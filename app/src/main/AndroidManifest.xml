@@ -89,6 +89,10 @@
         <activity
             android:name=".java.activity.ActivityLogin"
             android:exported="true" />
+        <activity android:name=".java.activity.ActivityHome"
+            android:exported="true"/>
+        <activity android:name=".java.activity.ActivitySplashBrace"
+            android:exported="true"/>
         <!--Java-->
     </application>
 

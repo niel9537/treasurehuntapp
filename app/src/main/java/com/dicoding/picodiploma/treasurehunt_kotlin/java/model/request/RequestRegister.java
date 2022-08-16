@@ -3,7 +3,7 @@ package com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class requestRegister {
+public class RequestRegister {
     @SerializedName("email")
     @Expose
     private String email;
@@ -20,7 +20,7 @@ public class requestRegister {
     @Expose
     private String phoneNumber;
 
-    public requestRegister(String email, String password, String fullName, String address, String phoneNumber) {
+    public RequestRegister(String email, String password, String fullName, String address, String phoneNumber) {
         this.email = email;
         this.password = password;
         this.fullName = fullName;

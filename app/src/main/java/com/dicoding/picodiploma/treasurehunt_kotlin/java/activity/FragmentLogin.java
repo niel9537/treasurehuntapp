@@ -1,6 +1,7 @@
 package com.dicoding.picodiploma.treasurehunt_kotlin.java.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
@@ -18,12 +19,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.dicoding.picodiploma.treasurehunt_kotlin.R;
-import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.requestLogin;
+import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestLogin;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.LoginModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.network.ApiHelper;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.network.ApiInterface;
+import com.dicoding.picodiploma.treasurehunt_kotlin.java.util.LoadingDialogBar;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -38,6 +41,7 @@ public class FragmentLogin extends Fragment{
     SharedPreferences.Editor editor;
     private static final String SHARED_PREF_NAME = "treasureHunt";
     private static final String KEY_TOKEN = "key_token";
+    LoadingDialogBar loadingDialogBar;
     @Override
     public void onAttach(@NonNull Context context) {
         sharedPreferences=context.getSharedPreferences(SHARED_PREF_NAME,Context.MODE_PRIVATE);
@@ -49,6 +53,7 @@ public class FragmentLogin extends Fragment{
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login,container,false);
+
         login = view.findViewById(R.id.logins_button);
         register = view.findViewById(R.id.register_login);
         emailInput = view.findViewById(R.id.email_input_login);
@@ -64,14 +69,14 @@ public class FragmentLogin extends Fragment{
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 login.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.yellow));
 
-                //login();
+                login();
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
                 login.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.yellow));
 
-                //login();
+                login();
             }
         });
         passInput.addTextChangedListener(new TextWatcher() {
@@ -84,22 +89,25 @@ public class FragmentLogin extends Fragment{
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 login.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.yellow));
 
-                //login();
+                login();
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
                 login.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.yellow));
 
-                //login();
+                login();
             }
         });
+
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(callbackFragment!=null){
-                    callbackFragment.changeFragment();
-                }
+                Fragment newFragment = new FragmentRegister();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragmentContainerView, newFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
             }
         });
         return view;
@@ -107,25 +115,33 @@ public class FragmentLogin extends Fragment{
 
 
     private void login() {
-        ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
-        Call<LoginModel> loginCall = apiInterface.login(new requestLogin(emailInput.getText().toString(),passInput.getText().toString()));
-        loginCall.enqueue(new Callback<LoginModel>() {
+        login.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onResponse(Call<LoginModel> call, Response<LoginModel> response) {
-                if(response.isSuccessful()){
-                    editor.putString(KEY_TOKEN,"Bearer "+response.body().getData().getAccessToken().toString());
-                    editor.apply();
-                    Log.d("Token", "Bearer : " + response.body().getData().getAccessToken().toString());
-                }else{
-                    Toast.makeText(getActivity(),"Email dan Password salah!",Toast.LENGTH_SHORT).show();
-                }
-            }
+            public void onClick(View view) {
+                ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
+                Call<LoginModel> loginCall = apiInterface.login(new RequestLogin(emailInput.getText().toString(),passInput.getText().toString()));
+                loginCall.enqueue(new Callback<LoginModel>() {
+                    @Override
+                    public void onResponse(Call<LoginModel> call, Response<LoginModel> response) {
+                        if(response.isSuccessful()){
+                            editor.putString(KEY_TOKEN,"Bearer "+response.body().getData().getAccessToken().toString());
+                            editor.apply();
 
-            @Override
-            public void onFailure(Call<LoginModel> call, Throwable t) {
-                Toast.makeText(getActivity(),"Gagal Login : "+t.getMessage().toString(),Toast.LENGTH_SHORT).show();
+                            Log.d("Token", "Bearer : " + response.body().getData().getAccessToken().toString());
+                            startActivity(new Intent(getActivity(),ActivityHome.class));
+                        }else{
+                            Toast.makeText(getActivity(),"Email dan Password salah!",Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<LoginModel> call, Throwable t) {
+                        Toast.makeText(getActivity(),"Gagal Login : "+t.getMessage().toString(),Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
+
 
     }
     public void setCallbackFragment(CallbackFragment callbackFragment){
