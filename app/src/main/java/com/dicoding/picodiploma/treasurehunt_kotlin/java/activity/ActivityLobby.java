@@ -17,6 +17,7 @@ import androidx.core.content.ContextCompat;
 import com.dicoding.picodiploma.treasurehunt_kotlin.R;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.InputGameCodeModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.MeModel;
+import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.PlayModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.ReadyModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.network.ApiHelper;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.network.ApiInterface;
@@ -65,25 +66,20 @@ public class ActivityLobby extends AppCompatActivity {
 
     private void play() {
         ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
-        Call<ReadyModel> readyCall = apiInterface.ready(getKeyToken.toString(),getKeyTokenGame.toString());
-        readyCall.enqueue(new Callback<ReadyModel>() {
+        Call<PlayModel> playCall = apiInterface.play(getKeyToken.toString(),getKeyTokenGame.toString());
+        playCall.enqueue(new Callback<PlayModel>() {
             @Override
-            public void onResponse(Call<ReadyModel> call, Response<ReadyModel> response) {
+            public void onResponse(Call<PlayModel> call, Response<PlayModel> response) {
                 if(response.isSuccessful()){
-                    if(response.body().getData().getStatus().equals("READY")){
-                        ready.setText(response.body().getMessage().toString());
-                        ready.setBackgroundColor(ContextCompat.getColor(ActivityLobby.this, R.color.login_gray));
-                        ready.setEnabled(false);
-                        play.setBackgroundColor(ContextCompat.getColor(ActivityLobby.this, R.color.green));
-                        play.setEnabled(true);
-                    }
+                    Toast.makeText(ActivityLobby.this,"Sukses : "+response.message().toString(),Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(ActivityLobby.this,ActivityPlayGame.class));
                 }else{
-                    Toast.makeText(ActivityLobby.this,""+response.message().toString(),Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivityLobby.this,"Error : "+response.message().toString(),Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<ReadyModel> call, Throwable t) {
+            public void onFailure(Call<PlayModel> call, Throwable t) {
 
             }
         });
@@ -96,7 +92,7 @@ public class ActivityLobby extends AppCompatActivity {
             @Override
             public void onResponse(Call<ReadyModel> call, Response<ReadyModel> response) {
                 if(response.isSuccessful()){
-                   if(response.body().getData().getStatus().equals("READY")){
+                   if(response.body().getMessage().equals("I am Ready to Play")){
                        ready.setText(response.body().getMessage().toString());
                        ready.setBackgroundColor(ContextCompat.getColor(ActivityLobby.this, R.color.login_gray));
                        ready.setEnabled(false);
@@ -104,7 +100,7 @@ public class ActivityLobby extends AppCompatActivity {
                        play.setEnabled(true);
                    }
                 }else{
-                    Toast.makeText(ActivityLobby.this,""+response.message().toString(),Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivityLobby.this,"Error : "+response.message().toString(),Toast.LENGTH_SHORT).show();
                 }
             }
 

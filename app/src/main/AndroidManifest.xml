@@ -95,6 +95,8 @@
             android:exported="true"/>
         <activity android:name=".java.activity.ActivityLobby"
             android:exported="true"/>
+        <activity android:name=".java.activity.ActivityPlayGame"
+            android:exported="true"/>
         <!--Java-->
     </application>
 

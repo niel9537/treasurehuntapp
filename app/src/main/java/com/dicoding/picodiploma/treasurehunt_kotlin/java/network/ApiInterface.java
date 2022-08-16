@@ -7,6 +7,7 @@ import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestRe
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.InputGameCodeModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.LoginModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.MeModel;
+import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.PlayModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.ReadyModel;
 
 import retrofit2.Call;
@@ -30,5 +31,5 @@ public interface ApiInterface {
     @POST("/mobile/v1/game-controls/ready-check")
     Call<ReadyModel> ready(@Header("Authorization") String token, @Query("game_token") String userGameToken);
     @POST("/mobile/v1/game-controls/start-game")
-    Call<ReadyModel> play(@Header("Authorization") String token, @Query("game_token") String userGameToken);
+    Call<PlayModel> play(@Header("Authorization") String token, @Query("game_token") String userGameToken);
 }
