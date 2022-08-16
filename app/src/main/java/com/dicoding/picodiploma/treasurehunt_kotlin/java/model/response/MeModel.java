@@ -3,7 +3,7 @@ package com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class GameModel {
+public class MeModel {
     @SerializedName("isSuccess")
     @Expose
     private Boolean isSuccess;
@@ -18,14 +18,14 @@ public class GameModel {
     private String message;
     @SerializedName("data")
     @Expose
-    private DataJoinGame data;
+    private DataMeModel dataMeModel;
 
-    public GameModel(Boolean isSuccess, Integer responseCode, String responseMessage, String message, DataJoinGame data) {
+    public MeModel(Boolean isSuccess, Integer responseCode, String responseMessage, String message, DataMeModel dataMeModel) {
         this.isSuccess = isSuccess;
         this.responseCode = responseCode;
         this.responseMessage = responseMessage;
         this.message = message;
-        this.data = data;
+        this.dataMeModel = dataMeModel;
     }
 
     public Boolean getSuccess() {
@@ -60,11 +60,11 @@ public class GameModel {
         this.message = message;
     }
 
-    public DataJoinGame getData() {
-        return data;
+    public DataMeModel getDataMeModel() {
+        return dataMeModel;
     }
 
-    public void setData(DataJoinGame data) {
-        this.data = data;
+    public void setDataMeModel(DataMeModel dataMeModel) {
+        this.dataMeModel = dataMeModel;
     }
 }

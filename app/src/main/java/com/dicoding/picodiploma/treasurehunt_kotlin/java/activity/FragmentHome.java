@@ -22,9 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.dicoding.picodiploma.treasurehunt_kotlin.R;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestJoinGame;
-import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestLogin;
-import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.GameModel;
-import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.LoginModel;
+import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.InputGameCodeModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.network.ApiHelper;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.network.ApiInterface;
 
@@ -87,20 +85,21 @@ public class FragmentHome extends Fragment {
             public void onClick(View view) {
                 if(!codeInput.getText().toString().isEmpty()){
                     ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
-                    Call<GameModel> joinGameCall = apiInterface.joinGame(getKeyToken.toString(),new RequestJoinGame(codeInput.getText().toString()));
-                    joinGameCall.enqueue(new Callback<GameModel>() {
+                    Call<InputGameCodeModel> joinGameCall = apiInterface.joinGame(getKeyToken.toString(),new RequestJoinGame(codeInput.getText().toString()));
+                    joinGameCall.enqueue(new Callback<InputGameCodeModel>() {
                         @Override
-                        public void onResponse(Call<GameModel> call, Response<GameModel> response) {
+                        public void onResponse(Call<InputGameCodeModel> call, Response<InputGameCodeModel> response) {
                             Log.d("API-login: ",  getKeyToken.toString()+"%%%%%"+codeInput.getText().toString());
                             editor.putString(KEY_TOKEN_GAME,""+response.body().getData().getGameToken().toString());
                             editor.apply();
 
                             Log.d("Token Game", " : " + response.body().getData().getGameToken().toString());
-                            
+                            startActivity(new Intent(getActivity(),ActivitySplashBrace.class));
+
                         }
 
                         @Override
-                        public void onFailure(Call<GameModel> call, Throwable t) {
+                        public void onFailure(Call<InputGameCodeModel> call, Throwable t) {
 
                         }
                     });
