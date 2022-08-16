@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.dicoding.picodiploma.treasurehunt_kotlin">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-feature android:name="android.hardware.camera" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.TreasureHuntKotlin">
+        <activity
+            android:name=".manohara.ManoharaMainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ApiTestActivity"
+            android:exported="true">
+        </activity>
+        <activity
+            android:name=".brace.ScanQRActivity"
+            android:exported="false" />
+        <activity
+            android:name=".brace.BraceCheckOutActivity"
+            android:exported="false" />
+        <activity
+            android:name=".brace.BraceShareActivity"
+            android:exported="false" />
+        <activity
+            android:name=".brace.BracePlayActivity"
+            android:exported="false" />
+        <activity
+            android:name=".brace.BraceNarasiActivity"
+            android:exported="false" />
+        <activity
+            android:name=".brace.BraceCheckInActivity"
+            android:exported="false" />
+        <activity
+            android:name=".TermsAndConditionsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AboutActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ChangePasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LobbyGameActivity"
+            android:exported="false" />
+        <activity
+            android:name=".WelcomeGameActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DetailGameActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LobbyActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DetailBraceActivity"
+            android:exported="false" />
+        <activity
+            android:name=".java.activity.ActivitySplash"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".PlayGameActivity"
+            android:exported="false" />
+        <activity
+            android:name=".OnBoardActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LoginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="true" />
+        <!--Java-->
+        <activity
+            android:name=".java.activity.ActivityLogin"
+            android:exported="true" />
+        <!--Java-->
+    </application>
+
+</manifest>
