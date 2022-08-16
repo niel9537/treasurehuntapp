@@ -1,5 +1,7 @@
 package com.dicoding.picodiploma.treasurehunt_kotlin.java.activity;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -9,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -27,14 +30,27 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class FragmentLogin extends Fragment{
-    Button login, register;
+    Button login;
+    TextView register;
     EditText emailInput,passInput;
     CallbackFragment callbackFragment;
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
+    private static final String SHARED_PREF_NAME = "treasureHunt";
+    private static final String KEY_TOKEN = "key_token";
+    @Override
+    public void onAttach(@NonNull Context context) {
+        sharedPreferences=context.getSharedPreferences(SHARED_PREF_NAME,Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        super.onAttach(context);
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login,container,false);
         login = view.findViewById(R.id.logins_button);
+        register = view.findViewById(R.id.register_login);
         emailInput = view.findViewById(R.id.email_input_login);
         passInput = view.findViewById(R.id.pass_input_login);
         emailInput.addTextChangedListener(new TextWatcher() {
@@ -48,14 +64,14 @@ public class FragmentLogin extends Fragment{
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 login.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.yellow));
 
-                login();
+                //login();
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
                 login.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.yellow));
 
-                login();
+                //login();
             }
         });
         passInput.addTextChangedListener(new TextWatcher() {
@@ -68,14 +84,22 @@ public class FragmentLogin extends Fragment{
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 login.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.yellow));
 
-                login();
+                //login();
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
                 login.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.yellow));
 
-                login();
+                //login();
+            }
+        });
+        register.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(callbackFragment!=null){
+                    callbackFragment.changeFragment();
+                }
             }
         });
         return view;
@@ -89,20 +113,24 @@ public class FragmentLogin extends Fragment{
             @Override
             public void onResponse(Call<LoginModel> call, Response<LoginModel> response) {
                 if(response.isSuccessful()){
+                    editor.putString(KEY_TOKEN,"Bearer "+response.body().getData().getAccessToken().toString());
+                    editor.apply();
                     Log.d("Token", "Bearer : " + response.body().getData().getAccessToken().toString());
                 }else{
-                    Toast.makeText(getActivity(),"Gagal Login",Toast.LENGTH_SHORT);
+                    Toast.makeText(getActivity(),"Email dan Password salah!",Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<LoginModel> call, Throwable t) {
-                Toast.makeText(getActivity(),"Gagal Login",Toast.LENGTH_SHORT);
+                Toast.makeText(getActivity(),"Gagal Login : "+t.getMessage().toString(),Toast.LENGTH_SHORT).show();
             }
         });
 
     }
-
+    public void setCallbackFragment(CallbackFragment callbackFragment){
+        this.callbackFragment = callbackFragment;
+    }
     public void getCallbackFragment(CallbackFragment callbackFragment){
         this.callbackFragment = callbackFragment;
     }

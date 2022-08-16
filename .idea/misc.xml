@@ -35,6 +35,15 @@
         <entry key="..\:/Project/Treasure Hunt Indonesia/treasure_hunt_kotlin/app/src/main/res/layout/registration_dialog_layout.xml" value="0.1" />
         <entry key="..\:/Project/Treasure Hunt Indonesia/treasure_hunt_kotlin/app/src/main/res/layout/registration_failed_dialog_layout.xml" value="0.25" />
         <entry key="..\:/Project/Treasure Hunt Indonesia/treasure_hunt_kotlin/app/src/main/res/layout/registration_success_dialog_layout.xml" value="0.2" />
+        <entry key="..\:/Project/TreasureHunt App/app/src/main/res/layout/activity_login.xml" value="0.37206878582595104" />
+        <entry key="..\:/Project/TreasureHunt App/app/src/main/res/layout/activity_manohara_main.xml" value="0.371875" />
+        <entry key="..\:/Project/TreasureHunt App/app/src/main/res/layout/activity_play_game.xml" value="0.371875" />
+        <entry key="..\:/Project/TreasureHunt App/app/src/main/res/layout/activity_terms_and_conditions.xml" value="0.371875" />
+        <entry key="..\:/Project/TreasureHunt App/app/src/main/res/layout/activity_welcome_game.xml" value="0.371875" />
+        <entry key="..\:/Project/TreasureHunt App/app/src/main/res/layout/create_new_pass_failed_dialog_layout.xml" value="0.371875" />
+        <entry key="..\:/Project/TreasureHunt App/app/src/main/res/layout/dialog_forgot_failed.xml" value="0.371875" />
+        <entry key="..\:/Project/TreasureHunt App/app/src/main/res/layout/fragment_login.xml" value="0.371875" />
+        <entry key="..\:/Project/TreasureHunt App/app/src/main/res/layout/fragment_registration.xml" value="0.24322916666666666" />
         <entry key="..\:/project/TreasureHuntKotlin/app/src/main/res/drawable/back_icon.xml" value="0.1" />
         <entry key="..\:/project/TreasureHuntKotlin/app/src/main/res/drawable/bottom_nav.xml" value="0.186" />
         <entry key="..\:/project/TreasureHuntKotlin/app/src/main/res/drawable/color_button_login.xml" value="0.1" />
@@ -89,7 +98,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="11" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

@@ -23,7 +23,8 @@ public class ActivityLogin extends AppCompatActivity implements CallbackFragment
     }
 
     public void addFragment(){
-        fragment = new FragmentLogin();
+        FragmentLogin fragment = new FragmentLogin();
+        fragment.setCallbackFragment(this);
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.fragmentContainerView,fragment);
