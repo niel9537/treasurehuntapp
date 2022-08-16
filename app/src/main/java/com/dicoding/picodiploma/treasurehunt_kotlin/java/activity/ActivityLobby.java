@@ -34,6 +34,7 @@ public class ActivityLobby extends AppCompatActivity {
     private static final String SHARED_PREF_NAME = "treasureHunt";
     private static final String KEY_TOKEN = "key_token";
     private static final String KEY_TOKEN_GAME = "key_token_game";
+    private static final String KEY_FILE_ID = "key_file_id";
     String getKeyToken = "";
     String getKeyTokenGame = "";
     @Override
@@ -45,6 +46,7 @@ public class ActivityLobby extends AppCompatActivity {
         getKeyTokenGame=sharedPreferences.getString(KEY_TOKEN_GAME,null);
         Log.d("KEY TOKEN ", " : " + getKeyToken);
         Log.d("KEY TOKEN GAME", " : " + getKeyTokenGame);
+        editor = sharedPreferences.edit();
         player1 = findViewById(R.id.name_player1);
         ready = findViewById(R.id.ready_button);
         play = findViewById(R.id.play_game_button);
@@ -72,7 +74,10 @@ public class ActivityLobby extends AppCompatActivity {
             public void onResponse(Call<PlayModel> call, Response<PlayModel> response) {
                 if(response.isSuccessful()){
                     Toast.makeText(ActivityLobby.this,"Sukses : "+response.message().toString(),Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(ActivityLobby.this,ActivityPlayGame.class));
+                    Intent intent = new Intent(ActivityLobby.this,ActivityPlayGame.class);
+                    intent.putExtra("FILE_ID",response.body().getData().getNextFlow().getFile().getFileId().toString());
+                    intent.putExtra("FLOW_ID",response.body().getData().getNextFlow().getId().toString());
+                    startActivity(intent);
                 }else{
                     Toast.makeText(ActivityLobby.this,"Error : "+response.message().toString(),Toast.LENGTH_SHORT).show();
                 }
