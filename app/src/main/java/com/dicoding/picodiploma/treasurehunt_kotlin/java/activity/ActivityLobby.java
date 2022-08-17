@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.dicoding.picodiploma.treasurehunt_kotlin.R;
+import com.dicoding.picodiploma.treasurehunt_kotlin.java.config.Config;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.InputGameCodeModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.MeModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.PlayModel;
@@ -77,6 +78,7 @@ public class ActivityLobby extends AppCompatActivity {
                     Intent intent = new Intent(ActivityLobby.this,ActivityPlayGame.class);
                     intent.putExtra("FILE_ID",response.body().getData().getNextFlow().getFile().getFileId().toString());
                     intent.putExtra("FLOW_ID",response.body().getData().getNextFlow().getId().toString());
+                    intent.putExtra("STATUS", Config.PLAY_GAME);
                     startActivity(intent);
                 }else{
                     Toast.makeText(ActivityLobby.this,"Error : "+response.message().toString(),Toast.LENGTH_SHORT).show();

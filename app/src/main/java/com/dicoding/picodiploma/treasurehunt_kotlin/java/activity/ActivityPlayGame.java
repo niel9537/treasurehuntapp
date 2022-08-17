@@ -60,6 +60,8 @@ public class ActivityPlayGame extends AppCompatActivity {
     String FILE_ID = "";
     String FILE_TYPE = "";
     String FLOW_ID = "";
+    String POST_ID = "";
+    int STATUS = 0;
     Boolean next = false;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -74,56 +76,67 @@ public class ActivityPlayGame extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             FILE_ID= extras.getString("FILE_ID");
+            POST_ID= extras.getString("POST_ID");
             FLOW_ID= extras.getString("FLOW_ID");
+            STATUS= extras.getInt("STATUS");
             Log.d("FLOW_ID", " : " + FLOW_ID);
             //The key argument here must match that used in the other activity
         }
 
+        switch(STATUS){
+            case 1 :
+                AlertDialog.Builder mBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
+                View mView= LayoutInflater.from(this).inflate(R.layout.dialog_intro_story,null);
+                mBuilder.setView(mView);
+                //String web = "http://videocdn.bodybuilding.com/video/mp4/62000/62792m.mp4";
+                skip = mView.findViewById(R.id.videoSkip);
+                playerView = mView.findViewById(R.id.videoView);
+                // Build a HttpDataSource.Factory with cross-protocol redirects enabled.
+                HttpDataSource.Factory httpDataSourceFactory =
+                        new DefaultHttpDataSource.Factory().setAllowCrossProtocolRedirects(true);
+                // Wrap the HttpDataSource.Factory in a DefaultDataSource.Factory, which adds in
+                // support for requesting data from other sources (e.g., files, resources, etc).
+                DefaultDataSource.Factory dataSourceFactory = () -> {
+                    HttpDataSource dataSource = httpDataSourceFactory.createDataSource();
+                    // Set a custom authentication request header.
+                    dataSource.setRequestProperty("Authorization", getKeyToken.toString());
+                    return dataSource;
+                };
 
+                try {
+                    simpleExoPlayer = new SimpleExoPlayer.Builder(this).setMediaSourceFactory(new DefaultMediaSourceFactory(dataSourceFactory)).build();
+                    playerView.setPlayer(simpleExoPlayer);
+                    MediaItem mediaItem = MediaItem.fromUri(Config.BASE_URL+"mobile/v1/file-uploads/"+FILE_ID);
+                    //MediaItem mediaItem = MediaItem.fromUri(web);
+                    simpleExoPlayer.addMediaItem(mediaItem);
+                    simpleExoPlayer.prepare();
+                    simpleExoPlayer.play();
+                }catch (Exception e){
 
+                }
 
-        AlertDialog.Builder mBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
-        View mView= LayoutInflater.from(this).inflate(R.layout.dialog_intro_story,null);
-        mBuilder.setView(mView);
-        //String web = "http://videocdn.bodybuilding.com/video/mp4/62000/62792m.mp4";
-        skip = mView.findViewById(R.id.videoSkip);
-        playerView = mView.findViewById(R.id.videoView);
-        // Build a HttpDataSource.Factory with cross-protocol redirects enabled.
-        HttpDataSource.Factory httpDataSourceFactory =
-                new DefaultHttpDataSource.Factory().setAllowCrossProtocolRedirects(true);
-        // Wrap the HttpDataSource.Factory in a DefaultDataSource.Factory, which adds in
-        // support for requesting data from other sources (e.g., files, resources, etc).
-        DefaultDataSource.Factory dataSourceFactory = () -> {
-            HttpDataSource dataSource = httpDataSourceFactory.createDataSource();
-            // Set a custom authentication request header.
-            dataSource.setRequestProperty("Authorization", getKeyToken.toString());
-            return dataSource;
-        };
+                skip.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                        nextFlow(FLOW_ID);
+                    }
+                });
 
-        try {
-            simpleExoPlayer = new SimpleExoPlayer.Builder(this).setMediaSourceFactory(new DefaultMediaSourceFactory(dataSourceFactory)).build();
-            playerView.setPlayer(simpleExoPlayer);
-            MediaItem mediaItem = MediaItem.fromUri(Config.BASE_URL+"mobile/v1/file-uploads/"+FILE_ID);
-            //MediaItem mediaItem = MediaItem.fromUri(web);
-            simpleExoPlayer.addMediaItem(mediaItem);
-            simpleExoPlayer.prepare();
-            simpleExoPlayer.play();
-        }catch (Exception e){
+                dialog = mBuilder.create();
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.setCanceledOnTouchOutside(false);
+                dialog.show();
+                break;
+            case 2 :
+                Log.d("POST_ID", " : " + POST_ID);
+                Log.d("FLOW_ID", " : " + FLOW_ID);
+                Log.d("STATUS", " : " + STATUS);
 
+                break;
         }
 
-        skip.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                nextFlow(FLOW_ID);
-            }
-        });
 
-        dialog = mBuilder.create();
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.show();
 
 
     }
@@ -137,15 +150,23 @@ public class ActivityPlayGame extends AppCompatActivity {
                 if(response.isSuccessful()){
                     String type = response.body().getData().getNextFlow().getFlowType().getName().toString();
                     FLOW_ID = response.body().getData().getNextFlow().getId();
-                    if(type.equals("manohara-instruction")){
-                        String content = response.body().getData().getNextFlow().getContent().toString();
-                        introInstructionDialog(FLOW_ID,content,"");
-                    }else if(type.equals("manohara-map")){
-                        introMapDialog(FLOW_ID,"");
-                    }else{
-                        Toast.makeText(ActivityPlayGame.this,"Type : "+type,Toast.LENGTH_SHORT).show();
+                    Log.d("TYPE",""+type);
+                    Log.d("FLOW_ID",""+FLOW_ID);
+                    switch(type){
+                        case "manohara-instruction":
+                            String content = response.body().getData().getNextFlow().getContent().toString();
+                            introInstructionDialog(FLOW_ID,content,"");
+                            break;
+                        case "manohara-map":
+                            introMapDialog(FLOW_ID,"");
+                            break;
+                        case "checkin":
+                            startActivity(new Intent(ActivityPlayGame.this,ActivityScan.class));
+                            break;
+                        default:
+                            Toast.makeText(ActivityPlayGame.this,"Type : "+type,Toast.LENGTH_SHORT).show();
+                            break;
                     }
-
                 }else{
                     Toast.makeText(ActivityPlayGame.this,"Error : "+response.message().toString(),Toast.LENGTH_SHORT).show();
                 }
@@ -174,14 +195,8 @@ public class ActivityPlayGame extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<PlayModel> call, Response<PlayModel> response) {
                         if(response.isSuccessful()){
-                            if(response.body().getData().getNextFlow().getLast()==false){
-                                FLOW_ID = response.body().getData().getNextFlow().getId();
-                                nextFlow(FLOW_ID);
-                            }else{
-                                Toast.makeText(ActivityPlayGame.this,"TAMAT ",Toast.LENGTH_SHORT).show();
-                            }
-
-
+                            //FLOW_ID = response.body().getData().getNextFlow().getId();
+                            nextFlow(id);
                         }else{
                             Toast.makeText(ActivityPlayGame.this,"Error : "+response.message().toString(),Toast.LENGTH_SHORT).show();
                         }
@@ -218,14 +233,8 @@ public class ActivityPlayGame extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<PlayModel> call, Response<PlayModel> response) {
                         if(response.isSuccessful()){
-                            if(response.body().getData().getNextFlow().getLast()==false){
-                                FLOW_ID = response.body().getData().getNextFlow().getId();
-                                nextFlow(FLOW_ID);
-                            }else{
-                                Toast.makeText(ActivityPlayGame.this,"TAMAT ",Toast.LENGTH_SHORT).show();
-                            }
-
-
+                            //FLOW_ID = response.body().getData().getNextFlow().getId();
+                            nextFlow(id);
                         }else{
                             Toast.makeText(ActivityPlayGame.this,"Error : "+response.message().toString(),Toast.LENGTH_SHORT).show();
                         }

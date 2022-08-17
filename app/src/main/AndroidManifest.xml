@@ -97,6 +97,8 @@
             android:exported="true"/>
         <activity android:name=".java.activity.ActivityPlayGame"
             android:exported="true"/>
+        <activity android:name=".java.activity.ActivityScan"
+            android:exported="true"/>
         <!--Java-->
     </application>
 
