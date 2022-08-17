@@ -85,7 +85,7 @@ public class FragmentHome extends Fragment {
             public void onClick(View view) {
                 if(!codeInput.getText().toString().isEmpty()){
                     ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
-                    Call<InputGameCodeModel> joinGameCall = apiInterface.joinGame(getKeyToken.toString(),new RequestJoinGame(codeInput.getText().toString()));
+                    Call<InputGameCodeModel> joinGameCall = apiInterface.joinGame(getKeyToken.toString(),new RequestJoinGame(codeInput.getText().toString().toUpperCase()));
                     joinGameCall.enqueue(new Callback<InputGameCodeModel>() {
                         @Override
                         public void onResponse(Call<InputGameCodeModel> call, Response<InputGameCodeModel> response) {

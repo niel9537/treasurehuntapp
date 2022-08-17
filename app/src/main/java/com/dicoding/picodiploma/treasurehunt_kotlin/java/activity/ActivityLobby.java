@@ -38,6 +38,7 @@ public class ActivityLobby extends AppCompatActivity {
     private static final String KEY_FILE_ID = "key_file_id";
     String getKeyToken = "";
     String getKeyTokenGame = "";
+    Boolean PROGRESS = false;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,6 +118,10 @@ public class ActivityLobby extends AppCompatActivity {
             }
         });
 
+    }
+
+    private Boolean cekProgress(){
+        return false;
     }
 
     private void me() {

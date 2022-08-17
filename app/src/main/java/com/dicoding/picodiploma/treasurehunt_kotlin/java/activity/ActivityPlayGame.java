@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.dicoding.picodiploma.treasurehunt_kotlin.R;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.config.Config;
+import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestCheckIn;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestNextFlow;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.PlayModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.network.ApiHelper;
@@ -132,7 +133,8 @@ public class ActivityPlayGame extends AppCompatActivity {
                 Log.d("POST_ID", " : " + POST_ID);
                 Log.d("FLOW_ID", " : " + FLOW_ID);
                 Log.d("STATUS", " : " + STATUS);
-
+                checkIn(POST_ID);
+                //posVideoDialog("",POST_ID);
                 break;
         }
 
@@ -177,6 +179,91 @@ public class ActivityPlayGame extends AppCompatActivity {
                 Toast.makeText(ActivityPlayGame.this,"Error : "+t.getMessage().toString(),Toast.LENGTH_SHORT).show();
             }
         });
+    }
+    private void checkIn(String post_id) {
+        ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
+        Call<PlayModel> playCall = apiInterface.cekin(getKeyToken.toString(),getKeyTokenGame,new RequestCheckIn(post_id));
+        playCall.enqueue(new Callback<PlayModel>() {
+            @Override
+            public void onResponse(Call<PlayModel> call, Response<PlayModel> response) {
+                if(response.isSuccessful()){
+                    String type = response.body().getData().getNextFlow().getFlowType().getName().toString();
+                    FLOW_ID = response.body().getData().getNextFlow().getId();
+                    FILE_ID = response.body().getData().getNextFlow().getFile().getFileId();
+                    Log.d("TYPE",""+type);
+                    Log.d("FLOW_ID",""+FLOW_ID);
+                    switch(type){
+                        case "manohara-instruction":
+                            String content = response.body().getData().getNextFlow().getContent().toString();
+                            introInstructionDialog(FLOW_ID,content,"");
+                            break;
+                        case "manohara-map":
+                            introMapDialog(FLOW_ID,"");
+                            break;
+                        case "checkin":
+                            startActivity(new Intent(ActivityPlayGame.this,ActivityScan.class));
+                            break;
+                        case "video":
+                            posVideoDialog(FLOW_ID,FILE_ID);
+                            break;
+                        default:
+                            Toast.makeText(ActivityPlayGame.this,"Type : "+type,Toast.LENGTH_SHORT).show();
+                            break;
+                    }
+                }else{
+                    Toast.makeText(ActivityPlayGame.this,"Error : "+response.message().toString(),Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PlayModel> call, Throwable t) {
+                Toast.makeText(ActivityPlayGame.this,"Error : "+t.getMessage().toString(),Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    private void posVideoDialog(String id,String file_id) {
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
+        View mView= LayoutInflater.from(this).inflate(R.layout.dialog_intro_story,null);
+        mBuilder.setView(mView);
+        //String web = "http://videocdn.bodybuilding.com/video/mp4/62000/62792m.mp4";
+        skip = mView.findViewById(R.id.videoSkip);
+        playerView = mView.findViewById(R.id.videoView);
+        // Build a HttpDataSource.Factory with cross-protocol redirects enabled.
+        HttpDataSource.Factory httpDataSourceFactory =
+                new DefaultHttpDataSource.Factory().setAllowCrossProtocolRedirects(true);
+        // Wrap the HttpDataSource.Factory in a DefaultDataSource.Factory, which adds in
+        // support for requesting data from other sources (e.g., files, resources, etc).
+        DefaultDataSource.Factory dataSourceFactory = () -> {
+            HttpDataSource dataSource = httpDataSourceFactory.createDataSource();
+            // Set a custom authentication request header.
+            dataSource.setRequestProperty("Authorization", getKeyToken.toString());
+            return dataSource;
+        };
+
+        try {
+            simpleExoPlayer = new SimpleExoPlayer.Builder(this).setMediaSourceFactory(new DefaultMediaSourceFactory(dataSourceFactory)).build();
+            playerView.setPlayer(simpleExoPlayer);
+            MediaItem mediaItem = MediaItem.fromUri(Config.BASE_URL+"mobile/v1/file-uploads/"+file_id);
+            //MediaItem mediaItem = MediaItem.fromUri(web);
+            simpleExoPlayer.addMediaItem(mediaItem);
+            simpleExoPlayer.prepare();
+            simpleExoPlayer.play();
+        }catch (Exception e){
+
+        }
+
+        skip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                nextFlow(id);
+            }
+        });
+
+        dialog = mBuilder.create();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
     }
 
     private void introMapDialog(String id,String file_id) {
