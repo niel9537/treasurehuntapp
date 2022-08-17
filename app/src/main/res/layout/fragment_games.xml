@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,107 +9,112 @@
     android:paddingEnd="40dp"
     tools:context=".HomeFragment">
 
-    <TextView
-        android:id="@+id/username_welcome"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="54dp"
-        android:fontFamily="@font/lora_regular"
-        android:text="Games"
-        android:textColor="@color/green"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/welcome_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:fontFamily="@font/plus_jakarta_sans_regular"
-        android:text="Temukan berbagai game seru disini!"
-        android:textColor="@color/login_gray"
-        android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="@+id/username_welcome"
-        app:layout_constraintTop_toBottomOf="@+id/username_welcome" />
-
-    <LinearLayout
-        android:id="@+id/linearLayout"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_marginTop="13dp"
-        android:background="@color/yellow"
-        android:orientation="horizontal"
-        app:layout_constraintStart_toStartOf="@+id/welcome_text"
-        app:layout_constraintTop_toBottomOf="@id/welcome_text" />
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/berita_terkini"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:fontFamily="@font/plus_jakarta_sans_regular"
-        android:text="Whats new?"
-        android:textColor="@color/green"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/linearLayout"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+        <TextView
+            android:id="@+id/username_welcome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="54dp"
+            android:fontFamily="@font/lora_regular"
+            android:text="Games"
+            android:textColor="@color/green"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/view_pager_list"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_marginTop="7dp"
-        app:layout_constraintStart_toStartOf="@+id/berita_terkini"
-        app:layout_constraintTop_toBottomOf="@+id/berita_terkini" />
+        <TextView
+            android:id="@+id/welcome_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@font/plus_jakarta_sans_regular"
+            android:text="Temukan berbagai game seru disini!"
+            android:textColor="@color/login_gray"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="@+id/username_welcome"
+            app:layout_constraintTop_toBottomOf="@+id/username_welcome" />
 
-    <LinearLayout
-        android:id="@+id/indikator_game"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:gravity="center_horizontal|center_vertical"
-        android:orientation="horizontal"
-        app:layout_constraintStart_toStartOf="@+id/view_pager_list"
-        app:layout_constraintTop_toBottomOf="@id/view_pager_list" />
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginTop="13dp"
+            android:background="@color/yellow"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="@+id/welcome_text"
+            app:layout_constraintTop_toBottomOf="@id/welcome_text" />
 
-    <TextView
-        android:id="@+id/berita_terbaru"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:fontFamily="@font/plus_jakarta_sans_regular"
-        android:text="List of Games"
-        android:textColor="@color/green"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/indikator_game"
-        app:layout_constraintTop_toBottomOf="@+id/indikator_game" />
+        <TextView
+            android:id="@+id/berita_terkini"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/plus_jakarta_sans_regular"
+            android:text="Whats new?"
+            android:textColor="@color/green"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/linearLayout"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
-    <TextView
-        android:id="@+id/welcome_list1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/plus_jakarta_sans_regular"
-        android:text="Lorem ipsum dolor sit amet"
-        android:textColor="@color/login_gray"
-        android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="@+id/username_welcome"
-        app:layout_constraintTop_toBottomOf="@+id/berita_terbaru" />
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/view_pager_list"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="7dp"
+            app:layout_constraintStart_toStartOf="@+id/berita_terkini"
+            app:layout_constraintTop_toBottomOf="@+id/berita_terkini" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/list_game_rv"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="16dp"
-        tools:listitem="@layout/item_listgame"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/welcome_list1"
-        tools:layout_editor_absoluteX="16dp"/>
+        <LinearLayout
+            android:id="@+id/indikator_game"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center_horizontal|center_vertical"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="@+id/view_pager_list"
+            app:layout_constraintTop_toBottomOf="@id/view_pager_list" />
 
+        <TextView
+            android:id="@+id/berita_terbaru"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/plus_jakarta_sans_regular"
+            android:text="List of Games"
+            android:textColor="@color/green"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/indikator_game"
+            app:layout_constraintTop_toBottomOf="@+id/indikator_game" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/welcome_list1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/plus_jakarta_sans_regular"
+            android:text="Lorem ipsum dolor sit amet"
+            android:textColor="@color/login_gray"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="@+id/username_welcome"
+            app:layout_constraintTop_toBottomOf="@+id/berita_terbaru" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/list_game_rv"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="16dp"
+            tools:listitem="@layout/item_listgame"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/welcome_list1"
+            tools:layout_editor_absoluteX="16dp"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>
