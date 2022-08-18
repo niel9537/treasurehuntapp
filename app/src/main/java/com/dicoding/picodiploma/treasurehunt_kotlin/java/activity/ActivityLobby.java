@@ -106,34 +106,12 @@ public class ActivityLobby extends AppCompatActivity {
                 if(response.isSuccessful()){
                    if(response.body().getMessage().equals("I am Ready to Play")){
                        Log.d("STATUS ", " : " + response.body().getMessage().toString());
-                       ready.setText(response.body().getMessage().toString());
+                       ready.setText("UNREADY");
                        ready.setBackgroundColor(ContextCompat.getColor(ActivityLobby.this, R.color.login_gray));
                        ready.setEnabled(false);
                        play.setBackgroundColor(ContextCompat.getColor(ActivityLobby.this, R.color.green));
                        play.setEnabled(true);
                        cekProgress();
-                      /* if(cekProgress()){
-                           Log.d("CEK PROGRESS ", " : " + isContinue);
-                           play.setOnClickListener(new View.OnClickListener() {
-                               @Override
-                               public void onClick(View view) {
-                                   lanjut();
-                               }
-                           });
-                       }else{
-                           ready.setOnClickListener(new View.OnClickListener() {
-                               @Override
-                               public void onClick(View view) {
-                                   ready();
-                               }
-                           });
-                           play.setOnClickListener(new View.OnClickListener() {
-                               @Override
-                               public void onClick(View view) {
-                                   play();
-                               }
-                           });
-                       }*/
                    }
                 }else{
                     Toast.makeText(ActivityLobby.this,"Error : "+response.message().toString(),Toast.LENGTH_SHORT).show();
@@ -156,6 +134,7 @@ public class ActivityLobby extends AppCompatActivity {
             @Override
             public void onResponse(Call<CekProgressModel> call, Response<CekProgressModel> response) {
               if(response.isSuccessful()){
+                  ready.setEnabled(false);
                   play.setText("Continue");
                   FLOW_ID = response.body().getData().getLatestFlow().getId().toString();
                   Log.d("FLOW_ID ", " : " + FLOW_ID);
