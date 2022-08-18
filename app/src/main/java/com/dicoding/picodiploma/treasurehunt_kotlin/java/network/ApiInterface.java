@@ -11,6 +11,7 @@ import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.LoginMod
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.MeModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.PlayModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.ReadyModel;
+import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.checkprogress.CekProgressModel;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -38,4 +39,6 @@ public interface ApiInterface {
     Call<PlayModel> next(@Header("Authorization") String token,  @Query("game_token") String userGameToken,@Body RequestNextFlow requestNextFlow);
     @POST("/mobile/v1/game-controls/check-in")
     Call<PlayModel> cekin(@Header("Authorization") String token,  @Query("game_token") String userGameToken,@Body RequestCheckIn requestCheckIn);
+    @GET("/mobile/v1/game-controls/check-progress")
+    Call<CekProgressModel> cekproses(@Header("Authorization") String token, @Query("game_token") String userGameToken);
 }

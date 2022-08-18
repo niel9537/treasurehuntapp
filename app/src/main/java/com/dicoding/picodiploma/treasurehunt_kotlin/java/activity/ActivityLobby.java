@@ -20,6 +20,7 @@ import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.InputGam
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.MeModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.PlayModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.ReadyModel;
+import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.checkprogress.CekProgressModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.network.ApiHelper;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.network.ApiInterface;
 
@@ -38,7 +39,8 @@ public class ActivityLobby extends AppCompatActivity {
     private static final String KEY_FILE_ID = "key_file_id";
     String getKeyToken = "";
     String getKeyTokenGame = "";
-    Boolean PROGRESS = false;
+    boolean isContinue;
+    String FLOW_ID = "";
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,18 +56,15 @@ public class ActivityLobby extends AppCompatActivity {
         play = findViewById(R.id.play_game_button);
         play.setEnabled(false);
         me();
+
+
         ready.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ready();
             }
         });
-        play.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                play();
-            }
-        });
+
     }
 
     private void play() {
@@ -92,7 +91,12 @@ public class ActivityLobby extends AppCompatActivity {
             }
         });
     }
-
+    private void lanjut() {
+           Intent intent = new Intent(ActivityLobby.this,ActivityPlayGame.class);
+           intent.putExtra("FLOW_ID",FLOW_ID);
+           intent.putExtra("STATUS", Config.CONTINUE_GAME);
+           startActivity(intent);
+    }
     private void ready() {
         ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
         Call<ReadyModel> readyCall = apiInterface.ready(getKeyToken.toString(),getKeyTokenGame.toString());
@@ -101,11 +105,35 @@ public class ActivityLobby extends AppCompatActivity {
             public void onResponse(Call<ReadyModel> call, Response<ReadyModel> response) {
                 if(response.isSuccessful()){
                    if(response.body().getMessage().equals("I am Ready to Play")){
+                       Log.d("STATUS ", " : " + response.body().getMessage().toString());
                        ready.setText(response.body().getMessage().toString());
                        ready.setBackgroundColor(ContextCompat.getColor(ActivityLobby.this, R.color.login_gray));
                        ready.setEnabled(false);
                        play.setBackgroundColor(ContextCompat.getColor(ActivityLobby.this, R.color.green));
                        play.setEnabled(true);
+                       cekProgress();
+                      /* if(cekProgress()){
+                           Log.d("CEK PROGRESS ", " : " + isContinue);
+                           play.setOnClickListener(new View.OnClickListener() {
+                               @Override
+                               public void onClick(View view) {
+                                   lanjut();
+                               }
+                           });
+                       }else{
+                           ready.setOnClickListener(new View.OnClickListener() {
+                               @Override
+                               public void onClick(View view) {
+                                   ready();
+                               }
+                           });
+                           play.setOnClickListener(new View.OnClickListener() {
+                               @Override
+                               public void onClick(View view) {
+                                   play();
+                               }
+                           });
+                       }*/
                    }
                 }else{
                     Toast.makeText(ActivityLobby.this,"Error : "+response.message().toString(),Toast.LENGTH_SHORT).show();
@@ -120,8 +148,51 @@ public class ActivityLobby extends AppCompatActivity {
 
     }
 
-    private Boolean cekProgress(){
-        return false;
+    private void cekProgress(){
+
+        ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
+        Call<CekProgressModel> cekProgressCall = apiInterface.cekproses(getKeyToken.toString(),getKeyTokenGame.toString());
+        cekProgressCall.enqueue(new Callback<CekProgressModel>() {
+            @Override
+            public void onResponse(Call<CekProgressModel> call, Response<CekProgressModel> response) {
+              if(response.isSuccessful()){
+                  play.setText("Continue");
+                  FLOW_ID = response.body().getData().getLatestFlow().getId().toString();
+                  Log.d("FLOW_ID ", " : " + FLOW_ID);
+                  isContinue = true;
+                  Log.d("CEK PROGRESS ", " : " + isContinue);
+                  play.setOnClickListener(new View.OnClickListener() {
+                      @Override
+                      public void onClick(View view) {
+                          lanjut();
+                      }
+                  });
+              }else{
+                  ready.setOnClickListener(new View.OnClickListener() {
+                      @Override
+                      public void onClick(View view) {
+                          ready();
+                      }
+                  });
+                  play.setOnClickListener(new View.OnClickListener() {
+                      @Override
+                      public void onClick(View view) {
+                          play();
+                      }
+                  });
+                  //Toast.makeText(ActivityLobby.this,"Error : "+response.message().toString(),Toast.LENGTH_SHORT).show();
+                  isContinue = false;
+              }
+            }
+
+            @Override
+            public void onFailure(Call<CekProgressModel> call, Throwable t) {
+                Toast.makeText(ActivityLobby.this,"Error Failure : "+t.getMessage().toString(),Toast.LENGTH_SHORT).show();
+                isContinue = false;
+            }
+        });
+        Log.d("RETURN PROGRESS ", " : " + isContinue);
+       // return isContinue;
     }
 
     private void me() {

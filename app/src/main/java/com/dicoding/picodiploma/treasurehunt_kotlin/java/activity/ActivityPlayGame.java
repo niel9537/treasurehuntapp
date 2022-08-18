@@ -130,10 +130,17 @@ public class ActivityPlayGame extends AppCompatActivity {
                 dialog.show();
                 break;
             case 2 :
-                Log.d("POST_ID", " : " + POST_ID);
-                Log.d("FLOW_ID", " : " + FLOW_ID);
-                Log.d("STATUS", " : " + STATUS);
+                Log.d("POST_ID 2", " : " + POST_ID);
+                Log.d("FLOW_ID 2", " : " + FLOW_ID);
+                Log.d("STATUS 2", " : " + STATUS);
                 checkIn(POST_ID);
+                //posVideoDialog("",POST_ID);
+                break;
+            case 3 :
+                Log.d("POST_ID 3", " : " + POST_ID);
+                Log.d("FLOW_ID 3", " : " + FLOW_ID);
+                Log.d("STATUS 3", " : " + STATUS);
+                nextFlow(FLOW_ID);
                 //posVideoDialog("",POST_ID);
                 break;
         }
