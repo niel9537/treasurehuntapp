@@ -12,6 +12,7 @@ import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.LoginMod
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.MeModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.PlayModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.ReadyModel;
+import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.UserMeModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.checkprogress.CekProgressModel;
 
 import retrofit2.Call;
@@ -26,6 +27,8 @@ public interface ApiInterface {
     //Login
     @POST("mobile/v1/auth")
     Call<LoginModel> login(@Body RequestLogin requestLogin);
+    @GET("/mobile/v1/me")
+    Call<UserMeModel> profilme(@Header("Authorization") String token);
     @POST("mobile/v1/registration")
     Call<LoginModel> registration(@Body RequestRegister requestRegister);
     @POST("mobile/v1/game-controls/join-game")
@@ -34,6 +37,8 @@ public interface ApiInterface {
     Call<MeModel> me(@Header("Authorization") String token, @Query("game_token") String userGameToken);
     @POST("/mobile/v1/game-controls/ready-check")
     Call<ReadyModel> ready(@Header("Authorization") String token, @Query("game_token") String userGameToken);
+    @POST("/mobile/v1/game-controls/not-ready-check")
+    Call<ReadyModel> unready(@Header("Authorization") String token, @Query("game_token") String userGameToken);
     @POST("/mobile/v1/game-controls/start-game")
     Call<PlayModel> play(@Header("Authorization") String token, @Query("game_token") String userGameToken);
     @POST("/mobile/v1/game-controls/next-flow")
@@ -42,6 +47,6 @@ public interface ApiInterface {
     Call<PlayModel> cekin(@Header("Authorization") String token,  @Query("game_token") String userGameToken,@Body RequestCheckIn requestCheckIn);
     @GET("/mobile/v1/game-controls/check-progress")
     Call<CekProgressModel> cekproses(@Header("Authorization") String token, @Query("game_token") String userGameToken);
-    @GET("/mobile/v1/game-controls/lobbies/")
-    Call<LobbyDetailModel> lobbydetail(@Header("Authorization") String token, @Query("game_token") String userGameToken, @Path("id") String lobbyId);
+    @GET("/mobile/v1/game-controls/lobbies/{id}")
+    Call<LobbyDetailModel> lobbydetail(@Header("Authorization") String token,@Path("id") String lobbyId, @Query("game_token") String userGameToken );
 }

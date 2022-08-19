@@ -3,10 +3,13 @@ package com.dicoding.picodiploma.treasurehunt_kotlin.java.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,6 +47,7 @@ public class ActivityLobby extends AppCompatActivity {
     String getKeyLobbyId = "";
     boolean isContinue;
     String FLOW_ID = "";
+    boolean statusReady = false;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,12 +67,14 @@ public class ActivityLobby extends AppCompatActivity {
         ready = findViewById(R.id.ready_button);
         play = findViewById(R.id.play_game_button);
         play.setEnabled(false);
+
         me();
-       // lobbyDetail();
+        lobbyDetail();
 
         ready.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                statusReady = true;
                 ready();
             }
         });
@@ -76,13 +82,26 @@ public class ActivityLobby extends AppCompatActivity {
     }
 
     private void lobbyDetail() {
+        final LinearLayout ly = (LinearLayout) findViewById(R.id.ly);
+        ly.setOrientation(LinearLayout.VERTICAL);
         ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
-        Call<LobbyDetailModel> lobbydetailCall = apiInterface.lobbydetail(getKeyToken.toString(),getKeyTokenGame.toString(),getKeyLobbyId.toString());
+        Call<LobbyDetailModel> lobbydetailCall = apiInterface.lobbydetail(getKeyToken.toString(),getKeyLobbyId.toString(),getKeyTokenGame.toString());
         lobbydetailCall.enqueue(new Callback<LobbyDetailModel>() {
             @Override
             public void onResponse(Call<LobbyDetailModel> call, Response<LobbyDetailModel> response) {
                 if(response.isSuccessful()){
-
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                    params.setMargins(0,20,0,10);
+                    for(int i=0; i<response.body().getData().getPartyMembers().size(); i++){
+                        TextView textView = new TextView(ActivityLobby.this);
+                        textView.setText(response.body().getData().getPartyMembers().get(i).getUser().getProfile().getFullName()+" - "+response.body().getData().getPartyMembers().get(i).getBadge().toString());
+                        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+                        textView.setTextColor(ContextCompat.getColor(ActivityLobby.this, R.color.dark_blue));
+                        textView.setPadding(15,10,15,10);
+                        textView.setBackground(ContextCompat.getDrawable(ActivityLobby.this, R.drawable.player));
+                        textView.setLayoutParams(params);
+                        ly.addView(textView);
+                    }
                 }else{
                     Toast.makeText(ActivityLobby.this,"Error : "+response.message().toString(),Toast.LENGTH_SHORT).show();
                 }
@@ -153,7 +172,40 @@ public class ActivityLobby extends AppCompatActivity {
         });
 
     }
+    private void unready() {
+        ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
+        Call<ReadyModel> readyCall = apiInterface.unready(getKeyToken.toString(),getKeyTokenGame.toString());
+        readyCall.enqueue(new Callback<ReadyModel>() {
+            @Override
+            public void onResponse(Call<ReadyModel> call, Response<ReadyModel> response) {
+                if(response.isSuccessful()){
+                    if(response.body().getMessage().equals("I am Ready to Play")){
+                        Log.d("STATUS ", " : " + response.body().getMessage().toString());
+                        ready.setText("READY");
+                        ready.setBackgroundColor(ContextCompat.getColor(ActivityLobby.this, R.color.green));
+                        ready.setEnabled(true);
+                        play.setBackgroundColor(ContextCompat.getColor(ActivityLobby.this, R.color.login_gray));
+                        play.setEnabled(false);
+                        ready.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                ready();
+                            }
+                        });
+                        //cekProgress();
+                    }
+                }else{
+                    Toast.makeText(ActivityLobby.this,"Error : "+response.message().toString(),Toast.LENGTH_SHORT).show();
+                }
+            }
 
+            @Override
+            public void onFailure(Call<ReadyModel> call, Throwable t) {
+
+            }
+        });
+
+    }
     private void cekProgress(){
 
         ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
@@ -212,7 +264,7 @@ public class ActivityLobby extends AppCompatActivity {
                     Log.d("Status ", " : " + response.body().getDataMeModel().getStatus().toString());
                     Log.d("Badge ", " : " + response.body().getDataMeModel().getBadge().toString());
                     String name = response.body().getDataMeModel().getUser().getProfile().getFullName().toString();
-                    player1.setText(name);
+                    //player1.setText(name);
                 }else{
                     Log.d("Status ", " : " + response.code());
                     Toast.makeText(ActivityLobby.this,"Error : "+response.message().toString(),Toast.LENGTH_SHORT).show();
