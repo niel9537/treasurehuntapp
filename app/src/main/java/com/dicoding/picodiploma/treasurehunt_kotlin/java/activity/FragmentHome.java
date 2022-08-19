@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -23,6 +24,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.dicoding.picodiploma.treasurehunt_kotlin.R;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestJoinGame;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.InputGameCodeModel;
+import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.MeModel;
+import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.UserMeModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.network.ApiHelper;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.network.ApiInterface;
 
@@ -37,6 +40,7 @@ public class FragmentHome extends Fragment {
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     SharedPreferences sharedPreferences;
+    TextView username_welcome;
     SharedPreferences.Editor editor;
     private static final String SHARED_PREF_NAME = "treasureHunt";
     private static final String KEY_TOKEN = "key_token";
@@ -54,6 +58,8 @@ public class FragmentHome extends Fragment {
         Log.d("CHECKING: ", getKeyToken.toString());
         codeInput = view.findViewById(R.id.input_code);
         playButton = view.findViewById(R.id.play_button);
+        username_welcome = view.findViewById(R.id.username_welcome);
+        meProfile();
         codeInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -110,6 +116,25 @@ public class FragmentHome extends Fragment {
                     Toast.makeText(getActivity(), "Masukkan Kode Permainan!", Toast.LENGTH_SHORT).show();
                 }
 
+            }
+        });
+    }
+    private void meProfile(){
+        ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
+        Call<UserMeModel> userMeModelCall = apiInterface.profilme(getKeyToken.toString());
+        userMeModelCall.enqueue(new Callback<UserMeModel>() {
+            @Override
+            public void onResponse(Call<UserMeModel> call, Response<UserMeModel> response) {
+                if(response.isSuccessful()){
+                    username_welcome.setText("Hallo, "+response.body().getData().getProfile().getFullName());
+                }else{
+                    Toast.makeText(getActivity(), "Fail "+response.body().getResponseMessage().toString(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserMeModel> call, Throwable t) {
+                Toast.makeText(getActivity(), "Fail "+t.getMessage().toString(), Toast.LENGTH_SHORT).show();
             }
         });
     }

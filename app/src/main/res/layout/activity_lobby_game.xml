@@ -36,176 +36,32 @@
             app:layout_constraintTop_toBottomOf="@id/lobby_title"
             app:layout_constraintEnd_toEndOf="@+id/lobby_title"
             app:layout_constraintStart_toStartOf="@+id/lobby_title" />
+        <LinearLayout
+            android:layout_marginTop="35dp"
+            android:layout_marginHorizontal="39dp"
+            android:id="@+id/ly"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/desc_lobby"
+            android:orientation="vertical">
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/player1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter"
-            android:text="Player 1"
+            android:text=""
             android:layout_marginStart="39dp"
-            android:layout_marginTop="35dp"
+            android:layout_marginTop="20dp"
             android:textColor="@color/dark_blue"
             android:textSize="14sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/desc_lobby" />
+            app:layout_constraintTop_toBottomOf="@+id/ly" />
 
-        <TextView
-            android:id="@+id/name_player1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/player"
-            android:fontFamily="@font/inter"
-            android:layout_marginTop="5dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:paddingStart="15dp"
-            android:paddingEnd="15dp"
-            android:layout_marginStart="39dp"
-            android:layout_marginEnd="39dp"
-            android:text="Username / Nama"
-            android:textColor="@color/dark_blue"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/player1" />
-
-        <TextView
-            android:id="@+id/player2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="39dp"
-            android:fontFamily="@font/inter"
-            android:text="Player 2"
-            android:textColor="@color/dark_blue"
-            android:layout_marginTop="10dp"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/name_player1" />
-
-        <TextView
-            android:id="@+id/name_player2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/player"
-            android:fontFamily="@font/inter"
-            android:layout_marginTop="5dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:paddingStart="15dp"
-            android:paddingEnd="15dp"
-            android:layout_marginStart="39dp"
-            android:layout_marginEnd="39dp"
-            android:text="Username / Nama"
-            android:textColor="@color/dark_blue"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/player2" />
-
-        <TextView
-            android:id="@+id/player3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="39dp"
-            android:fontFamily="@font/inter"
-            android:text="Player 3"
-            android:textColor="@color/dark_blue"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:layout_marginTop="10dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/name_player2" />
-
-        <TextView
-            android:id="@+id/name_player3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/player"
-            android:fontFamily="@font/inter"
-            android:layout_marginTop="5dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:paddingStart="15dp"
-            android:paddingEnd="15dp"
-            android:layout_marginStart="39dp"
-            android:layout_marginEnd="39dp"
-            android:text="Username / Nama"
-            android:textColor="@color/dark_blue"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/player3" />
-
-        <TextView
-            android:id="@+id/player4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="39dp"
-            android:fontFamily="@font/inter"
-            android:text="Player 4"
-            android:textColor="@color/dark_blue"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/name_player3" />
-
-        <TextView
-            android:id="@+id/name_player4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/player"
-            android:fontFamily="@font/inter"
-            android:layout_marginTop="5dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:paddingStart="15dp"
-            android:paddingEnd="15dp"
-            android:layout_marginStart="39dp"
-            android:layout_marginEnd="39dp"
-            android:text="Username / Nama"
-            android:textColor="@color/dark_blue"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/player4" />
-
-        <TextView
-            android:id="@+id/player5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="39dp"
-            android:fontFamily="@font/inter"
-            android:text="Player 5"
-            android:textColor="@color/dark_blue"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/name_player4" />
-
-        <TextView
-            android:id="@+id/name_player5"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/player"
-            android:fontFamily="@font/inter"
-            android:layout_marginTop="5dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:paddingStart="15dp"
-            android:paddingEnd="15dp"
-            android:layout_marginStart="39dp"
-            android:layout_marginEnd="39dp"
-            android:text="Username / Nama"
-            android:textColor="@color/dark_blue"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/player5" />
 
         <Button
             android:id="@+id/ready_button"
@@ -221,11 +77,10 @@
             android:textAllCaps="false"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:layout_marginTop="40dp"
             app:layout_constraintBottom_toTopOf="@+id/play_game_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/name_player5" />
+            app:layout_constraintTop_toBottomOf="@+id/player1" />
 
         <Button
             android:id="@+id/play_game_button"

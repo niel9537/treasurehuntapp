@@ -97,7 +97,7 @@ public class ActivityPlayGame extends AppCompatActivity {
                         new DefaultHttpDataSource.Factory().setAllowCrossProtocolRedirects(true);
                 // Wrap the HttpDataSource.Factory in a DefaultDataSource.Factory, which adds in
                 // support for requesting data from other sources (e.g., files, resources, etc).
-                DefaultDataSource.Factory dataSourceFactory = () -> {
+                DefaultDataSource.Factory dataSourceFactory = ( ) -> {
                     HttpDataSource dataSource = httpDataSourceFactory.createDataSource();
                     // Set a custom authentication request header.
                     dataSource.setRequestProperty("Authorization", getKeyToken.toString());

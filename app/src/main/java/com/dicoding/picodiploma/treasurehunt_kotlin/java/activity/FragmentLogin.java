@@ -124,6 +124,7 @@ public class FragmentLogin extends Fragment{
                     @Override
                     public void onResponse(Call<LoginModel> call, Response<LoginModel> response) {
                         if(response.isSuccessful()){
+                            //editor.putString(KEY_USERNAME,emailInput.getText().toString());
                             editor.putString(KEY_TOKEN,"Bearer "+response.body().getData().getAccessToken().toString());
                             editor.apply();
 
