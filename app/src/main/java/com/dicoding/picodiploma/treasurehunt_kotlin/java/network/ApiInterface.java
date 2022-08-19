@@ -7,6 +7,7 @@ import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestLo
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestNextFlow;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestRegister;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.InputGameCodeModel;
+import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.LobbyDetailModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.LoginModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.MeModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.PlayModel;
@@ -41,4 +42,6 @@ public interface ApiInterface {
     Call<PlayModel> cekin(@Header("Authorization") String token,  @Query("game_token") String userGameToken,@Body RequestCheckIn requestCheckIn);
     @GET("/mobile/v1/game-controls/check-progress")
     Call<CekProgressModel> cekproses(@Header("Authorization") String token, @Query("game_token") String userGameToken);
+    @GET("/mobile/v1/game-controls/lobbies/")
+    Call<LobbyDetailModel> lobbydetail(@Header("Authorization") String token, @Query("game_token") String userGameToken, @Path("id") String lobbyId);
 }

@@ -160,6 +160,10 @@ public class ActivityPlayGame extends AppCompatActivity {
 //                    }else{
 //                        FILE_ID = "NOT_FOUND";
 //                    }
+                    if(response.body().getData().getNextFlow().getLast() == true){
+                        Toast.makeText(ActivityPlayGame.this,"End Game",Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(ActivityPlayGame.this,ActivityHome.class));
+                    }
                     Log.d("TYPE",""+type);
                     Log.d("FLOW_ID",""+FLOW_ID);
                     switch(type){
@@ -200,6 +204,14 @@ public class ActivityPlayGame extends AppCompatActivity {
                             //String content3 = response.body().getData().getNextFlow().getContent().toString();
                             manoharaPickMe(FLOW_ID,"Pick Me","");
                             break;
+                        case "manohara-come-back-home":
+                            //String content3 = response.body().getData().getNextFlow().getContent().toString();
+                            manoharaComeBackHome(FLOW_ID,"Come Back Home","");
+                            break;
+                        case "manohara-media-social":
+                            //String content3 = response.body().getData().getNextFlow().getContent().toString();
+                            manoharaMediaSocial(FLOW_ID,"Share to Media Social","");
+                            break;
                         default:
                             Toast.makeText(ActivityPlayGame.this,"Type : "+type,Toast.LENGTH_SHORT).show();
                             break;
@@ -229,6 +241,10 @@ public class ActivityPlayGame extends AppCompatActivity {
 //                    }else{
 //                        FILE_ID = "NOT_FOUND";
 //                    }
+                    if(response.body().getData().getNextFlow().getLast() == true){
+                        Toast.makeText(ActivityPlayGame.this,"End Game",Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(ActivityPlayGame.this,ActivityHome.class));
+                    }
                     Log.d("TYPE",""+type);
                     Log.d("FLOW_ID",""+FLOW_ID);
                     switch(type){
@@ -268,6 +284,14 @@ public class ActivityPlayGame extends AppCompatActivity {
                         case "manohara-pick-me":
                             //String content3 = response.body().getData().getNextFlow().getContent().toString();
                             manoharaPickMe(FLOW_ID,"Pick Me","");
+                            break;
+                        case "manohara-come-back-home":
+                            //String content3 = response.body().getData().getNextFlow().getContent().toString();
+                            manoharaComeBackHome(FLOW_ID,"Come Back Home","");
+                            break;
+                        case "manohara-media-social":
+                            //String content3 = response.body().getData().getNextFlow().getContent().toString();
+                            manoharaMediaSocial(FLOW_ID,"Share to Media Social","");
                             break;
                         default:
                             Toast.makeText(ActivityPlayGame.this,"Type : "+type,Toast.LENGTH_SHORT).show();
@@ -589,6 +613,80 @@ public class ActivityPlayGame extends AppCompatActivity {
         dialog.show();
     }
     private void manoharaPickMe(String id, String content, String file_id) {
+        AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
+        View mView= LayoutInflater.from(this).inflate(R.layout.dialog_narasi_pengantar,null);
+        dBuilder.setView(mView);
+        dialogContent = mView.findViewById(R.id.dialogContent);
+        lanjut = mView.findViewById(R.id.dialogContinue_button);
+        dialogContent.setText(content);
+        lanjut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
+                Call<PlayModel> playCall = apiInterface.next(getKeyToken.toString(),getKeyTokenGame,new RequestNextFlow(id));
+                playCall.enqueue(new Callback<PlayModel>() {
+                    @Override
+                    public void onResponse(Call<PlayModel> call, Response<PlayModel> response) {
+                        if(response.isSuccessful()){
+                            //FLOW_ID = response.body().getData().getNextFlow().getId();
+                            nextFlow(id);
+                        }else{
+                            Toast.makeText(ActivityPlayGame.this,"Error : "+response.message().toString(),Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<PlayModel> call, Throwable t) {
+                        Toast.makeText(ActivityPlayGame.this,"Error : "+t.getMessage().toString(),Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+
+        dialog = dBuilder.create();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+    }
+    private void manoharaComeBackHome(String id, String content, String file_id) {
+        AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
+        View mView= LayoutInflater.from(this).inflate(R.layout.dialog_narasi_pengantar,null);
+        dBuilder.setView(mView);
+        dialogContent = mView.findViewById(R.id.dialogContent);
+        lanjut = mView.findViewById(R.id.dialogContinue_button);
+        dialogContent.setText(content);
+        lanjut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
+                Call<PlayModel> playCall = apiInterface.next(getKeyToken.toString(),getKeyTokenGame,new RequestNextFlow(id));
+                playCall.enqueue(new Callback<PlayModel>() {
+                    @Override
+                    public void onResponse(Call<PlayModel> call, Response<PlayModel> response) {
+                        if(response.isSuccessful()){
+                            //FLOW_ID = response.body().getData().getNextFlow().getId();
+                            nextFlow(id);
+                        }else{
+                            Toast.makeText(ActivityPlayGame.this,"Error : "+response.message().toString(),Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<PlayModel> call, Throwable t) {
+                        Toast.makeText(ActivityPlayGame.this,"Error : "+t.getMessage().toString(),Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+
+        dialog = dBuilder.create();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+    }
+    private void manoharaMediaSocial(String id, String content, String file_id) {
         AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
         View mView= LayoutInflater.from(this).inflate(R.layout.dialog_narasi_pengantar,null);
         dBuilder.setView(mView);

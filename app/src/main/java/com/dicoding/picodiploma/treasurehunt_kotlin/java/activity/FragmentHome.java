@@ -41,6 +41,7 @@ public class FragmentHome extends Fragment {
     private static final String SHARED_PREF_NAME = "treasureHunt";
     private static final String KEY_TOKEN = "key_token";
     private static final String KEY_TOKEN_GAME = "key_token_game";
+    private static final String KEY_LOBBY_ID = "key_lobby_id";
     String getKeyToken = "";
 
     @Nullable
@@ -89,11 +90,13 @@ public class FragmentHome extends Fragment {
                     joinGameCall.enqueue(new Callback<InputGameCodeModel>() {
                         @Override
                         public void onResponse(Call<InputGameCodeModel> call, Response<InputGameCodeModel> response) {
-                            Log.d("API-login: ",  getKeyToken.toString()+"%%%%%"+codeInput.getText().toString());
-                            editor.putString(KEY_TOKEN_GAME,""+response.body().getData().getGameToken().toString());
-                            editor.apply();
 
+                            editor.putString(KEY_TOKEN_GAME,""+response.body().getData().getGameToken().toString());
+                            editor.putString(KEY_LOBBY_ID,""+response.body().getData().getLobbyId().toString());
+                            editor.apply();
+                            Log.d("API-login: ",  getKeyToken.toString()+"%%%%%"+codeInput.getText().toString());
                             Log.d("Token Game", " : " + response.body().getData().getGameToken().toString());
+                            Log.d("Lobby Id", " : " + response.body().getData().getLobbyId().toString());
                             startActivity(new Intent(getActivity(),ActivitySplashBrace.class));
 
                         }

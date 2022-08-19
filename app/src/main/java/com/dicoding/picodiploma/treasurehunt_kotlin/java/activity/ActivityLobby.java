@@ -17,6 +17,7 @@ import androidx.core.content.ContextCompat;
 import com.dicoding.picodiploma.treasurehunt_kotlin.R;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.config.Config;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.InputGameCodeModel;
+import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.LobbyDetailModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.MeModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.PlayModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.ReadyModel;
@@ -29,7 +30,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ActivityLobby extends AppCompatActivity {
-    TextView player1;
+    TextView player1,player2,player3,player4,player5;
     Button ready,play;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
@@ -37,8 +38,10 @@ public class ActivityLobby extends AppCompatActivity {
     private static final String KEY_TOKEN = "key_token";
     private static final String KEY_TOKEN_GAME = "key_token_game";
     private static final String KEY_FILE_ID = "key_file_id";
+    private static final String KEY_LOBBY_ID = "key_lobby_id";
     String getKeyToken = "";
     String getKeyTokenGame = "";
+    String getKeyLobbyId = "";
     boolean isContinue;
     String FLOW_ID = "";
     @Override
@@ -48,15 +51,20 @@ public class ActivityLobby extends AppCompatActivity {
         sharedPreferences=getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         getKeyToken=sharedPreferences.getString(KEY_TOKEN,null);
         getKeyTokenGame=sharedPreferences.getString(KEY_TOKEN_GAME,null);
+        getKeyLobbyId=sharedPreferences.getString(KEY_LOBBY_ID,null);
         Log.d("KEY TOKEN ", " : " + getKeyToken);
         Log.d("KEY TOKEN GAME", " : " + getKeyTokenGame);
         editor = sharedPreferences.edit();
         player1 = findViewById(R.id.name_player1);
+        player2 = findViewById(R.id.name_player2);
+        player3 = findViewById(R.id.name_player3);
+        player4 = findViewById(R.id.name_player4);
+        player5 = findViewById(R.id.name_player5);
         ready = findViewById(R.id.ready_button);
         play = findViewById(R.id.play_game_button);
         play.setEnabled(false);
         me();
-
+       // lobbyDetail();
 
         ready.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,6 +73,26 @@ public class ActivityLobby extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void lobbyDetail() {
+        ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
+        Call<LobbyDetailModel> lobbydetailCall = apiInterface.lobbydetail(getKeyToken.toString(),getKeyTokenGame.toString(),getKeyLobbyId.toString());
+        lobbydetailCall.enqueue(new Callback<LobbyDetailModel>() {
+            @Override
+            public void onResponse(Call<LobbyDetailModel> call, Response<LobbyDetailModel> response) {
+                if(response.isSuccessful()){
+
+                }else{
+                    Toast.makeText(ActivityLobby.this,"Error : "+response.message().toString(),Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<LobbyDetailModel> call, Throwable t) {
+                Toast.makeText(ActivityLobby.this,"Fail : "+t.getMessage().toString(),Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void play() {
