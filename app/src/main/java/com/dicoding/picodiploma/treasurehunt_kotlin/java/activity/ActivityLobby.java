@@ -42,9 +42,11 @@ public class ActivityLobby extends AppCompatActivity {
     private static final String KEY_TOKEN_GAME = "key_token_game";
     private static final String KEY_FILE_ID = "key_file_id";
     private static final String KEY_LOBBY_ID = "key_lobby_id";
+    private static final String KEY_GAME_ID = "key_game_id";
     String getKeyToken = "";
     String getKeyTokenGame = "";
     String getKeyLobbyId = "";
+    String getKeyGameId = "";
     boolean isContinue;
     String FLOW_ID = "";
     boolean statusReady = false;
@@ -56,6 +58,7 @@ public class ActivityLobby extends AppCompatActivity {
         getKeyToken=sharedPreferences.getString(KEY_TOKEN,null);
         getKeyTokenGame=sharedPreferences.getString(KEY_TOKEN_GAME,null);
         getKeyLobbyId=sharedPreferences.getString(KEY_LOBBY_ID,null);
+        getKeyGameId=sharedPreferences.getString(KEY_GAME_ID,null);
         Log.d("KEY TOKEN ", " : " + getKeyToken);
         Log.d("KEY TOKEN GAME", " : " + getKeyTokenGame);
         editor = sharedPreferences.edit();
@@ -125,6 +128,8 @@ public class ActivityLobby extends AppCompatActivity {
                     Intent intent = new Intent(ActivityLobby.this,ActivityPlayGame.class);
                     intent.putExtra("FILE_ID",response.body().getData().getNextFlow().getFile().getFileId().toString());
                     intent.putExtra("FLOW_ID",response.body().getData().getNextFlow().getId().toString());
+                    intent.putExtra("CONTENT",response.body().getData().getNextFlow().getContent().toString());
+                    intent.putExtra("GAME_ID", getKeyGameId);
                     intent.putExtra("STATUS", Config.PLAY_GAME);
                     startActivity(intent);
                 }else{

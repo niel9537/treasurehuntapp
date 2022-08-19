@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,7 +13,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.VideoView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,15 +28,9 @@ import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.DefaultMediaSourceFactory;
 import com.google.android.exoplayer2.ui.PlayerView;
-import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultDataSource;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSource;
 import com.google.android.exoplayer2.upstream.HttpDataSource;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -62,6 +54,8 @@ public class ActivityPlayGame extends AppCompatActivity {
     String FILE_TYPE = "";
     String FLOW_ID = "";
     String POST_ID = "";
+    String GAME_ID = "";
+    String CONTENT = "";
     int STATUS = 0;
     Boolean next = false;
     @Override
@@ -79,6 +73,8 @@ public class ActivityPlayGame extends AppCompatActivity {
             FILE_ID= extras.getString("FILE_ID");
             POST_ID= extras.getString("POST_ID");
             FLOW_ID= extras.getString("FLOW_ID");
+            GAME_ID=extras.getString("GAME_ID");
+            CONTENT= extras.getString("CONTENT");
             STATUS= extras.getInt("STATUS");
             Log.d("FLOW_ID", " : " + FLOW_ID);
             //The key argument here must match that used in the other activity
@@ -86,48 +82,52 @@ public class ActivityPlayGame extends AppCompatActivity {
 
         switch(STATUS){
             case 1 :
-                AlertDialog.Builder mBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
-                View mView= LayoutInflater.from(this).inflate(R.layout.dialog_intro_story,null);
-                mBuilder.setView(mView);
-                //String web = "http://videocdn.bodybuilding.com/video/mp4/62000/62792m.mp4";
-                skip = mView.findViewById(R.id.videoSkip);
-                playerView = mView.findViewById(R.id.videoView);
-                // Build a HttpDataSource.Factory with cross-protocol redirects enabled.
-                HttpDataSource.Factory httpDataSourceFactory =
-                        new DefaultHttpDataSource.Factory().setAllowCrossProtocolRedirects(true);
-                // Wrap the HttpDataSource.Factory in a DefaultDataSource.Factory, which adds in
-                // support for requesting data from other sources (e.g., files, resources, etc).
-                DefaultDataSource.Factory dataSourceFactory = ( ) -> {
-                    HttpDataSource dataSource = httpDataSourceFactory.createDataSource();
-                    // Set a custom authentication request header.
-                    dataSource.setRequestProperty("Authorization", getKeyToken.toString());
-                    return dataSource;
-                };
+                if(GAME_ID.equals(Config.MANOHARA)){
+                    AlertDialog.Builder mBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
+                    View mView= LayoutInflater.from(this).inflate(R.layout.dialog_intro_story,null);
+                    mBuilder.setView(mView);
+                    //String web = "http://videocdn.bodybuilding.com/video/mp4/62000/62792m.mp4";
+                    skip = mView.findViewById(R.id.videoSkip);
+                    playerView = mView.findViewById(R.id.videoView);
+                    // Build a HttpDataSource.Factory with cross-protocol redirects enabled.
+                    HttpDataSource.Factory httpDataSourceFactory =
+                            new DefaultHttpDataSource.Factory().setAllowCrossProtocolRedirects(true);
+                    // Wrap the HttpDataSource.Factory in a DefaultDataSource.Factory, which adds in
+                    // support for requesting data from other sources (e.g., files, resources, etc).
+                    DefaultDataSource.Factory dataSourceFactory = ( ) -> {
+                        HttpDataSource dataSource = httpDataSourceFactory.createDataSource();
+                        // Set a custom authentication request header.
+                        dataSource.setRequestProperty("Authorization", getKeyToken.toString());
+                        return dataSource;
+                    };
 
-                try {
-                    simpleExoPlayer = new SimpleExoPlayer.Builder(this).setMediaSourceFactory(new DefaultMediaSourceFactory(dataSourceFactory)).build();
-                    playerView.setPlayer(simpleExoPlayer);
-                    MediaItem mediaItem = MediaItem.fromUri(Config.BASE_URL+"mobile/v1/file-uploads/"+FILE_ID);
-                    //MediaItem mediaItem = MediaItem.fromUri(web);
-                    simpleExoPlayer.addMediaItem(mediaItem);
-                    simpleExoPlayer.prepare();
-                    simpleExoPlayer.play();
-                }catch (Exception e){
+                    try {
+                        simpleExoPlayer = new SimpleExoPlayer.Builder(this).setMediaSourceFactory(new DefaultMediaSourceFactory(dataSourceFactory)).build();
+                        playerView.setPlayer(simpleExoPlayer);
+                        MediaItem mediaItem = MediaItem.fromUri(Config.BASE_URL+"mobile/v1/file-uploads/"+FILE_ID);
+                        //MediaItem mediaItem = MediaItem.fromUri(web);
+                        simpleExoPlayer.addMediaItem(mediaItem);
+                        simpleExoPlayer.prepare();
+                        simpleExoPlayer.play();
+                    }catch (Exception e){
 
-                }
-
-                skip.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog.dismiss();
-                        nextFlow(FLOW_ID);
                     }
-                });
-                dialog = mBuilder.create();
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                dialog.setCanceledOnTouchOutside(false);
-                dialog.show();
-                break;
+
+                    skip.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                            nextFlow(FLOW_ID);
+                        }
+                    });
+                    dialog = mBuilder.create();
+                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    dialog.setCanceledOnTouchOutside(false);
+                    dialog.show();
+                    break;
+                }else{
+                    transportInstructionDialog(FLOW_ID,CONTENT,"");
+                }
             case 2 :
                 Log.d("POST_ID 2", " : " + POST_ID);
                 Log.d("FLOW_ID 2", " : " + FLOW_ID);
@@ -212,6 +212,14 @@ public class ActivityPlayGame extends AppCompatActivity {
                             //String content3 = response.body().getData().getNextFlow().getContent().toString();
                             manoharaMediaSocial(FLOW_ID,"Share to Media Social","");
                             break;
+                        case "transport-instruction":
+                            String contentsTransportInstruction = response.body().getData().getNextFlow().getContent().toString();
+                            transportInstructionDialog(FLOW_ID,contentsTransportInstruction,"");
+                            break;
+                        case "checkin-instruction":
+                            String contentsCheckinInstruction = response.body().getData().getNextFlow().getContent().toString();
+                            checkInInstructionDialog(FLOW_ID,contentsCheckinInstruction,"");
+                            break;
                         default:
                             Toast.makeText(ActivityPlayGame.this,"Type : "+type,Toast.LENGTH_SHORT).show();
                             break;
@@ -292,6 +300,14 @@ public class ActivityPlayGame extends AppCompatActivity {
                         case "manohara-media-social":
                             //String content3 = response.body().getData().getNextFlow().getContent().toString();
                             manoharaMediaSocial(FLOW_ID,"Share to Media Social","");
+                            break;
+                        case "transport-instruction":
+                            String contentsTransportInstruction = response.body().getData().getNextFlow().getContent().toString();
+                            transportInstructionDialog(FLOW_ID,contentsTransportInstruction,"");
+                            break;
+                        case "checkin-instruction":
+                            String contentsCheckinInstruction = response.body().getData().getNextFlow().getContent().toString();
+                            checkInInstructionDialog(FLOW_ID,contentsCheckinInstruction,"");
                             break;
                         default:
                             Toast.makeText(ActivityPlayGame.this,"Type : "+type,Toast.LENGTH_SHORT).show();
@@ -389,7 +405,80 @@ public class ActivityPlayGame extends AppCompatActivity {
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
     }
+    private void checkInInstructionDialog(String id, String content, String file_id) {
+        AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
+        View mView= LayoutInflater.from(this).inflate(R.layout.activity_brace_check_out,null);
+        dBuilder.setView(mView);
+        Button button_checkin = mView.findViewById(R.id.button_checkin);
+        TextView desc_checkin = mView.findViewById(R.id.desc_checkin);
+        desc_checkin.setText(content);
+        button_checkin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
+                Call<PlayModel> playCall = apiInterface.next(getKeyToken.toString(),getKeyTokenGame,new RequestNextFlow(id));
+                playCall.enqueue(new Callback<PlayModel>() {
+                    @Override
+                    public void onResponse(Call<PlayModel> call, Response<PlayModel> response) {
+                        if(response.isSuccessful()){
+                            //FLOW_ID = response.body().getData().getNextFlow().getId();
+                            nextFlow(id);
+                        }else{
+                            Toast.makeText(ActivityPlayGame.this,"Error : "+response.message().toString(),Toast.LENGTH_SHORT).show();
+                        }
+                    }
 
+                    @Override
+                    public void onFailure(Call<PlayModel> call, Throwable t) {
+                        Toast.makeText(ActivityPlayGame.this,"Error : "+t.getMessage().toString(),Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+
+        dialog = dBuilder.create();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+    }
+    private void transportInstructionDialog(String id, String content, String file_id) {
+        AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
+        View mView= LayoutInflater.from(this).inflate(R.layout.dialog_transport_instruction,null);
+        dBuilder.setView(mView);
+        Button button_berangkat = mView.findViewById(R.id.button_berangkat);
+        TextView desc_berangkat = mView.findViewById(R.id.desc_berangkat);
+        desc_berangkat.setText(content);
+        button_berangkat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
+                Call<PlayModel> playCall = apiInterface.next(getKeyToken.toString(),getKeyTokenGame,new RequestNextFlow(id));
+                playCall.enqueue(new Callback<PlayModel>() {
+                    @Override
+                    public void onResponse(Call<PlayModel> call, Response<PlayModel> response) {
+                        if(response.isSuccessful()){
+                            //FLOW_ID = response.body().getData().getNextFlow().getId();
+                            nextFlow(id);
+                        }else{
+                            Toast.makeText(ActivityPlayGame.this,"Error : "+response.message().toString(),Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<PlayModel> call, Throwable t) {
+                        Toast.makeText(ActivityPlayGame.this,"Error : "+t.getMessage().toString(),Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+
+        dialog = dBuilder.create();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+    }
     private void introInstructionDialog(String id, String content, String file_id) {
         AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
         View mView= LayoutInflater.from(this).inflate(R.layout.dialog_petunjuk,null);

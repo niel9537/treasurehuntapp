@@ -46,6 +46,7 @@ public class FragmentHome extends Fragment {
     private static final String KEY_TOKEN = "key_token";
     private static final String KEY_TOKEN_GAME = "key_token_game";
     private static final String KEY_LOBBY_ID = "key_lobby_id";
+    private static final String KEY_GAME_ID = "key_game_id";
     String getKeyToken = "";
 
     @Nullable
@@ -99,9 +100,11 @@ public class FragmentHome extends Fragment {
 
                             editor.putString(KEY_TOKEN_GAME,""+response.body().getData().getGameToken().toString());
                             editor.putString(KEY_LOBBY_ID,""+response.body().getData().getLobbyId().toString());
+                            editor.putString(KEY_GAME_ID,""+response.body().getData().getGameId().toString());
                             editor.apply();
                             Log.d("API-login: ",  getKeyToken.toString()+"%%%%%"+codeInput.getText().toString());
                             Log.d("Token Game", " : " + response.body().getData().getGameToken().toString());
+                            Log.d("Game Id", " : " + response.body().getData().getGameId().toString());
                             Log.d("Lobby Id", " : " + response.body().getData().getLobbyId().toString());
                             startActivity(new Intent(getActivity(),ActivitySplashBrace.class));
 
