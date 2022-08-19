@@ -123,6 +123,28 @@
         <entry key="..\:/project/TreasureHuntKotlin/app/src/main/res/layout/item_on_boad.xml" value="0.13323201621073963" />
         <entry key="..\:/project/TreasureHuntKotlin/app/src/main/res/layout/item_on_board.xml" value="0.264" />
         <entry key="..\:/project/TreasureHuntKotlin/app/src/main/res/menu/bottom_menu.xml" value="0.275" />
+<<<<<<< HEAD
+=======
+        <entry key="..\:/project/TreasureHunt_/treasurehuntapp/app/src/main/res/layout/activity_about.xml" value="0.1539855072463768" />
+        <entry key="..\:/project/TreasureHunt_/treasurehuntapp/app/src/main/res/layout/activity_brace_check_in.xml" value="0.1539855072463768" />
+        <entry key="..\:/project/TreasureHunt_/treasurehuntapp/app/src/main/res/layout/activity_brace_check_out.xml" value="0.1539855072463768" />
+        <entry key="..\:/project/TreasureHunt_/treasurehuntapp/app/src/main/res/layout/activity_change_password.xml" value="0.1539855072463768" />
+        <entry key="..\:/project/TreasureHunt_/treasurehuntapp/app/src/main/res/layout/activity_detail_brace.xml" value="0.1337386018237082" />
+        <entry key="..\:/project/TreasureHunt_/treasurehuntapp/app/src/main/res/layout/activity_detail_game.xml" value="0.1539855072463768" />
+        <entry key="..\:/project/TreasureHunt_/treasurehuntapp/app/src/main/res/layout/activity_lobby.xml" value="0.1539855072463768" />
+        <entry key="..\:/project/TreasureHunt_/treasurehuntapp/app/src/main/res/layout/activity_lobby_game.xml" value="0.2" />
+        <entry key="..\:/project/TreasureHunt_/treasurehuntapp/app/src/main/res/layout/activity_on_board.xml" value="0.1539855072463768" />
+        <entry key="..\:/project/TreasureHunt_/treasurehuntapp/app/src/main/res/layout/activity_play_game.xml" value="0.1539855072463768" />
+        <entry key="..\:/project/TreasureHunt_/treasurehuntapp/app/src/main/res/layout/activity_scan_qr_activity.xml" value="0.23596014492753623" />
+        <entry key="..\:/project/TreasureHunt_/treasurehuntapp/app/src/main/res/layout/activity_terms_and_conditions.xml" value="0.1539855072463768" />
+        <entry key="..\:/project/TreasureHunt_/treasurehuntapp/app/src/main/res/layout/activity_welcome_game.xml" value="0.1539855072463768" />
+        <entry key="..\:/project/TreasureHunt_/treasurehuntapp/app/src/main/res/layout/dialog_game_check_in.xml" value="0.23596014492753623" />
+        <entry key="..\:/project/TreasureHunt_/treasurehuntapp/app/src/main/res/layout/dialog_intro_story.xml" value="0.12545289855072464" />
+        <entry key="..\:/project/TreasureHunt_/treasurehuntapp/app/src/main/res/layout/dialog_peta.xml" value="0.23596014492753623" />
+        <entry key="..\:/project/TreasureHunt_/treasurehuntapp/app/src/main/res/layout/fragment_forgot_password.xml" value="0.1539855072463768" />
+        <entry key="..\:/project/TreasureHunt_/treasurehuntapp/app/src/main/res/layout/fragment_games.xml" value="0.1539855072463768" />
+        <entry key="..\:/project/TreasureHunt_/treasurehuntapp/app/src/main/res/layout/fragment_login.xml" value="0.17760416666666667" />
+>>>>>>> new
         <entry key="..\:/treasure_hunt_kotlin-master/app/src/main/res/layout/activity_brace_check_in.xml" value="0.209375" />
         <entry key="..\:/treasure_hunt_kotlin-master/app/src/main/res/layout/activity_brace_check_out.xml" value="0.371875" />
         <entry key="..\:/treasure_hunt_kotlin-master/app/src/main/res/layout/activity_change_password.xml" value="0.371875" />
