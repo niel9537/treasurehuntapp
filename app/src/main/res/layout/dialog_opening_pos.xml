@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/bg_brace">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button_pos"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:shadowColor="@color/black"
+        android:shadowRadius="100"
+        android:layout_marginBottom="0dp">
+
+        <TextView
+            android:id="@+id/text_pos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/judul_pos"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginBottom="30dp"
+            android:fontFamily="@font/lora_bold"
+            android:text="Pos 1"
+            android:textAlignment="center"
+            android:textColor="@color/gray"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/judul_pos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/desc_pos"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginBottom="30dp"
+            android:fontFamily="@font/lora_bold"
+            android:shadowColor="@color/black"
+            android:shadowRadius="100"
+            android:text="Balkondes Borobudur"
+            android:textAlignment="center"
+            android:textColor="@color/yellow"
+            android:textSize="28sp" />
+
+        <TextView
+            android:id="@+id/desc_pos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="220dp"
+            android:fontFamily="@font/plus_jakarta_sans_regular"
+            android:shadowColor="@color/black"
+            android:shadowRadius="100"
+            android:text="Menjadi Balkondes yang paling dekat dari kompleks wisata Candi Borobudur berjarak 1 km.  Berlokasi di daerah kaki gunung Menoreh yang menyuguhkan pemandangan asri dan alami. "
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="14sp" />
+
+    </RelativeLayout>
+
+
+    <Button
+        android:id="@+id/button_pos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="60dp"
+        android:backgroundTint="@color/yellow"
+        android:fontFamily="@font/lora_bold"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:text="Continue"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="20sp" />
+
+</RelativeLayout>

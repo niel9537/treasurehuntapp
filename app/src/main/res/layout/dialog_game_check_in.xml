@@ -3,79 +3,78 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_brace">
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="300dp"
-        android:layout_height="700dp"
-        app:cardBackgroundColor="#EEEAE1"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/pop_up_dialog"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/imageView7"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="76dp"
+            android:src="@drawable/pos_01_check_in"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
-                android:id="@+id/imageView7"
-                android:layout_width="200dp"
-                android:layout_height="200dp"
-                android:layout_marginTop="76dp"
-                android:src="@drawable/pos_01_check_in"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/title_checkin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/lora_regular"
+            android:text="Check In"
+            android:textColor="@color/green"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/imageView7"
+            app:layout_constraintStart_toStartOf="@+id/imageView7"
+            app:layout_constraintTop_toBottomOf="@+id/imageView7" />
 
-            <TextView
-                android:id="@+id/title_checkin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/lora_regular"
-                android:text="Check In"
-                android:textColor="@color/green"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:layout_marginTop="20dp"
-                app:layout_constraintEnd_toEndOf="@+id/imageView7"
-                app:layout_constraintStart_toStartOf="@+id/imageView7"
-                app:layout_constraintTop_toBottomOf="@+id/imageView7" />
+        <TextView
+            android:id="@+id/desc_checkin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:fontFamily="@font/plus_jakarta_sans_regular"
+            android:paddingStart="30dp"
+            android:paddingEnd="30dp"
+            android:text="Scan rambu yang kamu temui di lapangan ini. Rambu ini akan mengarahkanmu ke lokasi pertama. "
+            android:textAlignment="center"
+            android:textColor="@color/text2"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="@+id/title_checkin"
+            app:layout_constraintStart_toStartOf="@id/title_checkin"
+            app:layout_constraintTop_toBottomOf="@+id/title_checkin" />
 
-            <TextView
-                android:id="@+id/desc_checkin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/plus_jakarta_sans_regular"
-                android:text="Scan rambu yang kamu temui di lapangan ini. Rambu ini akan mengarahkanmu ke lokasi pertama. "
-                android:textColor="@color/text2"
-                android:textSize="12sp"
-                android:paddingStart="30dp"
-                android:paddingEnd="30dp"
-                android:textAlignment="center"
-                android:layout_marginTop="15dp"
-                app:layout_constraintEnd_toEndOf="@+id/title_checkin"
-                app:layout_constraintTop_toBottomOf="@+id/title_checkin"
-                app:layout_constraintStart_toStartOf="@id/title_checkin"/>
+        <TextView
+            android:id="@+id/button_checkin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/bg_light_yellow"
+            android:fontFamily="@font/lora_regular"
+            android:text="Scan Sekarang"
+            android:textAllCaps="false"
+            android:textColor="@color/green"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="40dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
-            <TextView
-                android:id="@+id/button_checkin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/bg_light_yellow"
-                android:fontFamily="@font/lora_regular"
-                android:text="Scan Sekarang"
-                android:textAllCaps="false"
-                android:textColor="@color/green"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/desc_checkin"
-                app:layout_constraintStart_toStartOf="@+id/desc_checkin"
-                app:layout_constraintTop_toBottomOf="@+id/desc_checkin" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </androidx.cardview.widget.CardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
