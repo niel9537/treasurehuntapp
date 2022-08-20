@@ -59,7 +59,7 @@
             app:layout_constraintTop_toBottomOf="@+id/perintah_kamera" />
 
         <Button
-            android:id="@+id/button_buka_camera"
+            android:id="@+id/buka_camera"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/green"
