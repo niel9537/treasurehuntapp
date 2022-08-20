@@ -14,14 +14,18 @@ public class DataMemberReadyModel {
     @SerializedName("status")
     @Expose
     private String status;
+    @SerializedName("online_status")
+    @Expose
+    private String onlineStatus;
     @SerializedName("user")
     @Expose
     private User user;
 
-    public DataMemberReadyModel(String id, String badge, String status, User user) {
+    public DataMemberReadyModel(String id, String badge, String status, String onlineStatus, User user) {
         this.id = id;
         this.badge = badge;
         this.status = status;
+        this.onlineStatus = onlineStatus;
         this.user = user;
     }
 
@@ -47,6 +51,14 @@ public class DataMemberReadyModel {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getOnlineStatus() {
+        return onlineStatus;
+    }
+
+    public void setOnlineStatus(String onlineStatus) {
+        this.onlineStatus = onlineStatus;
     }
 
     public User getUser() {

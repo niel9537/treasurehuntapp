@@ -112,7 +112,8 @@ public class FragmentHome extends Fragment {
                                 Log.d("Token Game", " : " + response.body().getData().getGameToken().toString());
                                 Log.d("Game Id", " : " + response.body().getData().getGameId().toString());
                                 Log.d("Lobby Id", " : " + response.body().getData().getLobbyId().toString());
-                                startActivity(new Intent(getActivity(),ActivitySplashBrace.class));
+                                meGame(response.body().getData().getGameToken().toString());
+
                             }else{
                                 Toast.makeText(getActivity(), "Error "+response.body().getResponseMessage().toString(), Toast.LENGTH_SHORT).show();
                             }
@@ -129,6 +130,35 @@ public class FragmentHome extends Fragment {
 
             }
         });
+    }
+
+    private void meGame(String tokenGame) {
+        ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
+        Call<MeModel> meCall = apiInterface.me(getKeyToken.toString(),tokenGame);
+        meCall.enqueue(new Callback<MeModel>() {
+            @Override
+            public void onResponse(Call<MeModel> call, Response<MeModel> response) {
+                if(response.isSuccessful()){
+                    Log.d("Status ", " : " + response.body().getDataMeModel().getStatus().toString());
+                    Log.d("Badge ", " : " + response.body().getDataMeModel().getBadge().toString());
+                    String name = response.body().getDataMeModel().getUser().getProfile().getFullName().toString();
+                    editor.putString(KEY_MEMBER_ID,""+response.body().getDataMeModel().getId().toString());
+                    editor.apply();
+                    startActivity(new Intent(getActivity(),ActivitySplashBrace.class));
+                    //player1.setText(name);
+                }else{
+                    Log.d("Status ", " : " + response.code());
+                    Toast.makeText(getActivity(),"Error : "+response.message().toString(),Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<MeModel> call, Throwable t) {
+
+            }
+        });
+
     }
     private void meProfile(){
         ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);

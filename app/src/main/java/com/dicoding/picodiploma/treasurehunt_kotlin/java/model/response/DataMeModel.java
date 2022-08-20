@@ -13,6 +13,9 @@ public class DataMeModel {
     @SerializedName("status")
     @Expose
     private String status;
+    @SerializedName("online_status")
+    @Expose
+    private String onlineStatus;
     @SerializedName("party_id")
     @Expose
     private String partyId;
@@ -20,10 +23,11 @@ public class DataMeModel {
     @Expose
     private User user;
 
-    public DataMeModel(String id, String badge, String status, String partyId, User user) {
+    public DataMeModel(String id, String badge, String status, String onlineStatus, String partyId, User user) {
         this.id = id;
         this.badge = badge;
         this.status = status;
+        this.onlineStatus = onlineStatus;
         this.partyId = partyId;
         this.user = user;
     }
@@ -50,6 +54,14 @@ public class DataMeModel {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getOnlineStatus() {
+        return onlineStatus;
+    }
+
+    public void setOnlineStatus(String onlineStatus) {
+        this.onlineStatus = onlineStatus;
     }
 
     public String getPartyId() {

@@ -58,8 +58,8 @@
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/desc_checkin"
-        app:layout_constraintStart_toStartOf="@+id/desc_checkin"
-        app:layout_constraintTop_toBottomOf="@+id/desc_checkin" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/desc_berangkat" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

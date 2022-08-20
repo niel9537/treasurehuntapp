@@ -98,6 +98,8 @@
             android:exported="true"/>
         <activity android:name=".java.activity.ActivityScan"
             android:exported="true"/>
+        <activity android:name=".java.activity.ActivitySplashBrace2022"
+            android:exported="true"/>
         <!--Java-->
     </application>
 

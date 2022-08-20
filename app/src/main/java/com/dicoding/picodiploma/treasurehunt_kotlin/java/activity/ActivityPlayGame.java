@@ -7,16 +7,21 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaders;
 import com.dicoding.picodiploma.treasurehunt_kotlin.R;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.config.Config;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestCheckIn;
@@ -218,9 +223,15 @@ public class ActivityPlayGame extends AppCompatActivity {
                             break;
                         case "checkin-instruction":
                             String contentsCheckinInstruction = response.body().getData().getNextFlow().getContent().toString();
-                            checkInInstructionDialog(FLOW_ID,contentsCheckinInstruction,"");
+                            String fileCheckinInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
+                            checkInInstructionDialog(FLOW_ID,contentsCheckinInstruction,fileCheckinInstruction);
                             break;
-
+                        case "brace-post-desc":
+                            braceDescDialog(FLOW_ID,"","");
+                        case "brace-game-instruction":
+                            String contentsBraceInstruction = response.body().getData().getNextFlow().getContent().toString();
+                            String fileBraceInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
+                            braceGameInstruction(FLOW_ID,contentsBraceInstruction,fileBraceInstruction);
                         default:
                             Toast.makeText(ActivityPlayGame.this,"Type : "+type,Toast.LENGTH_SHORT).show();
                             break;
@@ -308,9 +319,15 @@ public class ActivityPlayGame extends AppCompatActivity {
                             break;
                         case "checkin-instruction":
                             String contentsCheckinInstruction = response.body().getData().getNextFlow().getContent().toString();
-                            checkInInstructionDialog(FLOW_ID,contentsCheckinInstruction,"");
+                            String fileCheckinInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
+                            checkInInstructionDialog(FLOW_ID,contentsCheckinInstruction,fileCheckinInstruction);
                             break;
-
+                        case "brace-post-desc":
+                            braceDescDialog(FLOW_ID,"","");
+                        case "brace-game-instruction":
+                            String contentsBraceInstruction = response.body().getData().getNextFlow().getContent().toString();
+                            String fileBraceInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
+                            braceGameInstruction(FLOW_ID,contentsBraceInstruction,fileBraceInstruction);
                         default:
                             Toast.makeText(ActivityPlayGame.this,"Type : "+type,Toast.LENGTH_SHORT).show();
                             break;
@@ -326,6 +343,30 @@ public class ActivityPlayGame extends AppCompatActivity {
             }
         });
     }
+
+    private void braceDescDialog(String id, String content, String file_id) {
+        AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
+        View mView= LayoutInflater.from(this).inflate(R.layout.activity_splash_brace2022,null);
+        dBuilder.setView(mView);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                dialog.dismiss();
+                //setelah loading maka akan langsung berpindah ke home activity
+                nextFlow(id);
+            }
+        },3000);
+        dialog = dBuilder.create();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setCanceledOnTouchOutside(false);
+        if(!isFinishing()) {
+            dialog.show();
+        }
+
+
+
+    }
+
     private void posVideoDialog(String id,String file_id) {
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
         View mView= LayoutInflater.from(this).inflate(R.layout.dialog_intro_story,null);
@@ -409,10 +450,19 @@ public class ActivityPlayGame extends AppCompatActivity {
     }
     private void checkInInstructionDialog(String id, String content, String file_id) {
         AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
-        View mView= LayoutInflater.from(this).inflate(R.layout.activity_brace_check_out,null);
+        View mView= LayoutInflater.from(this).inflate(R.layout.dialog_petunjuk,null);
         dBuilder.setView(mView);
-        Button button_checkin = mView.findViewById(R.id.button_checkin);
-        TextView desc_checkin = mView.findViewById(R.id.desc_checkin);
+        ImageView img_petunjuk = mView.findViewById(R.id.img_petunjuk);
+        GlideUrl glideUrl = new GlideUrl(Config.BASE_URL+"mobile/v1/file-uploads/"+file_id,
+                new LazyHeaders.Builder()
+                        .addHeader("Authorization",getKeyToken)
+                        .build());
+
+        Glide.with(this)
+                .load(glideUrl)
+                .into(img_petunjuk);
+        TextView button_checkin = mView.findViewById(R.id.button_continue_petunjuk);
+        TextView desc_checkin = mView.findViewById(R.id.desc_petunjuk);
         desc_checkin.setText(content);
         button_checkin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -424,8 +474,10 @@ public class ActivityPlayGame extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<PlayModel> call, Response<PlayModel> response) {
                         if(response.isSuccessful()){
+
                             //FLOW_ID = response.body().getData().getNextFlow().getId();
                             nextFlow(id);
+                            dialog.dismiss();
                         }else{
                             Toast.makeText(ActivityPlayGame.this,"Error : "+response.message().toString(),Toast.LENGTH_SHORT).show();
                         }
@@ -444,6 +496,58 @@ public class ActivityPlayGame extends AppCompatActivity {
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
     }
+    private void braceGameInstruction(String id, String content, String file_id) {
+        AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
+        View mView= LayoutInflater.from(this).inflate(R.layout.dialog_brace_petunjuk,null);
+        dBuilder.setView(mView);
+        ImageView img_petunjuk = mView.findViewById(R.id.img_petunjuk);
+        GlideUrl glideUrl = new GlideUrl(Config.BASE_URL+"mobile/v1/file-uploads/"+file_id,
+                new LazyHeaders.Builder()
+                        .addHeader("Authorization",getKeyToken)
+                        .build());
+
+        Glide.with(this)
+                .load(glideUrl)
+                .into(img_petunjuk);
+        TextView button_checkin = mView.findViewById(R.id.button_continue_petunjuk);
+        TextView desc_checkin = mView.findViewById(R.id.desc_petunjuk);
+        desc_checkin.setText(content);
+        button_checkin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
+                Call<PlayModel> playCall = apiInterface.next(getKeyToken.toString(),getKeyTokenGame,new RequestNextFlow(id));
+                playCall.enqueue(new Callback<PlayModel>() {
+                    @Override
+                    public void onResponse(Call<PlayModel> call, Response<PlayModel> response) {
+                        if(response.isSuccessful()){
+
+                            //FLOW_ID = response.body().getData().getNextFlow().getId();
+                            nextFlow(id);
+                            dialog.dismiss();
+                        }else{
+                            Toast.makeText(ActivityPlayGame.this,"Error : "+response.message().toString(),Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<PlayModel> call, Throwable t) {
+                        Toast.makeText(ActivityPlayGame.this,"Error : "+t.getMessage().toString(),Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+
+        dialog = dBuilder.create();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+    }
+/*    private void getImage(String file_id, ImageView img) {
+
+    }*/
+
     private void transportInstructionDialog(String id, String content, String file_id) {
         AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
         View mView= LayoutInflater.from(this).inflate(R.layout.dialog_transport_instruction,null);

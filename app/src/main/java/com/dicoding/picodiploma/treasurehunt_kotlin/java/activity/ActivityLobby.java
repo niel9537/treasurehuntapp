@@ -65,6 +65,7 @@ public class ActivityLobby extends AppCompatActivity {
     boolean statusReady = false;
     public String message;
     private Socket mSocket;
+    String Member_Id = "";
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,18 +103,20 @@ public class ActivityLobby extends AppCompatActivity {
                 ready();
             }
         });
-        try {
-            mSocket = IO.socket("https://th-main-api.kartala.id/mobile?member="+getKeyMemberId+"&lobby="+getKeyLobbyId+"");
-            mSocket.connect();
-            setListening();
-        } catch (URISyntaxException e) {
-            Log.d("Error Socket :",""+e.getMessage());
-        }
+
 
 
 
         //hit Socket
-
+        Log.d("URL", ""+"https://th-main-api.kartala.id/mobile?member="+getKeyMemberId+"&lobby="+getKeyLobbyId+"");
+        try {
+            mSocket = IO.socket("https://th-main-api.kartala.id/mobile?member="+getKeyMemberId+"&lobby="+getKeyLobbyId+"");
+            mSocket.connect();
+            Log.d("IS_CONNECTED ", ""+mSocket.connected());
+            setListening();
+        } catch (URISyntaxException e) {
+            Log.d("Error Socket :",""+e.getMessage());
+        }
     }
 
     private void setListening() {
@@ -143,7 +146,7 @@ public class ActivityLobby extends AppCompatActivity {
                         JSONObject json = (JSONObject) args[0];
                         Log.d("JSON : Join",""+json.toString());
                         MemberJoinModel data = gson.fromJson(json.toString(),MemberJoinModel.class);
-                        FancyToast.makeText(ActivityLobby.this,"Player bernama "+data.getUser().getProfile().getFullName().toString()+" telah bergabung !!",FancyToast.LENGTH_LONG,FancyToast.SUCCESS,true).show();
+                        FancyToast.makeText(ActivityLobby.this,"Player bernama "+data.getUser().getProfile().getFullName().toString()+" telah bergabung !!",FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,true).show();
                         startActivity(new Intent(ActivityLobby.this,ActivityLobby.class));
                     }
                 });
@@ -159,7 +162,7 @@ public class ActivityLobby extends AppCompatActivity {
                         JSONObject json = (JSONObject) args[0];
                         Log.d("JSON : Leaved",""+json.toString());
                         MemberReadyModel data = gson.fromJson(json.toString(), MemberReadyModel.class);
-                        FancyToast.makeText(ActivityLobby.this,"Player bernama "+data.getMember().getUser().getProfile().getFullName().toString()+" telah meninggalkan permainan !!",FancyToast.LENGTH_LONG,FancyToast.SUCCESS,true).show();
+                        FancyToast.makeText(ActivityLobby.this,"Player bernama "+data.getMember().getUser().getProfile().getFullName().toString()+" telah meninggalkan permainan !!",FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,true).show();
                         startActivity(new Intent(ActivityLobby.this,ActivityLobby.class));
 
                     }
@@ -206,8 +209,8 @@ public class ActivityLobby extends AppCompatActivity {
                         JSONObject json = (JSONObject) args[0];
                         Log.d("JSON : Ready",""+json.toString());
                         MemberReadyModel data = gson.fromJson(json.toString(), MemberReadyModel.class);
-                        FancyToast.makeText(ActivityLobby.this,"Player bernama "+data.getMember().getUser().getProfile().getFullName().toString()+" telah ready !!",FancyToast.LENGTH_LONG,FancyToast.SUCCESS,true).show();
-                        startActivity(new Intent(ActivityLobby.this,ActivityLobby.class));
+                        FancyToast.makeText(ActivityLobby.this,"Player bernama "+data.getMember().getUser().getProfile().getFullName().toString()+" telah ready !!",FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,true).show();
+                        //startActivity(new Intent(ActivityLobby.this,ActivityLobby.class));
 
                     }
                 });
@@ -223,7 +226,7 @@ public class ActivityLobby extends AppCompatActivity {
                         JSONObject json = (JSONObject) args[0];
                         Log.d("JSON : Not Ready",""+json.toString());
                         MemberReadyModel data = gson.fromJson(json.toString(), MemberReadyModel.class);
-                        FancyToast.makeText(ActivityLobby.this,"Player bernama "+data.getMember().getUser().getProfile().getFullName().toString()+" belum ready !!",FancyToast.LENGTH_LONG,FancyToast.SUCCESS,true).show();
+                        FancyToast.makeText(ActivityLobby.this,"Player bernama "+data.getMember().getUser().getProfile().getFullName().toString()+" belum ready !!",FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,true).show();
                         startActivity(new Intent(ActivityLobby.this,ActivityLobby.class));
 
 
@@ -240,6 +243,8 @@ public class ActivityLobby extends AppCompatActivity {
                         Gson gson = new Gson();
                         JSONObject json = (JSONObject) args[0];
                         Log.d("JSON Offline: ",""+json.toString());
+                        MemberReadyModel data = gson.fromJson(json.toString(), MemberReadyModel.class);
+                        FancyToast.makeText(ActivityLobby.this,"Player bernama "+data.getMember().getUser().getProfile().getFullName().toString()+" telah offline !!",FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,true).show();
 
 
                     }
@@ -255,8 +260,8 @@ public class ActivityLobby extends AppCompatActivity {
                         Gson gson = new Gson();
                         JSONObject json = (JSONObject) args[0];
                         Log.d("JSON Online: ",""+json.toString());
-
-
+                        MemberReadyModel data = gson.fromJson(json.toString(), MemberReadyModel.class);
+                        FancyToast.makeText(ActivityLobby.this,"Player bernama "+data.getMember().getUser().getProfile().getFullName().toString()+" telah online !!",FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,true).show();
                     }
                 });
 
@@ -450,6 +455,7 @@ public class ActivityLobby extends AppCompatActivity {
                     Log.d("Status ", " : " + response.body().getDataMeModel().getStatus().toString());
                     Log.d("Badge ", " : " + response.body().getDataMeModel().getBadge().toString());
                     String name = response.body().getDataMeModel().getUser().getProfile().getFullName().toString();
+
                     //player1.setText(name);
                 }else{
                     Log.d("Status ", " : " + response.code());
@@ -465,4 +471,6 @@ public class ActivityLobby extends AppCompatActivity {
         });
 
     }
+
+
 }
