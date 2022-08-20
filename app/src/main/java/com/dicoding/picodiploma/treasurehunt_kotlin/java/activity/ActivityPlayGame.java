@@ -220,6 +220,7 @@ public class ActivityPlayGame extends AppCompatActivity {
                             String contentsCheckinInstruction = response.body().getData().getNextFlow().getContent().toString();
                             checkInInstructionDialog(FLOW_ID,contentsCheckinInstruction,"");
                             break;
+
                         default:
                             Toast.makeText(ActivityPlayGame.this,"Type : "+type,Toast.LENGTH_SHORT).show();
                             break;
@@ -309,6 +310,7 @@ public class ActivityPlayGame extends AppCompatActivity {
                             String contentsCheckinInstruction = response.body().getData().getNextFlow().getContent().toString();
                             checkInInstructionDialog(FLOW_ID,contentsCheckinInstruction,"");
                             break;
+
                         default:
                             Toast.makeText(ActivityPlayGame.this,"Type : "+type,Toast.LENGTH_SHORT).show();
                             break;

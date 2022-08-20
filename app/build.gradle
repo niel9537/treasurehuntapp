@@ -71,4 +71,8 @@ dependencies {
     implementation 'com.google.android.exoplayer:exoplayer-core:2.14.1'
     implementation 'com.google.android.exoplayer:exoplayer-dash:2.14.1'
     implementation 'com.google.android.exoplayer:exoplayer-ui:2.14.1'
+    implementation ('io.socket:socket.io-client:2.0.0') {
+        exclude group: 'org.json', module: 'json'
+    }
+    implementation 'io.github.shashank02051997:FancyToast:2.0.2'
 }

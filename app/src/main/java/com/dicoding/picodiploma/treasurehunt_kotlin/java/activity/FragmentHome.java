@@ -20,6 +20,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.dicoding.picodiploma.treasurehunt_kotlin.R;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestJoinGame;
@@ -47,8 +48,9 @@ public class FragmentHome extends Fragment {
     private static final String KEY_TOKEN_GAME = "key_token_game";
     private static final String KEY_LOBBY_ID = "key_lobby_id";
     private static final String KEY_GAME_ID = "key_game_id";
+    private static final String KEY_MEMBER_ID = "key_member_id";
     String getKeyToken = "";
-
+    ViewPager2 viewPager2;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -60,6 +62,9 @@ public class FragmentHome extends Fragment {
         codeInput = view.findViewById(R.id.input_code);
         playButton = view.findViewById(R.id.play_button);
         username_welcome = view.findViewById(R.id.username_welcome);
+/*        viewPager2 = (ViewPager2) view.findViewById(R.id.view_pager_home);
+        RecyclerView.Adapter viewPagerAdapter = new R(getActivity());
+        viewPager2.setAdapter(viewPagerAdapter);*/
         meProfile();
         codeInput.addTextChangedListener(new TextWatcher() {
             @Override
@@ -97,22 +102,25 @@ public class FragmentHome extends Fragment {
                     joinGameCall.enqueue(new Callback<InputGameCodeModel>() {
                         @Override
                         public void onResponse(Call<InputGameCodeModel> call, Response<InputGameCodeModel> response) {
+                            if(response.isSuccessful()){
+                                editor.putString(KEY_TOKEN_GAME,""+response.body().getData().getGameToken().toString());
+                                editor.putString(KEY_LOBBY_ID,""+response.body().getData().getLobbyId().toString());
+                                editor.putString(KEY_GAME_ID,""+response.body().getData().getGameId().toString());
 
-                            editor.putString(KEY_TOKEN_GAME,""+response.body().getData().getGameToken().toString());
-                            editor.putString(KEY_LOBBY_ID,""+response.body().getData().getLobbyId().toString());
-                            editor.putString(KEY_GAME_ID,""+response.body().getData().getGameId().toString());
-                            editor.apply();
-                            Log.d("API-login: ",  getKeyToken.toString()+"%%%%%"+codeInput.getText().toString());
-                            Log.d("Token Game", " : " + response.body().getData().getGameToken().toString());
-                            Log.d("Game Id", " : " + response.body().getData().getGameId().toString());
-                            Log.d("Lobby Id", " : " + response.body().getData().getLobbyId().toString());
-                            startActivity(new Intent(getActivity(),ActivitySplashBrace.class));
-
+                                editor.apply();
+                                Log.d("API-login: ",  getKeyToken.toString()+"%%%%%"+codeInput.getText().toString());
+                                Log.d("Token Game", " : " + response.body().getData().getGameToken().toString());
+                                Log.d("Game Id", " : " + response.body().getData().getGameId().toString());
+                                Log.d("Lobby Id", " : " + response.body().getData().getLobbyId().toString());
+                                startActivity(new Intent(getActivity(),ActivitySplashBrace.class));
+                            }else{
+                                Toast.makeText(getActivity(), "Error "+response.body().getResponseMessage().toString(), Toast.LENGTH_SHORT).show();
+                            }
                         }
 
                         @Override
                         public void onFailure(Call<InputGameCodeModel> call, Throwable t) {
-
+                            Toast.makeText(getActivity(), "Fail "+t.getMessage().toString(), Toast.LENGTH_SHORT).show();
                         }
                     });
                 }else{
@@ -129,6 +137,9 @@ public class FragmentHome extends Fragment {
             @Override
             public void onResponse(Call<UserMeModel> call, Response<UserMeModel> response) {
                 if(response.isSuccessful()){
+                    editor.putString(KEY_MEMBER_ID,""+response.body().getData().getId().toString());
+                    editor.apply();
+                    Log.d("Member ID", " : " + response.body().getData().getId().toString());
                     username_welcome.setText("Hallo, "+response.body().getData().getProfile().getFullName());
                 }else{
                     Toast.makeText(getActivity(), "Fail "+response.body().getResponseMessage().toString(), Toast.LENGTH_SHORT).show();
@@ -141,4 +152,6 @@ public class FragmentHome extends Fragment {
             }
         });
     }
+
+
 }
