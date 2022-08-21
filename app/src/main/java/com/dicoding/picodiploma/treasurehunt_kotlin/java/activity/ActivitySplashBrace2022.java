@@ -18,8 +18,6 @@ public class ActivitySplashBrace2022 extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
         setContentView(R.layout.activity_splash_brace2022);
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -34,7 +32,7 @@ public class ActivitySplashBrace2022 extends AppCompatActivity {
                 //setelah loading maka akan langsung berpindah ke home activity
                 Intent home=new Intent(ActivitySplashBrace2022.this, ActivityPlayGame.class);
                 home.putExtra("FLOW_ID",FLOW_ID);
-                home.putExtra("STATUS", Config.CONTINUE_GAME);
+                home.putExtra("STATUS", Config.DESK);
                 startActivity(home);
 
             }

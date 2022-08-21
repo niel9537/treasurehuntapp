@@ -19,27 +19,9 @@
         android:shadowColor="@color/black">
 
         <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_centerInParent="true">
-
-            <TextView
-                android:id="@+id/title_check_out"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginStart="0dp"
-                android:fontFamily="@font/lora_regular"
-                android:text="Kendaraan Untukmu"
-                android:textAlignment="center"
-                android:textColor="@color/green"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
 
 
             <TextView
@@ -70,11 +52,24 @@ healing di Borobudur enaknya naik VW
                 android:layout_marginTop="50dp"
                 android:src="@drawable/vw" />
 
+            <TextView
+                android:id="@+id/title_check_out"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="3dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="0dp"
+                android:fontFamily="@font/lora_regular"
+                android:text="Kendaraan Untukmu"
+                android:textAlignment="center"
+                android:textColor="@color/green"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
         </RelativeLayout>
-
-
-
-
 
 
     </RelativeLayout>
@@ -88,7 +83,7 @@ healing di Borobudur enaknya naik VW
         android:layout_alignParentBottom="true"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
-        android:layout_marginBottom="60dp"
+        android:layout_marginBottom="42dp"
         android:backgroundTint="@color/green"
         android:fontFamily="@font/lora_regular"
         android:paddingTop="10dp"
@@ -101,7 +96,6 @@ healing di Borobudur enaknya naik VW
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
 
 
 </RelativeLayout>
