@@ -33,6 +33,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
@@ -224,6 +225,13 @@ public class ActivityPlayGame extends AppCompatActivity {
                 nextFlow(FLOW_ID);
                 //posVideoDialog("",POST_ID);
                 break;
+            case 9 :
+                Log.d("POST_ID 6", " : " + POST_ID);
+                Log.d("FLOW_ID 6", " : " + FLOW_ID);
+                Log.d("STATUS 6", " : " + STATUS);
+                nextFlow(FLOW_ID);
+                //posVideoDialog("",POST_ID);
+                break;
         }
 
     }
@@ -265,7 +273,8 @@ public class ActivityPlayGame extends AppCompatActivity {
                             break;
                         case "manohara-dialogs":
                             String content2 = response.body().getData().getNextFlow().getContent().toString();
-                            manoharaDialog(FLOW_ID,content2,"");
+                            String fileId = response.body().getData().getNextFlow().getFile().getFileId().toString();
+                            manoharaDialog(FLOW_ID,content2,fileId);
                             break;
                         case "manohara-weding-rings":
                             //String content3 = response.body().getData().getNextFlow().getContent().toString();
@@ -337,11 +346,23 @@ public class ActivityPlayGame extends AppCompatActivity {
                         case "gerabah-game":
                             gerabahGame(FLOW_ID,"","");
                             break;
+                        case "gerabah-game-instruction":
+                            String contentsGerabahInstruction = response.body().getData().getNextFlow().getContent().toString();
+                            String fileGerabahInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
+                            gerabahGameInstruction(FLOW_ID,contentsGerabahInstruction,fileGerabahInstruction);
+                            break;
                         case "socmed":
                             patiArenSocmed(FLOW_ID,"","");
                             break;
                         case "pati-aren-game":
-                            patiArenGame(FLOW_ID,"","");
+                            Intent pati = new Intent(ActivityPlayGame.this,ActivityPatiArenGame.class);
+                            pati.putExtra("FLOW_ID",FLOW_ID);
+                            startActivity(pati);
+                            break;
+                        case "mie-pati-game-instruction":
+                            String contentsMiePatiInstruction = response.body().getData().getNextFlow().getContent().toString();
+                            String fileMiePatiInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
+                            miePatiArenGameInstruction(FLOW_ID,contentsMiePatiInstruction,fileMiePatiInstruction);
                             break;
                         case "kopi-game":
                             kopiGame(FLOW_ID,"","");
@@ -352,14 +373,14 @@ public class ActivityPlayGame extends AppCompatActivity {
                             ovjGameInstruction(FLOW_ID,contentsOvjInstruction,fileOvjInstruction);
                             break;
                         case "kain-perca-game-instruction":
-                            kainpercaGame(FLOW_ID,"","");
+                            kainpercaGameInstruction(FLOW_ID,"","");
                             break;
                         default:
                             Toast.makeText(ActivityPlayGame.this,"Type : "+type,Toast.LENGTH_SHORT).show();
                             break;
                     }
                 }else{
-                    Toast.makeText(ActivityPlayGame.this,"Error : "+response.message().toString(),Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivityPlayGame.this,"Nextflow Gagal : "+response.message().toString(),Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -477,11 +498,23 @@ public class ActivityPlayGame extends AppCompatActivity {
                         case "gerabah-game":
                             gerabahGame(FLOW_ID,"","");
                             break;
+                        case "gerabah-game-instruction":
+                            String contentsGerabahInstruction = response.body().getData().getNextFlow().getContent().toString();
+                            String fileGerabahInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
+                            gerabahGameInstruction(FLOW_ID,contentsGerabahInstruction,fileGerabahInstruction);
+                            break;
                         case "socmed":
                             patiArenSocmed(FLOW_ID,"","");
                             break;
                         case "pati-aren-game":
-                            patiArenGame(FLOW_ID,"","");
+                            Intent pati = new Intent(ActivityPlayGame.this,ActivityPatiArenGame.class);
+                            pati.putExtra("FLOW_ID",FLOW_ID);
+                            startActivity(pati);
+                            break;
+                        case "mie-pati-game-instruction":
+                            String contentsMiePatiInstruction = response.body().getData().getNextFlow().getContent().toString();
+                            String fileMiePatiInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
+                            miePatiArenGameInstruction(FLOW_ID,contentsMiePatiInstruction,fileMiePatiInstruction);
                             break;
                         case "kopi-game":
                             kopiGame(FLOW_ID,"","");
@@ -492,14 +525,14 @@ public class ActivityPlayGame extends AppCompatActivity {
                             ovjGameInstruction(FLOW_ID,contentsOvjInstruction,fileOvjInstruction);
                             break;
                         case "kain-perca-game-instruction":
-                            kainpercaGame(FLOW_ID,"","");
+                            kainpercaGameInstruction(FLOW_ID,"","");
                             break;
                         default:
                             Toast.makeText(ActivityPlayGame.this,"Type : "+type,Toast.LENGTH_SHORT).show();
                             break;
                     }
                 }else{
-                    Toast.makeText(ActivityPlayGame.this,"Error : "+response.message().toString(),Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivityPlayGame.this,"Chekin gagal : "+response.message().toString(),Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -509,6 +542,37 @@ public class ActivityPlayGame extends AppCompatActivity {
             }
         });
     }
+
+    private void miePatiArenGameInstruction(String flow_id, String content, String file_id) {
+        AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
+        View mView= LayoutInflater.from(this).inflate(R.layout.dialog_brace_petunjuk,null);
+        dBuilder.setView(mView);
+        ImageView img_petunjuk = mView.findViewById(R.id.img_petunjuk);
+        GlideUrl glideUrl = new GlideUrl(Config.BASE_URL+"mobile/v1/file-uploads/"+file_id,
+                new LazyHeaders.Builder()
+                        .addHeader("Authorization",getKeyToken)
+                        .build());
+
+        Glide.with(this)
+                .load(glideUrl)
+                .into(img_petunjuk);
+        TextView button_checkin = mView.findViewById(R.id.button_continue_petunjuk);
+        TextView desc_checkin = mView.findViewById(R.id.desc_petunjuk);
+        desc_checkin.setText(content);
+        button_checkin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                    nextFlow(flow_id);
+            }
+        });
+
+        dialog = dBuilder.create();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+    }
+
     private void ovjDialog(String flow_id, String file_id) {
         AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
         View mView= LayoutInflater.from(ActivityPlayGame.this).inflate(R.layout.dialog_ovj_show_image,null);
@@ -528,6 +592,58 @@ public class ActivityPlayGame extends AppCompatActivity {
             public void onClick(View view) {
                 dialog.dismiss();
                 nextFlow(flow_id);
+            }
+        });
+        dialog = dBuilder.create();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+    }
+    private void gerabahDialog(String flow_id, String file_id) {
+        AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
+        View mView= LayoutInflater.from(ActivityPlayGame.this).inflate(R.layout.dialog_ovj_show_image,null);
+        dBuilder.setView(mView);
+        TextView btnContinue = mView.findViewById(R.id.btnContinue);
+        ImageView imageGerabah = mView.findViewById(R.id.imgOvj);
+        GlideUrl glideUrl = new GlideUrl(Config.BASE_URL+"mobile/v1/file-uploads/"+ file_id,
+                new LazyHeaders.Builder()
+                        .addHeader("Authorization",getKeyToken)
+                        .build());
+
+        Glide.with(ActivityPlayGame.this)
+                .load(glideUrl)
+                .into(imageGerabah);
+        btnContinue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                nextFlow(flow_id);
+            }
+        });
+        dialog = dBuilder.create();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+    }
+    private void gerabahPreview(String flow_id, String file_id) {
+        AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
+        View mView= LayoutInflater.from(ActivityPlayGame.this).inflate(R.layout.dialog_ovj_show_image,null);
+        dBuilder.setView(mView);
+        TextView btnContinue = mView.findViewById(R.id.btnContinue);
+        ImageView imageGerabah = mView.findViewById(R.id.imgOvj);
+        btnContinue.setText("Tutup");
+        GlideUrl glideUrl = new GlideUrl(Config.BASE_URL+"mobile/v1/file-uploads/"+ file_id,
+                new LazyHeaders.Builder()
+                        .addHeader("Authorization",getKeyToken)
+                        .build());
+
+        Glide.with(ActivityPlayGame.this)
+                .load(glideUrl)
+                .into(imageGerabah);
+        btnContinue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
             }
         });
         dialog = dBuilder.create();
@@ -750,7 +866,68 @@ public class ActivityPlayGame extends AppCompatActivity {
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
     }
+    private void gerabahGameInstruction(String id, String content, String file_id) {
+        AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
+        View mView= LayoutInflater.from(this).inflate(R.layout.dialog_gerabah_instruction,null);
+        dBuilder.setView(mView);
+        ImageView img_petunjuk = mView.findViewById(R.id.img_petunjuk);
+        GlideUrl glideUrl = new GlideUrl(Config.BASE_URL+"mobile/v1/file-uploads/"+file_id,
+                new LazyHeaders.Builder()
+                        .addHeader("Authorization",getKeyToken)
+                        .build());
+
+        Glide.with(this)
+                .load(glideUrl)
+                .into(img_petunjuk);
+        TextView button_checkin = mView.findViewById(R.id.button_continue_petunjuk);
+        TextView button_preview = mView.findViewById(R.id.button_preview_petunjuk);
+        TextView desc_checkin = mView.findViewById(R.id.desc_petunjuk);
+        desc_checkin.setText(content);
+        button_preview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
+                Call<OvjQRModel> ovjQR = apiInterface.gerabah(getKeyToken.toString(),getKeyTokenGame);
+                ovjQR.enqueue(new Callback<OvjQRModel>() {
+                    @Override
+                    public void onResponse(Call<OvjQRModel> call, Response<OvjQRModel> response) {
+                        if(response.isSuccessful()){
+                            FILE_ID = response.body().getData().getFile().getFileId().toString();
+                            Log.d("FILE_ID", " : " + FILE_ID+" "+response.body().getData().getGameClassification().toString());
+                            gerabahPreview("",FILE_ID);
+                        }else{
+                            Toast.makeText(ActivityPlayGame.this,"Error "+response.message().toString(),Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<OvjQRModel> call, Throwable t) {
+                        Toast.makeText(ActivityPlayGame.this,"Fail "+t.getMessage().toString(),Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+            }
+        });
+        button_checkin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                gerabahOpenCamera(id);
+            }
+        });
+
+        dialog = dBuilder.create();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+    }
     private void ovjOpenCamera(String flow_id) {
+        Intent intent = new Intent(ActivityPlayGame.this,ActivityCaptureImage.class);
+        intent.putExtra("FLOW_ID",flow_id);
+        Log.d("FLOW_ID CAPTURE IMAGE",""+flow_id);
+        startActivity(intent);
+    }
+    private void gerabahOpenCamera(String flow_id) {
         Intent intent = new Intent(ActivityPlayGame.this,ActivityCaptureImage.class);
         intent.putExtra("FLOW_ID",flow_id);
         Log.d("FLOW_ID CAPTURE IMAGE",""+flow_id);
@@ -962,12 +1139,23 @@ public class ActivityPlayGame extends AppCompatActivity {
     }
     private void manoharaDialog(String id, String content, String file_id) {
         AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
-        View mView= LayoutInflater.from(this).inflate(R.layout.dialog_narasi_pengantar_v2,null);
+        //View mView= LayoutInflater.from(this).inflate(R.layout.dialog_narasi_pengantar_v2,null);
+        View mView= LayoutInflater.from(this).inflate(R.layout.dialog_narasi_backup,null);
         dBuilder.setView(mView);
-        dialogContent = mView.findViewById(R.id.desc_dialog);
-        lanjut = mView.findViewById(R.id.dialogContinue_button);
-        dialogContent.setText(content);
-        lanjut.setOnClickListener(new View.OnClickListener() {
+
+        TextView txtDialog = mView.findViewById(R.id.txtDialog);
+        TextView next = mView.findViewById(R.id.btnDialog);
+        ImageView img = mView.findViewById(R.id.imgDialog);
+        Log.d("File Id Manohara Dialog",""+file_id+" "+Config.BASE_URL+"mobile/v1/file-uploads/"+file_id);
+        GlideUrl glideUrl = new GlideUrl(Config.BASE_URL+"mobile/v1/file-uploads/"+file_id,
+                new LazyHeaders.Builder()
+                        .addHeader("Authorization",getKeyToken)
+                        .build());
+        Glide.with(this)
+                .load(glideUrl)
+                .into(img);
+        txtDialog.setText(content);
+        next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
@@ -1406,7 +1594,27 @@ public class ActivityPlayGame extends AppCompatActivity {
         dialog.show();
     }
     private void gerabahGame(String id, String content, String file_id){
-        AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
+        ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
+        Call<OvjQRModel> ovjQR = apiInterface.gerabah(getKeyToken.toString(),getKeyTokenGame);
+        ovjQR.enqueue(new Callback<OvjQRModel>() {
+            @Override
+            public void onResponse(Call<OvjQRModel> call, Response<OvjQRModel> response) {
+                if(response.isSuccessful()){
+                    FILE_ID = response.body().getData().getFile().getFileId().toString();
+                    Log.d("FILE_ID", " : " + FILE_ID+" "+response.body().getData().getGameClassification().toString());
+                    gerabahDialog(id,FILE_ID);
+                }else{
+                    Toast.makeText(ActivityPlayGame.this,"Error "+response.message().toString(),Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<OvjQRModel> call, Throwable t) {
+                Toast.makeText(ActivityPlayGame.this,"Fail "+t.getMessage().toString(),Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        /*AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
         View mView= LayoutInflater.from(this).inflate(R.layout.dialog_kamera,null);
         dBuilder.setView(mView);
         ImageView imgView = mView.findViewById(R.id.icon_kamera);
@@ -1438,7 +1646,7 @@ public class ActivityPlayGame extends AppCompatActivity {
         dialog = dBuilder.create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.setCanceledOnTouchOutside(false);
-        dialog.show();
+        dialog.show();*/
     }
     private void patiArenGame(String id, String content, String file_id){
         AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);

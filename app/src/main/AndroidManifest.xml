@@ -106,6 +106,8 @@
             android:exported="true"/>
         <activity android:name=".java.activity.ActivityCaptureImage"
             android:exported="true"/>
+        <activity android:name=".java.activity.ActivityPatiArenGame"
+            android:exported="true"/>
         <!--Java-->
     </application>
 
