@@ -11,6 +11,7 @@ import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.InputGam
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.LobbyDetailModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.LoginModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.MeModel;
+import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.OvjQRModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.PlayModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.ReadyModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.UserMeModel;
@@ -52,4 +53,6 @@ public interface ApiInterface {
     Call<CekProgressModel> cekproses(@Header("Authorization") String token, @Query("game_token") String userGameToken);
     @GET("/mobile/v1/game-controls/lobbies/{id}")
     Call<LobbyDetailModel> lobbydetail(@Header("Authorization") String token,@Path("id") String lobbyId, @Query("game_token") String userGameToken );
+    @GET("/mobile/v1/game-controls/brace/ovj/{id}")
+    Call<OvjQRModel> ovjQR(@Header("Authorization") String token, @Path("id") String id, @Query("game_token") String userGameToken );
 }

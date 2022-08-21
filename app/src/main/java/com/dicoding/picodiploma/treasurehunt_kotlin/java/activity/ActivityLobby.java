@@ -131,7 +131,10 @@ public class ActivityLobby extends AppCompatActivity {
                         Log.d("JSON : Started",""+json.toString());
                         GameStartedModel data = gson.fromJson(json.toString(),GameStartedModel.class);
                         Log.d("Listen : ",""+data.getNextFlow().getFlowType().getName().toString());
-
+                        Intent intent = new Intent(ActivityLobby.this,ActivityPlayGame.class);
+                        intent.putExtra("FLOW_ID",data.getNextFlow().getId());
+                        intent.putExtra("STATUS",Config.GAME_STARTED);
+                        startActivity(intent);
                     }
                 });
 
@@ -265,6 +268,43 @@ public class ActivityLobby extends AppCompatActivity {
                     }
                 });
 
+            }
+        }).on("checked-in", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Gson gson = new Gson();
+                        JSONObject json = (JSONObject) args[0];
+                        Log.d("JSON Online: ",""+json.toString());
+                        GameStartedModel data = gson.fromJson(json.toString(),GameStartedModel.class);
+                        Log.d("Listen : ",""+data.getNextFlow().getFlowType().getName().toString());
+                        /*Intent intent = new Intent(ActivityLobby.this,ActivityPlayGame.class);
+                        intent.putExtra("FLOW_ID",data.getNextFlow().getId());
+                        intent.putExtra("STATUS",Config.GAME_STARTED);
+                        startActivity(intent);*/
+                    }
+                });
+
+            }
+        }).on("checked-out", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Gson gson = new Gson();
+                        JSONObject json = (JSONObject) args[0];
+                        Log.d("JSON Online: ", "" + json.toString());
+                        GameStartedModel data = gson.fromJson(json.toString(), GameStartedModel.class);
+                        Log.d("Listen : ", "" + data.getNextFlow().getFlowType().getName().toString());
+                        /*Intent intent = new Intent(ActivityLobby.this,ActivityPlayGame.class);
+                        intent.putExtra("FLOW_ID",data.getNextFlow().getId());
+                        intent.putExtra("STATUS",Config.GAME_STARTED);
+                        startActivity(intent);}*/
+                    }
+                });
             }
         });
     }

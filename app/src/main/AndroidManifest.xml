@@ -102,6 +102,8 @@
             android:exported="true"/>
         <activity android:name=".java.activity.ActivityScanCheckOut"
             android:exported="true"/>
+        <activity android:name=".java.activity.ActivityScanOVJ"
+            android:exported="true"/>
         <!--Java-->
     </application>
 
