@@ -17,34 +17,34 @@
         android:background="@drawable/pop_up_dialog">
 
         <ImageView
-            android:id="@+id/img_petunjuk"
+            android:id="@+id/imgOvj"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/constraint_petunjuk"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginStart="0dp" />
+            android:layout_marginStart="0dp"
+            android:src="@drawable/camera" />
 
         <TextView
             android:id="@+id/title_petunjuk"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:layout_alignTop="@+id/desc_petunjuk"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="-59dp"
             android:layout_marginBottom="20dp"
             android:fontFamily="@font/lora_regular"
-            android:gravity="center"
-            android:text="Petunjuk"
             android:textAlignment="center"
             android:textColor="@color/green"
             android:textSize="20sp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/desc_petunjuk"
+            android:id="@+id/btnOpen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_above="@+id/constraint_petunjuk"
@@ -54,13 +54,14 @@
             android:layout_marginTop="10dp"
             android:layout_marginEnd="0dp"
             android:layout_marginBottom="30dp"
-            android:fontFamily="@font/plus_jakarta_sans_regular"
+            android:fontFamily="@font/lora_regular"
             android:paddingStart="30dp"
             android:paddingEnd="30dp"
-            android:text="Keberadaan Petapa Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            android:text="Buka Kamera"
             android:textAlignment="center"
-            android:textColor="@color/text2"
-            android:textSize="12sp" />
+            android:textColor="@color/green"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraint_petunjuk"
@@ -75,12 +76,12 @@
             android:padding="20dp">
 
             <TextView
-                android:id="@+id/button_continue_petunjuk"
+                android:id="@+id/btnUpload"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/bg_light_yellow"
                 android:fontFamily="@font/lora_regular"
-                android:text="Continue"
+                android:text="Upload"
                 android:textAllCaps="false"
                 android:textColor="@color/green"
                 android:textSize="20sp"

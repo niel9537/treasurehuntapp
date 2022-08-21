@@ -104,6 +104,8 @@
             android:exported="true"/>
         <activity android:name=".java.activity.ActivityScanOVJ"
             android:exported="true"/>
+        <activity android:name=".java.activity.ActivityCaptureImage"
+            android:exported="true"/>
         <!--Java-->
     </application>
 

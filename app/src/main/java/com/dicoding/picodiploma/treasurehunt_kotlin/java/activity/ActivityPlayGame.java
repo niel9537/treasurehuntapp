@@ -1,6 +1,9 @@
 package com.dicoding.picodiploma.treasurehunt_kotlin.java.activity;
 
+import static com.dicoding.picodiploma.treasurehunt_kotlin.java.config.Config.MY_CAMERA_PERMISSION_CODE;
+
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -214,6 +217,13 @@ public class ActivityPlayGame extends AppCompatActivity {
 
                 //posVideoDialog("",POST_ID);
                 break;
+            case 8 :
+                Log.d("POST_ID 6", " : " + POST_ID);
+                Log.d("FLOW_ID 6", " : " + FLOW_ID);
+                Log.d("STATUS 6", " : " + STATUS);
+                nextFlow(FLOW_ID);
+                //posVideoDialog("",POST_ID);
+                break;
         }
 
     }
@@ -340,6 +350,9 @@ public class ActivityPlayGame extends AppCompatActivity {
                             String contentsOvjInstruction = response.body().getData().getNextFlow().getContent().toString();
                             String fileOvjInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
                             ovjGameInstruction(FLOW_ID,contentsOvjInstruction,fileOvjInstruction);
+                            break;
+                        case "kain-perca-game-instruction":
+                            kainpercaGame(FLOW_ID,"","");
                             break;
                         default:
                             Toast.makeText(ActivityPlayGame.this,"Type : "+type,Toast.LENGTH_SHORT).show();
@@ -478,12 +491,15 @@ public class ActivityPlayGame extends AppCompatActivity {
                             String fileOvjInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
                             ovjGameInstruction(FLOW_ID,contentsOvjInstruction,fileOvjInstruction);
                             break;
+                        case "kain-perca-game-instruction":
+                            kainpercaGame(FLOW_ID,"","");
+                            break;
                         default:
                             Toast.makeText(ActivityPlayGame.this,"Type : "+type,Toast.LENGTH_SHORT).show();
                             break;
                     }
                 }else{
-                    //Toast.makeText(ActivityPlayGame.this,"Error : "+response.message().toString(),Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivityPlayGame.this,"Error : "+response.message().toString(),Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -519,7 +535,6 @@ public class ActivityPlayGame extends AppCompatActivity {
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
     }
-
     private void checkOut(String post_id, String flow_id) {
         ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
         Call<PlayModel> playCall = apiInterface.cekout(getKeyToken.toString(),getKeyTokenGame,new RequestCheckOut(post_id,flow_id));
@@ -726,7 +741,7 @@ public class ActivityPlayGame extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                ovjGameCapture(id);
+                ovjOpenCamera(id);
             }
         });
 
@@ -735,28 +750,33 @@ public class ActivityPlayGame extends AppCompatActivity {
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
     }
-
-    private void ovjGameCapture(String id) {
+    private void ovjOpenCamera(String flow_id) {
+        Intent intent = new Intent(ActivityPlayGame.this,ActivityCaptureImage.class);
+        intent.putExtra("FLOW_ID",flow_id);
+        Log.d("FLOW_ID CAPTURE IMAGE",""+flow_id);
+        startActivity(intent);
+    }
+    private void ovjCaptureImage(String flow_id) {
         AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
-        View mView= LayoutInflater.from(this).inflate(R.layout.dialog_brace_petunjuk,null);
+        View mView= LayoutInflater.from(this).inflate(R.layout.dialog_ovj_capture_image,null);
         dBuilder.setView(mView);
-        ImageView img_petunjuk = mView.findViewById(R.id.img_petunjuk);
-        GlideUrl glideUrl = new GlideUrl(Config.BASE_URL+"mobile/v1/file-uploads/"+file_id,
-                new LazyHeaders.Builder()
-                        .addHeader("Authorization",getKeyToken)
-                        .build());
-
-        Glide.with(this)
-                .load(glideUrl)
-                .into(img_petunjuk);
-        TextView button_checkin = mView.findViewById(R.id.button_continue_petunjuk);
-        TextView desc_checkin = mView.findViewById(R.id.desc_petunjuk);
-        desc_checkin.setText(content);
-        button_checkin.setOnClickListener(new View.OnClickListener() {
+        ImageView imgOvj = mView.findViewById(R.id.imgOvj);
+        TextView btnUpload = mView.findViewById(R.id.btnUpload);
+        TextView btnOpen = mView.findViewById(R.id.btnOpen);
+        btnOpen.setVisibility(View.INVISIBLE);
+        btnOpen.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View v) {
-                dialog.dismiss();
-                ovjGameCapture(id);
+                if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
+                {
+                    requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_PERMISSION_CODE);
+                }
+                else
+                {
+                    Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                    startActivityForResult(cameraIntent, Config.CAMERA_REQUEST);
+                }
             }
         });
 
@@ -765,7 +785,6 @@ public class ActivityPlayGame extends AppCompatActivity {
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
     }
-
     private void braceGameInstruction(String id, String content, String file_id) {
         AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
         View mView= LayoutInflater.from(this).inflate(R.layout.dialog_brace_petunjuk,null);
@@ -1237,7 +1256,6 @@ public class ActivityPlayGame extends AppCompatActivity {
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
     }
-
     private void ovjGame(String id, String content, String file_id){
         AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
         View mView= LayoutInflater.from(this).inflate(R.layout.dialog_kamera,null);
@@ -1291,7 +1309,6 @@ public class ActivityPlayGame extends AppCompatActivity {
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
     }
-
     private void showBottomSheetDialog(String FLOW_ID) {
         final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_layout);
@@ -1316,14 +1333,50 @@ public class ActivityPlayGame extends AppCompatActivity {
         });
 
     }
-
     private void kainpercaGame(String id, String content, String file_id){
         AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
-        View mView= LayoutInflater.from(this).inflate(R.layout.dialog_kamera,null);
+        View mView= LayoutInflater.from(this).inflate(R.layout.dialog_petunjuk,null);
         dBuilder.setView(mView);
-        ImageView imgView = mView.findViewById(R.id.icon_kamera);
-        Button buka_camera = mView.findViewById(R.id.buka_camera);
-        buka_camera.setOnClickListener(new View.OnClickListener() {
+        TextView descPetunjuk = mView.findViewById(R.id.desc_petunjuk);
+        TextView btnContinue = mView.findViewById(R.id.button_continue_petunjuk);
+        descPetunjuk.setText("Kain Perca Game Instruction");
+        btnContinue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
+                Call<PlayModel> playCall = apiInterface.next(getKeyToken.toString(),getKeyTokenGame,new RequestNextFlow(id));
+                playCall.enqueue(new Callback<PlayModel>() {
+                    @Override
+                    public void onResponse(Call<PlayModel> call, Response<PlayModel> response) {
+                        if(response.isSuccessful()){
+                            //FLOW_ID = response.body().getData().getNextFlow().getId();
+                            nextFlow(id);
+                        }else{
+                            Toast.makeText(ActivityPlayGame.this,"Error : "+response.message().toString(),Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<PlayModel> call, Throwable t) {
+                        Toast.makeText(ActivityPlayGame.this,"Error : "+t.getMessage().toString(),Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+        dialog = dBuilder.create();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+    }
+    private void kainpercaGameInstruction(String id, String content, String file_id){
+        AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
+        View mView= LayoutInflater.from(this).inflate(R.layout.dialog_petunjuk,null);
+        dBuilder.setView(mView);
+        TextView descPetunjuk = mView.findViewById(R.id.desc_petunjuk);
+        TextView btnContinue = mView.findViewById(R.id.button_continue_petunjuk);
+        descPetunjuk.setText("Kain Perca Game Instruction");
+        btnContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
@@ -1457,4 +1510,5 @@ public class ActivityPlayGame extends AppCompatActivity {
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
     }
+
 }

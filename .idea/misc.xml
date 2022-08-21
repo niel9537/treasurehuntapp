@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/drawable/bg_list_step.xml" value="0.1995" />
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/drawable/dialog_bg.xml" value="0.1995" />
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/drawable/dialog_ovj.xml" value="0.184" />
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/drawable/pop_up_dialog_2.xml" value="0.1995" />
@@ -12,6 +13,7 @@
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/activity_brace_narasi.xml" value="0.19166666666666668" />
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/activity_brace_play.xml" value="0.19166666666666668" />
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/activity_brace_share.xml" value="0.371875" />
+        <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/activity_camera.xml" value="0.22" />
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/activity_change_password.xml" value="0.19166666666666668" />
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/activity_detail_brace.xml" value="0.19166666666666668" />
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/activity_detail_game.xml" value="0.19166666666666668" />
@@ -46,6 +48,7 @@
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/dialog_next_pos.xml" value="0.23385416666666667" />
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/dialog_opening_pos.xml" value="0.15885416666666666" />
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/dialog_ovj.xml" value="0.209375" />
+        <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/dialog_ovj_capture_image.xml" value="0.19166666666666668" />
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/dialog_ovj_show_image.xml" value="0.19166666666666668" />
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/dialog_peta.xml" value="0.2453125" />
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/dialog_peta_lokasi.xml" value="0.2453125" />
