@@ -316,7 +316,11 @@ public class ActivityPlayGame extends AppCompatActivity {
                             break;
                         case "brace-post-desc":
                             //nextFlow(FLOW_ID);
-                            braceDescDialog(FLOW_ID,"","");
+                            String contentsBrace = response.body().getData().getNextFlow().getContent().toString();
+                            if(contentsBrace == null){
+                                contentsBrace = "Text";
+                            }
+                            braceDescDialog(FLOW_ID,contentsBrace,"");
                             break;
                         case "brace-game-instruction":
                             String contentsBraceInstruction = response.body().getData().getNextFlow().getContent().toString();
@@ -468,8 +472,15 @@ public class ActivityPlayGame extends AppCompatActivity {
                             break;
                         case "brace-post-desc":
                             //nextFlow(FLOW_ID);
-                            braceDescDialog(FLOW_ID,"","");
-                            break;
+                            if(response.body().getData().getNextFlow().getContent() != null){
+                                String contentsBrace = response.body().getData().getNextFlow().getContent().toString();
+                                braceDescDialog(FLOW_ID,contentsBrace,"");
+                                break;
+                            }else{
+                                String contentsBrace = "Text";
+                                braceDescDialog(FLOW_ID,contentsBrace,"");
+                                break;
+                            }
                         case "brace-game-instruction":
                             String contentsBraceInstruction = response.body().getData().getNextFlow().getContent().toString();
                             String fileBraceInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
@@ -703,6 +714,7 @@ public class ActivityPlayGame extends AppCompatActivity {
     private void braceDescDialog(String id, String content, String file_id) {
         Intent intent = new Intent(ActivityPlayGame.this,ActivitySplashBrace2022.class);
         intent.putExtra("FLOW_ID",id);
+        intent.putExtra("CONTENT",content);
         Log.d("FLOW_ID ID DESC",""+id);
         startActivity(intent);
     }

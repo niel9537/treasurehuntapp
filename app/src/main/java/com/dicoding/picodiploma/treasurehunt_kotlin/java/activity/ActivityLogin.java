@@ -2,7 +2,10 @@ package com.dicoding.picodiploma.treasurehunt_kotlin.java.activity;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,6 +28,7 @@ public class ActivityLogin extends AppCompatActivity implements CallbackFragment
     FragmentManager fragmentManager;
     FragmentTransaction fragmentTransaction;
 
+    int autoSave;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

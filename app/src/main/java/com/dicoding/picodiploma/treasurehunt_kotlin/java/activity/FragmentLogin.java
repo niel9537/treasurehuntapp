@@ -22,6 +22,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.dicoding.picodiploma.treasurehunt_kotlin.R;
+import com.dicoding.picodiploma.treasurehunt_kotlin.java.config.Config;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestLogin;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.LoginModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.network.ApiHelper;
@@ -41,6 +42,7 @@ public class FragmentLogin extends Fragment{
     SharedPreferences.Editor editor;
     private static final String SHARED_PREF_NAME = "treasureHunt";
     private static final String KEY_TOKEN = "key_token";
+    private static final String KEY_LOGIN = "key_login";
     LoadingDialogBar loadingDialogBar;
     @Override
     public void onAttach(@NonNull Context context) {
@@ -58,6 +60,15 @@ public class FragmentLogin extends Fragment{
         register = view.findViewById(R.id.register_login);
         emailInput = view.findViewById(R.id.email_input_login);
         passInput = view.findViewById(R.id.pass_input_login);
+        //"autoLogin" is a unique string to identify the instance of this shared preference
+        sharedPreferences = getActivity().getSharedPreferences(KEY_LOGIN, Context.MODE_PRIVATE);
+        int j = sharedPreferences.getInt(KEY_LOGIN, Config.KEEP_LOGIN);
+
+        //Default is 0 so autologin is disabled
+        if(j > 0){
+            Intent activity = new Intent(getActivity(), ActivityHome.class);
+            startActivity(activity);
+        }
         emailInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -125,6 +136,7 @@ public class FragmentLogin extends Fragment{
                     public void onResponse(Call<LoginModel> call, Response<LoginModel> response) {
                         if(response.isSuccessful()){
                             //editor.putString(KEY_USERNAME,emailInput.getText().toString());
+                            editor.putInt(KEY_LOGIN,1);
                             editor.putString(KEY_TOKEN,"Bearer "+response.body().getData().getAccessToken().toString());
                             editor.apply();
 

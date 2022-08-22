@@ -49,6 +49,8 @@ public class FragmentHome extends Fragment {
     private static final String KEY_LOBBY_ID = "key_lobby_id";
     private static final String KEY_GAME_ID = "key_game_id";
     private static final String KEY_MEMBER_ID = "key_member_id";
+    private static final String KEY_LOGIN = "key_login";
+    int getKeyLogin;
     String getKeyToken = "";
     ViewPager2 viewPager2;
     @Nullable
