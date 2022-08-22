@@ -108,6 +108,8 @@
             android:exported="true"/>
         <activity android:name=".java.activity.ActivityPatiArenGame"
             android:exported="true"/>
+        <activity android:name=".java.activity.ActivityBraceCredit"
+            android:exported="true"/>
         <!--Java-->
     </application>
 

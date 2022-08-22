@@ -34,16 +34,17 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class FragmentLogin extends Fragment{
-    Button login;
+    Button login, fb, google;
     TextView register;
     EditText emailInput,passInput;
     CallbackFragment callbackFragment;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
-    private static final String SHARED_PREF_NAME = "treasureHunt";
+    public static final String SHARED_PREF_NAME = "treasureHunt";
     private static final String KEY_TOKEN = "key_token";
     private static final String KEY_LOGIN = "key_login";
     LoadingDialogBar loadingDialogBar;
+    public static String PREFS_NAME = "MyPrefsFile";
     @Override
     public void onAttach(@NonNull Context context) {
         sharedPreferences=context.getSharedPreferences(SHARED_PREF_NAME,Context.MODE_PRIVATE);
@@ -60,6 +61,10 @@ public class FragmentLogin extends Fragment{
         register = view.findViewById(R.id.register_login);
         emailInput = view.findViewById(R.id.email_input_login);
         passInput = view.findViewById(R.id.pass_input_login);
+        google = view.findViewById(R.id.button);
+        fb = view.findViewById(R.id.button_fb);
+        google.setVisibility(View.INVISIBLE);
+        fb.setVisibility(View.INVISIBLE);
         //"autoLogin" is a unique string to identify the instance of this shared preference
         sharedPreferences = getActivity().getSharedPreferences(KEY_LOGIN, Context.MODE_PRIVATE);
         int j = sharedPreferences.getInt(KEY_LOGIN, Config.KEEP_LOGIN);
@@ -136,6 +141,7 @@ public class FragmentLogin extends Fragment{
                     public void onResponse(Call<LoginModel> call, Response<LoginModel> response) {
                         if(response.isSuccessful()){
                             //editor.putString(KEY_USERNAME,emailInput.getText().toString());
+                            editor.putBoolean("hasLoggedIn",true);
                             editor.putInt(KEY_LOGIN,1);
                             editor.putString(KEY_TOKEN,"Bearer "+response.body().getData().getAccessToken().toString());
                             editor.apply();

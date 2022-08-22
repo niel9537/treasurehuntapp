@@ -23,10 +23,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.dicoding.picodiploma.treasurehunt_kotlin.R;
+import com.dicoding.picodiploma.treasurehunt_kotlin.java.config.Config;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestJoinGame;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.InputGameCodeModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.MeModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.UserMeModel;
+import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.checkprogress.CekProgressModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.network.ApiHelper;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.network.ApiInterface;
 
@@ -52,6 +54,8 @@ public class FragmentHome extends Fragment {
     private static final String KEY_LOGIN = "key_login";
     int getKeyLogin;
     String getKeyToken = "";
+    String getKeyTokenGame = "";
+    String FLOW_ID = "";
     ViewPager2 viewPager2;
     @Nullable
     @Override
@@ -60,7 +64,9 @@ public class FragmentHome extends Fragment {
         sharedPreferences=this.getActivity().getSharedPreferences(SHARED_PREF_NAME,Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
         getKeyToken=sharedPreferences.getString(KEY_TOKEN,null);
+        getKeyTokenGame=sharedPreferences.getString(getKeyTokenGame,"");
         Log.d("CHECKING: ", getKeyToken.toString());
+        Log.d("TOKEN GAME: ", getKeyTokenGame.toString());
         codeInput = view.findViewById(R.id.input_code);
         playButton = view.findViewById(R.id.play_button);
         username_welcome = view.findViewById(R.id.username_welcome);
@@ -89,12 +95,49 @@ public class FragmentHome extends Fragment {
                 play();
             }
         });
+/*        if(getKeyTokenGame!=null){
+            checkProgress();
+        }*/
+
 
         return view;
     }
+    private void checkProgress(){
+        ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
+        Call<CekProgressModel> cekProgressCall = apiInterface.cekproses(getKeyToken.toString(),getKeyTokenGame.toString());
+        cekProgressCall.enqueue(new Callback<CekProgressModel>() {
+            @Override
+            public void onResponse(Call<CekProgressModel> call, Response<CekProgressModel> response) {
+                if(response.isSuccessful()){
+                    codeInput.setEnabled(false);
+                    codeInput.setVisibility(View.INVISIBLE);
+                    playButton.setText("Continue");
+                    FLOW_ID = response.body().getData().getLatestFlow().getId().toString();
+                    Log.d("FLOW_ID ", " : " + FLOW_ID);
+                    playButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            lanjut();
+                        }
+                    });
+                }
+            }
+            @Override
+            public void onFailure(Call<CekProgressModel> call, Throwable t) {
+                Toast.makeText(getActivity(),"Error Failure : "+t.getMessage().toString(),Toast.LENGTH_SHORT).show();
+            }
+        });
+        // return isContinue;
+    }
+
+    private void lanjut() {
+        Intent intent = new Intent(getActivity(),ActivityPlayGame.class);
+        intent.putExtra("FLOW_ID",FLOW_ID);
+        intent.putExtra("STATUS", Config.CONTINUE_GAME);
+        startActivity(intent);
+    }
 
     private void play() {
-
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -108,7 +151,6 @@ public class FragmentHome extends Fragment {
                                 editor.putString(KEY_TOKEN_GAME,""+response.body().getData().getGameToken().toString());
                                 editor.putString(KEY_LOBBY_ID,""+response.body().getData().getLobbyId().toString());
                                 editor.putString(KEY_GAME_ID,""+response.body().getData().getGameId().toString());
-
                                 editor.apply();
                                 Log.d("API-login: ",  getKeyToken.toString()+"%%%%%"+codeInput.getText().toString());
                                 Log.d("Token Game", " : " + response.body().getData().getGameToken().toString());

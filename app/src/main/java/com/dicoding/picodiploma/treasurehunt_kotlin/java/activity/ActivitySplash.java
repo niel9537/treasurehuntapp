@@ -1,6 +1,7 @@
 package com.dicoding.picodiploma.treasurehunt_kotlin.java.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 
@@ -22,11 +23,20 @@ public class ActivitySplash extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                SharedPreferences sharedPreferences = getSharedPreferences(FragmentLogin.SHARED_PREF_NAME,0);
+                boolean hasLoggedIn = sharedPreferences.getBoolean("hasLoggedIn",false);
+                if(hasLoggedIn){
+                    //setelah loading maka akan langsung berpindah ke home activity
+                    Intent home=new Intent(ActivitySplash.this, ActivityHome.class);
+                    startActivity(home);
+                    finish();
+                }else{
+                    //setelah loading maka akan langsung berpindah ke login activity
+                    Intent home=new Intent(ActivitySplash.this, ActivityLogin.class);
+                    startActivity(home);
+                    finish();
+                }
 
-                //setelah loading maka akan langsung berpindah ke home activity
-                Intent home=new Intent(ActivitySplash.this, ActivityLogin.class);
-                startActivity(home);
-                finish();
 
             }
         },delayValue);

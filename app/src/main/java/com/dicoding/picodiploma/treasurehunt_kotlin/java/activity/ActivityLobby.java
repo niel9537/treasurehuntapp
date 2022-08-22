@@ -92,7 +92,6 @@ public class ActivityLobby extends AppCompatActivity {
 
 
 
-
         me();
         lobbyDetail();
 
@@ -495,7 +494,8 @@ public class ActivityLobby extends AppCompatActivity {
                     Log.d("Status ", " : " + response.body().getDataMeModel().getStatus().toString());
                     Log.d("Badge ", " : " + response.body().getDataMeModel().getBadge().toString());
                     String name = response.body().getDataMeModel().getUser().getProfile().getFullName().toString();
-
+                    editor.putString(KEY_TOKEN_GAME,""+getKeyTokenGame);
+                    editor.apply();
                     //player1.setText(name);
                 }else{
                     Log.d("Status ", " : " + response.code());

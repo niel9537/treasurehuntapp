@@ -72,6 +72,10 @@ public class ActivityPlayGame extends AppCompatActivity {
     private static final String SHARED_PREF_NAME = "treasureHunt";
     private static final String KEY_TOKEN = "key_token";
     private static final String KEY_TOKEN_GAME = "key_token_game";
+    private static final String KEY_LOBBY_ID = "key_lobby_id";
+    private static final String KEY_MEMBER_ID = "key_member_id";
+    String getKeyLobbyId = "";
+    String getKeyMemberId = "";
     String getKeyToken = "";
     String getKeyTokenGame = "";
     String FILE_ID = "";
@@ -90,8 +94,12 @@ public class ActivityPlayGame extends AppCompatActivity {
         sharedPreferences=  getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         getKeyToken=sharedPreferences.getString(KEY_TOKEN,null);
         getKeyTokenGame=sharedPreferences.getString(KEY_TOKEN_GAME,null);
+        getKeyLobbyId=sharedPreferences.getString(KEY_LOBBY_ID,null);
+        getKeyMemberId=sharedPreferences.getString(KEY_MEMBER_ID,null);
         Log.d("KEY TOKEN ", " : " + getKeyToken);
         Log.d("KEY TOKEN GAME", " : " + getKeyTokenGame);
+        Log.d("KEY LOBBY ", " : " + getKeyLobbyId);
+        Log.d("KEY MEMBER", " : " + getKeyMemberId);
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             FILE_ID= extras.getString("FILE_ID");
@@ -226,9 +234,16 @@ public class ActivityPlayGame extends AppCompatActivity {
                 //posVideoDialog("",POST_ID);
                 break;
             case 9 :
-                Log.d("POST_ID 6", " : " + POST_ID);
-                Log.d("FLOW_ID 6", " : " + FLOW_ID);
-                Log.d("STATUS 6", " : " + STATUS);
+                Log.d("POST_ID 9", " : " + POST_ID);
+                Log.d("FLOW_ID 9", " : " + FLOW_ID);
+                Log.d("STATUS 9", " : " + STATUS);
+                nextFlow(FLOW_ID);
+                //posVideoDialog("",POST_ID);
+                break;
+            case 20 :
+                Log.d("POST_ID 20", " : " + POST_ID);
+                Log.d("FLOW_ID 20", " : " + FLOW_ID);
+                Log.d("STATUS 20", " : " + STATUS);
                 nextFlow(FLOW_ID);
                 //posVideoDialog("",POST_ID);
                 break;
@@ -315,13 +330,15 @@ public class ActivityPlayGame extends AppCompatActivity {
                             checkInInstructionDialog(FLOW_ID,contentsCheckinInstruction,fileCheckinInstruction);
                             break;
                         case "brace-post-desc":
-                            //nextFlow(FLOW_ID);
-                            String contentsBrace = response.body().getData().getNextFlow().getContent().toString();
-                            if(contentsBrace == null){
-                                contentsBrace = "Text";
+                            if(response.body().getData().getNextFlow().getContent() != null){
+                                String contentsBrace = response.body().getData().getNextFlow().getContent().toString();
+                                braceDescDialog(FLOW_ID,contentsBrace,"");
+                                break;
+                            }else{
+                                String contentsBrace = "Text";
+                                braceDescDialog(FLOW_ID,contentsBrace,"");
+                                break;
                             }
-                            braceDescDialog(FLOW_ID,contentsBrace,"");
-                            break;
                         case "brace-game-instruction":
                             String contentsBraceInstruction = response.body().getData().getNextFlow().getContent().toString();
                             String fileBraceInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
@@ -379,6 +396,16 @@ public class ActivityPlayGame extends AppCompatActivity {
                         case "kain-perca-game-instruction":
                             kainpercaGameInstruction(FLOW_ID,"","");
                             break;
+                        case "brace-credit-title":
+                            if(response.body().getData().getNextFlow().getContent() != null){
+                                String contentsCredit = response.body().getData().getNextFlow().getContent().toString();
+                                braceCreditTitle(FLOW_ID,contentsCredit,"");
+                                break;
+                            }else{
+                                String contentsCredit = "Text";
+                                braceCreditTitle(FLOW_ID,contentsCredit,"");
+                                break;
+                            }
                         default:
                             Toast.makeText(ActivityPlayGame.this,"Type : "+type,Toast.LENGTH_SHORT).show();
                             break;
@@ -538,6 +565,16 @@ public class ActivityPlayGame extends AppCompatActivity {
                         case "kain-perca-game-instruction":
                             kainpercaGameInstruction(FLOW_ID,"","");
                             break;
+                        case "brace-credit-title":
+                            if(response.body().getData().getNextFlow().getContent() != null){
+                                String contentsCredit = response.body().getData().getNextFlow().getContent().toString();
+                                braceCreditTitle(FLOW_ID,contentsCredit,"");
+                                break;
+                            }else{
+                                String contentsCredit = "Text";
+                                braceCreditTitle(FLOW_ID,contentsCredit,"");
+                                break;
+                            }
                         default:
                             Toast.makeText(ActivityPlayGame.this,"Type : "+type,Toast.LENGTH_SHORT).show();
                             break;
@@ -716,6 +753,13 @@ public class ActivityPlayGame extends AppCompatActivity {
         intent.putExtra("FLOW_ID",id);
         intent.putExtra("CONTENT",content);
         Log.d("FLOW_ID ID DESC",""+id);
+        startActivity(intent);
+    }
+    private void braceCreditTitle(String id, String content, String file_id) {
+        Intent intent = new Intent(ActivityPlayGame.this,ActivityBraceCredit.class);
+        intent.putExtra("FLOW_ID",id);
+        intent.putExtra("CONTENT",content);
+        Log.d("CONTENT TITLE",""+id);
         startActivity(intent);
     }
     private void posVideoDialog(String id,String file_id) {

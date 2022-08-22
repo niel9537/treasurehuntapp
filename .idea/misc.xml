@@ -15,6 +15,7 @@
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/activity_brace_share.xml" value="0.371875" />
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/activity_camera.xml" value="0.22" />
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/activity_change_password.xml" value="0.19166666666666668" />
+        <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/activity_credit.xml" value="0.30052083333333335" />
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/activity_detail_brace.xml" value="0.19166666666666668" />
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/activity_detail_game.xml" value="0.19166666666666668" />
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/activity_lobby.xml" value="0.19166666666666668" />
@@ -69,6 +70,7 @@
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/fragment_forgot_password.xml" value="0.23385416666666667" />
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/fragment_games.xml" value="0.25" />
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/fragment_home.xml" value="0.19166666666666668" />
+        <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/fragment_login.xml" value="0.16875" />
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/fragment_new_password.xml" value="0.15885416666666666" />
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/fragment_registration.xml" value="0.19166666666666668" />
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/item_brace_game.xml" value="0.15885416666666666" />

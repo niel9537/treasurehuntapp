@@ -7,6 +7,7 @@ import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestJo
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestLogin;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestNextFlow;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestRegister;
+import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.FinishModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.InputGameCodeModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.LobbyDetailModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.LoginModel;
@@ -60,4 +61,6 @@ public interface ApiInterface {
     Call<OvjQRModel> gerabah(@Header("Authorization") String token,@Query("game_token") String userGameToken );
     @GET("/mobile/v1/game-controls/brace/mie-pati-aren")
     Call<MiePatiArenModel> miepati(@Header("Authorization") String token, @Query("game_token") String userGameToken );
+    @POST("/mobile/v1/game-controls/finish-game")
+    Call<FinishModel> finish(@Header("Authorization") String token, @Query("game_token") String userGameToken, @Body RequestNextFlow requestNextFlow);
 }
