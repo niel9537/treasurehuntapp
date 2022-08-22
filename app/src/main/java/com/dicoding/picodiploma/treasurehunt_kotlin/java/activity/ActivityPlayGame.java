@@ -293,7 +293,8 @@ public class ActivityPlayGame extends AppCompatActivity {
                             break;
                         case "manohara-weding-rings":
                             //String content3 = response.body().getData().getNextFlow().getContent().toString();
-                            manoharaWeddingRings(FLOW_ID,"Bantu Sudhana Menemukan Pecahan Cincin","");
+                            //manoharaWeddingRings(FLOW_ID,"Bantu Sudhana Menemukan Pecahan Cincin","");
+                            manoharaFighting(FLOW_ID,"Fighting","");
                             break;
                         case "manohara-fighting":
                             //String content3 = response.body().getData().getNextFlow().getContent().toString();
@@ -301,19 +302,23 @@ public class ActivityPlayGame extends AppCompatActivity {
                             break;
                         case "manohara-pottery":
                             //String content3 = response.body().getData().getNextFlow().getContent().toString();
-                            manoharaPottery(FLOW_ID,"Pottery Unity","");
+                            //manoharaPottery(FLOW_ID,"Pottery Unity","");
+                            manoharaFighting(FLOW_ID,"Fighting","");
                             break;
                         case "manohara-archery":
                             //String content3 = response.body().getData().getNextFlow().getContent().toString();
-                            manoharaArchery(FLOW_ID,"Archery Unity","");
+                            //manoharaArchery(FLOW_ID,"Archery Unity","");
+                            manoharaFighting(FLOW_ID,"Fighting","");
                             break;
                         case "manohara-pick-me":
                             //String content3 = response.body().getData().getNextFlow().getContent().toString();
-                            manoharaPickMe(FLOW_ID,"Pick Me","");
+                            //manoharaPickMe(FLOW_ID,"Pick Me","");
+                            manoharaFighting(FLOW_ID,"Fighting","");
                             break;
                         case "manohara-come-back-home":
                             //String content3 = response.body().getData().getNextFlow().getContent().toString();
-                            manoharaComeBackHome(FLOW_ID,"Come Back Home","");
+                            //manoharaComeBackHome(FLOW_ID,"Come Back Home","");
+                            manoharaFighting(FLOW_ID,"Fighting","");
                             break;
                         case "manohara-media-social":
                             //String content3 = response.body().getData().getNextFlow().getContent().toString();
@@ -362,7 +367,8 @@ public class ActivityPlayGame extends AppCompatActivity {
                             startActivity(intent);
                             break;
                         case "kain-perca-game":
-                            kainpercaGame(FLOW_ID,"","");
+                            manoharaFighting(FLOW_ID,"Fighting","");
+                            //kainpercaGame(FLOW_ID,"","");
                             break;
                         case "gerabah-game":
                             gerabahGame(FLOW_ID,"","");
@@ -461,7 +467,8 @@ public class ActivityPlayGame extends AppCompatActivity {
                             break;
                         case "manohara-weding-rings":
                             String content3 = response.body().getData().getNextFlow().getContent().toString();
-                            manoharaWeddingRings(FLOW_ID,content3,"");
+                            //manoharaWeddingRings(FLOW_ID,content3,"");
+                            manoharaFighting(FLOW_ID,"Fighting","");
                             break;
                         case "manohara-fighting":
                             //String content3 = response.body().getData().getNextFlow().getContent().toString();
@@ -469,19 +476,23 @@ public class ActivityPlayGame extends AppCompatActivity {
                             break;
                         case "manohara-pottery":
                             //String content3 = response.body().getData().getNextFlow().getContent().toString();
-                            manoharaPottery(FLOW_ID,"Pottery Unity","");
+                            //manoharaPottery(FLOW_ID,"Pottery Unity","");
+                            manoharaFighting(FLOW_ID,"Fighting","");
                             break;
                         case "manohara-archery":
                             //String content3 = response.body().getData().getNextFlow().getContent().toString();
-                            manoharaArchery(FLOW_ID,"Archery Unity","");
+                            //manoharaArchery(FLOW_ID,"Archery Unity","");
+                            manoharaFighting(FLOW_ID,"Fighting","");
                             break;
                         case "manohara-pick-me":
                             //String content3 = response.body().getData().getNextFlow().getContent().toString();
-                            manoharaPickMe(FLOW_ID,"Pick Me","");
+                            //manoharaPickMe(FLOW_ID,"Pick Me","");
+                            manoharaFighting(FLOW_ID,"Fighting","");
                             break;
                         case "manohara-come-back-home":
                             //String content3 = response.body().getData().getNextFlow().getContent().toString();
-                            manoharaComeBackHome(FLOW_ID,"Come Back Home","");
+                            //manoharaComeBackHome(FLOW_ID,"Come Back Home","");
+                            manoharaFighting(FLOW_ID,"Fighting","");
                             break;
                         case "manohara-media-social":
                             //String content3 = response.body().getData().getNextFlow().getContent().toString();
@@ -531,7 +542,8 @@ public class ActivityPlayGame extends AppCompatActivity {
                             startActivity(intent);
                             break;
                         case "kain-perca-game":
-                            kainpercaGame(FLOW_ID,"","");
+                            manoharaFighting(FLOW_ID,"Fighting","");
+                            //kainpercaGame(FLOW_ID,"","");
                             break;
                         case "gerabah-game":
                             gerabahGame(FLOW_ID,"","");
