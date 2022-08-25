@@ -3,19 +3,15 @@ package com.dicoding.picodiploma.treasurehunt_kotlin.java.activity;
 import static com.dicoding.picodiploma.treasurehunt_kotlin.java.config.Config.MY_CAMERA_PERMISSION_CODE;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,18 +21,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
-import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
 import com.dicoding.picodiploma.treasurehunt_kotlin.R;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.config.Config;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestCheckIn;
@@ -86,6 +78,7 @@ public class ActivityPlayGame extends AppCompatActivity {
     String CONTENT = "";
     int STATUS = 0;
     Boolean next = false;
+    LinearLayout linearLayout;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,6 +89,7 @@ public class ActivityPlayGame extends AppCompatActivity {
         getKeyTokenGame=sharedPreferences.getString(KEY_TOKEN_GAME,null);
         getKeyLobbyId=sharedPreferences.getString(KEY_LOBBY_ID,null);
         getKeyMemberId=sharedPreferences.getString(KEY_MEMBER_ID,null);
+        linearLayout = findViewById(R.id.linearLayout);
         Log.d("KEY TOKEN ", " : " + getKeyToken);
         Log.d("KEY TOKEN GAME", " : " + getKeyTokenGame);
         Log.d("KEY LOBBY ", " : " + getKeyLobbyId);
@@ -820,7 +814,7 @@ public class ActivityPlayGame extends AppCompatActivity {
     }
     private void introMapDialog(String id,String file_id) {
         AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
-        View mView= LayoutInflater.from(this).inflate(R.layout.dialog_peta,null);
+        View mView= LayoutInflater.from(this).inflate(R.layout.manohara_map,null);
         dBuilder.setView(mView);
 
         TextView lanjut = mView.findViewById(R.id.continue_peta);
@@ -1170,10 +1164,10 @@ public class ActivityPlayGame extends AppCompatActivity {
     }
     private void introInstructionDialog(String id, String content, String file_id) {
         AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
-        View mView= LayoutInflater.from(this).inflate(R.layout.dialog_petunjuk,null);
+        View mView= LayoutInflater.from(this).inflate(R.layout.manohara_instruction,null);
         dBuilder.setView(mView);
-        dialogContent = mView.findViewById(R.id.desc_petunjuk);
-        TextView lanjut = mView.findViewById(R.id.button_continue_petunjuk);
+        dialogContent = mView.findViewById(R.id.txtInstruction);
+        TextView lanjut = mView.findViewById(R.id.btnInstruction);
         dialogContent.setText(content);
         lanjut.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1207,8 +1201,9 @@ public class ActivityPlayGame extends AppCompatActivity {
     }
     private void manoharaDialog(String id, String content, String file_id) {
         AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
+        linearLayout.setBackground(ContextCompat.getDrawable(ActivityPlayGame.this, R.drawable.hutan_phalaka));
         //View mView= LayoutInflater.from(this).inflate(R.layout.dialog_narasi_pengantar_v2,null);
-        View mView= LayoutInflater.from(this).inflate(R.layout.dialog_narasi_backup,null);
+        View mView= LayoutInflater.from(this).inflate(R.layout.manohara_dialog,null);
         dBuilder.setView(mView);
 
         TextView txtDialog = mView.findViewById(R.id.txtDialog);
@@ -1292,6 +1287,7 @@ public class ActivityPlayGame extends AppCompatActivity {
     }
     private void manoharaFighting(String id, String content, String file_id) {
         AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
+        linearLayout.setBackground(ContextCompat.getDrawable(ActivityPlayGame.this, R.drawable.manohara1));
         View mView= LayoutInflater.from(this).inflate(R.layout.dialog_narasi_pengantar,null);
         dBuilder.setView(mView);
         dialogContent = mView.findViewById(R.id.dialogContent);
