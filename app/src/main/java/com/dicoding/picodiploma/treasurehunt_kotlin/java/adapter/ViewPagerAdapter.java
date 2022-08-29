@@ -1,4 +1,4 @@
-package com.dicoding.picodiploma.treasurehunt_kotlin.java.activity;
+package com.dicoding.picodiploma.treasurehunt_kotlin.java.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;

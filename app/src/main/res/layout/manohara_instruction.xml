@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/linearLayout"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
@@ -21,7 +22,6 @@
             android:background="@drawable/pop_up_dialog">
 
             <ImageView
-                android:scaleType="fitXY"
                 android:id="@+id/imgInstruction"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -29,10 +29,11 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
-                android:layout_marginStart="0dp" />
+                android:layout_marginStart="0dp"
+                android:scaleType="fitXY" />
 
             <TextView
-                android:id="@+id/txtTitle"
+                android:id="@+id/txtSubtitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@+id/txtInstruction"
@@ -101,4 +102,4 @@
 
 
 
-</RelativeLayout>
+</LinearLayout>

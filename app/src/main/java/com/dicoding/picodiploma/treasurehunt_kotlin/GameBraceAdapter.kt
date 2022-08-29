@@ -11,7 +11,7 @@ import com.dicoding.picodiploma.treasurehunt_kotlin.databinding.ItemBraceHomeBin
 class GameBraceAdapter(private val item : List<BraceGameData>) : RecyclerView.Adapter<GameBraceAdapter.BraceViewHolder>() {
     inner class BraceViewHolder (itemView : ItemBraceGameBinding) : RecyclerView.ViewHolder(itemView.root) {
         private val binding = itemView
-        fun bind(data: BraceGameData){
+       /* fun bind(data: BraceGameData){
             with(binding){
                 Glide.with(itemView)
                     .load(data.imageBrace)
@@ -20,7 +20,7 @@ class GameBraceAdapter(private val item : List<BraceGameData>) : RecyclerView.Ad
                 detailTitle1.text = data.title1
                 detailTitle2.text = data.title2
             }
-        }
+        }*/
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BraceViewHolder {
@@ -28,8 +28,8 @@ class GameBraceAdapter(private val item : List<BraceGameData>) : RecyclerView.Ad
     }
 
     override fun onBindViewHolder(holder: BraceViewHolder, position: Int) {
-        holder.bind(item[position])
-
+        /*holder.bind(item[position])
+*/
         holder.itemView.setOnClickListener {
             val intent = Intent(holder.itemView.context, DetailGameActivity::class.java)
 

@@ -32,10 +32,12 @@ public class ActivityCaptureImage extends AppCompatActivity {
     ImageView imgOvj;
     TextView btnOpen;
     TextView btnUpload;
+    TextView txtHint;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.dialog_ovj_capture_image);
+        //setContentView(R.layout.dialog_ovj_capture_image);
+        setContentView(R.layout.activity_open_camera);
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             FLOW_ID= extras.getString("FLOW_ID");
@@ -43,6 +45,7 @@ public class ActivityCaptureImage extends AppCompatActivity {
             //The key argument here must match that used in the other activity
         }
         imgOvj = findViewById(R.id.imgOvj);
+        txtHint = findViewById(R.id.txtHint);
         btnUpload= findViewById(R.id.btnUpload);
         btnOpen= findViewById(R.id.btnOpen);
         btnUpload.setVisibility(View.INVISIBLE);
@@ -88,6 +91,7 @@ public class ActivityCaptureImage extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == Config.CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
             btnOpen.setVisibility(View.INVISIBLE);
+            txtHint.setVisibility(View.INVISIBLE);
             btnUpload.setVisibility(View.VISIBLE);
             Bitmap photo = (Bitmap) data.getExtras().get("data");
             imgOvj.setImageBitmap(photo);

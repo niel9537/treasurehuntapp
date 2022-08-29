@@ -1,15 +1,11 @@
 package com.dicoding.picodiploma.treasurehunt_kotlin
 
-import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Button
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.dicoding.picodiploma.treasurehunt_kotlin.api.games.list.GameDatas
-import com.dicoding.picodiploma.treasurehunt_kotlin.brace.BraceCheckInActivity
 import com.dicoding.picodiploma.treasurehunt_kotlin.databinding.ItemListgameBinding
 
 class ListGameAdapter: RecyclerView.Adapter<ListGameAdapter.ListGameViewHolder>() {
@@ -41,10 +37,10 @@ class ListGameAdapter: RecyclerView.Adapter<ListGameAdapter.ListGameViewHolder>(
 
                  */
 
-                textView9.text = data.title
+  /*              textView9.text = data.title
                 textView7.text = data.title
                 textView8.text = data.description
-
+*/
             }
         }
     }
@@ -62,7 +58,7 @@ class ListGameAdapter: RecyclerView.Adapter<ListGameAdapter.ListGameViewHolder>(
             holder.itemView.context.startActivity(intent)
         }
 
-        holder.itemView.findViewById<Button>(R.id.button_play_game_adapter).setOnClickListener {
+        holder.itemView.findViewById<Button>(R.id.btnPlayGame).setOnClickListener {
             val intent = Intent(holder.itemView.context, DetailGameActivity::class.java)
 
             holder.itemView.context.startActivity(intent)

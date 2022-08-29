@@ -11,12 +11,12 @@ class DetailBraceActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityDetailBraceBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+/*
         supportActionBar?.hide()
 
         binding.backDetail.setOnClickListener{
             val intentSplash = Intent(this, MainActivity::class.java)
             startActivity(intentSplash)
-        }
+        }*/
     }
 }

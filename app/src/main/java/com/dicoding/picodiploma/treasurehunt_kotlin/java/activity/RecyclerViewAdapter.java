@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MyViewModel>
-        implements  RecyclerRowMoveCallback.RecyclerViewRowTouchHelperContract{
+        implements RecyclerRowMoveCallback.RecyclerViewRowTouchHelperContract {
     private List<MiePatiArenData> dataList;
 
     public void setDataList(List<MiePatiArenData> dataList) {

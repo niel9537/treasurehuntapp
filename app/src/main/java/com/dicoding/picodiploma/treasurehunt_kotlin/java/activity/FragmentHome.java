@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -20,9 +21,12 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.CompositePageTransformer;
+import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.dicoding.picodiploma.treasurehunt_kotlin.R;
+import com.dicoding.picodiploma.treasurehunt_kotlin.java.adapter.SliderAdapter;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.config.Config;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestJoinGame;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.InputGameCodeModel;
@@ -31,6 +35,9 @@ import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.UserMeMo
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.checkprogress.CekProgressModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.network.ApiHelper;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.network.ApiInterface;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -57,6 +64,7 @@ public class FragmentHome extends Fragment {
     String getKeyTokenGame = "";
     String FLOW_ID = "";
     ViewPager2 viewPager2;
+    private Handler slideHandler = new Handler();
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -70,9 +78,13 @@ public class FragmentHome extends Fragment {
         codeInput = view.findViewById(R.id.input_code);
         playButton = view.findViewById(R.id.play_button);
         username_welcome = view.findViewById(R.id.username_welcome);
-/*        viewPager2 = (ViewPager2) view.findViewById(R.id.view_pager_home);
-        RecyclerView.Adapter viewPagerAdapter = new R(getActivity());
-        viewPager2.setAdapter(viewPagerAdapter);*/
+        viewPager2 = (ViewPager2) view.findViewById(R.id.view_pager_home);
+        List<SliderItem> sliderItems = new ArrayList<>();
+        sliderItems.add(new SliderItem(R.drawable.brace1));
+        sliderItems.add(new SliderItem(R.drawable.brace2));
+        sliderItems.add(new SliderItem(R.drawable.brace3));
+        viewPager2.setAdapter(new SliderAdapter(sliderItems,viewPager2));
+        sliderBuild();
         meProfile();
         codeInput.addTextChangedListener(new TextWatcher() {
             @Override
@@ -102,6 +114,38 @@ public class FragmentHome extends Fragment {
 
         return view;
     }
+
+    private void sliderBuild() {
+        viewPager2.setClipToPadding(false);
+        viewPager2.setClipChildren(false);
+        viewPager2.setOffscreenPageLimit(3);
+        viewPager2.getChildAt(0).setOverScrollMode(RecyclerView.OVER_SCROLL_NEVER);
+
+        CompositePageTransformer compositePageTransformer = new CompositePageTransformer();
+        compositePageTransformer.addTransformer(new MarginPageTransformer(40));
+        compositePageTransformer.addTransformer(new ViewPager2.PageTransformer() {
+            @Override
+            public void transformPage(@NonNull View page, float position) {
+                float r = 1 - Math.abs(position);
+                page.setScaleY(0.85f + r * 0.15f);
+            }
+        });
+        viewPager2.setPageTransformer(compositePageTransformer);
+        viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                slideHandler.removeCallbacks(sliderRunnable);
+                slideHandler.postDelayed(sliderRunnable,2000);
+            }
+        });
+    }
+    private Runnable sliderRunnable = new Runnable() {
+        @Override
+        public void run() {
+            viewPager2.setCurrentItem(viewPager2.getCurrentItem() +1);
+        }
+    };
     private void checkProgress(){
         ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
         Call<CekProgressModel> cekProgressCall = apiInterface.cekproses(getKeyToken.toString(),getKeyTokenGame.toString());

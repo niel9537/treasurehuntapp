@@ -11,14 +11,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.EditText
 import android.widget.TextView
-import android.widget.Toast
-import androidx.core.net.toUri
-import androidx.navigation.Navigation
-import androidx.navigation.ui.NavigationUI
 import de.hdodenhof.circleimageview.CircleImageView
-import kotlin.math.sign
 
 class AccountFragment : Fragment() {
     private lateinit var sharedPreferences: SharedPreferences // deklarasi fitur shared preference
@@ -62,25 +56,25 @@ class AccountFragment : Fragment() {
 
         }
 
-        view.findViewById<TextView>(R.id.change_password).setOnClickListener{
+        view.findViewById<TextView>(R.id.txtChangePassword).setOnClickListener{
             val intent = Intent(requireContext(), ChangePasswordActivity::class.java)
             startActivity(intent)
 
             //Navigation.findNavController(view).navigate(R.id.action_accountFragment_to_changePasswordFragment)
         }
 
-        view.findViewById<TextView>(R.id.about).setOnClickListener {
+        view.findViewById<TextView>(R.id.txtAbout).setOnClickListener {
             val intent = Intent(requireContext(), AboutActivity::class.java)
             startActivity(intent)
         }
 
-        view.findViewById<TextView>(R.id.terms_and_conditions).setOnClickListener {
+        view.findViewById<TextView>(R.id.txtTermsCondition).setOnClickListener {
             val intent = Intent(requireContext(), TermsAndConditionsActivity::class.java)
             startActivity(intent)
         }
 
         val uri = "https://images.unsplash.com/photo-1655874184076-c75fce971b46?ixlib=rb-1.2.1&dl=lance-reis-CsO0RhSdc-I-unsplash.jpg&w=640&q=80&fm=jpg&crop=entropy&cs=tinysrgb"
-        view.findViewById<CircleImageView>(R.id.profil_image).setImageURI(Uri.parse(uri))
+        view.findViewById<CircleImageView>(R.id.imgProfil).setImageURI(Uri.parse(uri))
 
         // https://images.unsplash.com/photo-1655874184076-c75fce971b46?ixlib=rb-1.2.1&dl=lance-reis-CsO0RhSdc-I-unsplash.jpg&w=640&q=80&fm=jpg&crop=entropy&cs=tinysrgb
         return view

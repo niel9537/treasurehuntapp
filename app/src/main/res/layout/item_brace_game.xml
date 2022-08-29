@@ -14,7 +14,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/detail_title1"
+        android:id="@+id/txtTitle2"
         android:layout_width="85dp"
         android:layout_height="30dp"
         android:fontFamily="@font/passero_one"
@@ -38,8 +38,8 @@
         android:text="2022"
         android:textColor="@color/white"
         android:textSize="32sp"
-        app:layout_constraintEnd_toEndOf="@+id/detail_title1"
-        app:layout_constraintStart_toStartOf="@+id/detail_title1"
-        app:layout_constraintTop_toBottomOf="@+id/detail_title1" />
+        app:layout_constraintEnd_toEndOf="@+id/txtTitle2"
+        app:layout_constraintStart_toStartOf="@+id/txtTitle2"
+        app:layout_constraintTop_toBottomOf="@+id/txtTitle2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

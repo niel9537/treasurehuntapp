@@ -7,8 +7,10 @@ import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestJo
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestLogin;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestNextFlow;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestRegister;
+import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.DetailGameModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.FinishModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.InputGameCodeModel;
+import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.ListGameModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.LobbyDetailModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.LoginModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.MeModel;
@@ -63,4 +65,8 @@ public interface ApiInterface {
     Call<MiePatiArenModel> miepati(@Header("Authorization") String token, @Query("game_token") String userGameToken );
     @POST("/mobile/v1/game-controls/finish-game")
     Call<FinishModel> finish(@Header("Authorization") String token, @Query("game_token") String userGameToken, @Body RequestNextFlow requestNextFlow);
+    @GET("/mobile/v1/games")
+    Call<ListGameModel> listgame(@Header("Authorization") String token);
+    @GET("/mobile/v1/games/{id}")
+    Call<DetailGameModel> detailgame(@Header("Authorization") String token, @Path("id") String id);
 }

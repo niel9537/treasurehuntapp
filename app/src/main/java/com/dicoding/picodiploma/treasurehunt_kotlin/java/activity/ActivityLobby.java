@@ -55,6 +55,7 @@ public class ActivityLobby extends AppCompatActivity {
     private static final String KEY_LOBBY_ID = "key_lobby_id";
     private static final String KEY_GAME_ID = "key_game_id";
     private static final String KEY_MEMBER_ID = "key_member_id";
+    private static final String KEY_BADGE = "key_badge";
     String getKeyToken = "";
     String getKeyTokenGame = "";
     String getKeyLobbyId = "";
@@ -279,10 +280,10 @@ public class ActivityLobby extends AppCompatActivity {
                         Log.d("JSON Online: ",""+json.toString());
                         GameStartedModel data = gson.fromJson(json.toString(),GameStartedModel.class);
                         Log.d("Listen : ",""+data.getNextFlow().getFlowType().getName().toString());
-                        /*Intent intent = new Intent(ActivityLobby.this,ActivityPlayGame.class);
+                        Intent intent = new Intent(ActivityLobby.this,ActivityPlayGame.class);
                         intent.putExtra("FLOW_ID",data.getNextFlow().getId());
                         intent.putExtra("STATUS",Config.GAME_STARTED);
-                        startActivity(intent);*/
+                        startActivity(intent);
                     }
                 });
 
@@ -495,6 +496,7 @@ public class ActivityLobby extends AppCompatActivity {
                     Log.d("Badge ", " : " + response.body().getDataMeModel().getBadge().toString());
                     String name = response.body().getDataMeModel().getUser().getProfile().getFullName().toString();
                     editor.putString(KEY_TOKEN_GAME,""+getKeyTokenGame);
+                    editor.putString(KEY_BADGE,""+response.body().getDataMeModel().getBadge().toString());
                     editor.apply();
                     //player1.setText(name);
                 }else{

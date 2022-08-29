@@ -57,10 +57,10 @@
         android:text="Email"
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView14" />
+        app:layout_constraintTop_toBottomOf="@+id/txtName" />
 
     <TextView
-        android:id="@+id/textView14"
+        android:id="@+id/txtName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
@@ -72,7 +72,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView13" />
 
     <TextView
-        android:id="@+id/textView16"
+        android:id="@+id/txtEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
@@ -84,7 +84,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView15" />
 
     <TextView
-        android:id="@+id/change_password"
+        android:id="@+id/txtChangePassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
@@ -94,10 +94,10 @@
         android:textStyle="bold"
         android:textSize="14dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView16" />
+        app:layout_constraintTop_toBottomOf="@+id/txtEmail" />
 
     <TextView
-        android:id="@+id/terms_and_conditions"
+        android:id="@+id/txtTermsCondition"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="22dp"
@@ -107,10 +107,10 @@
         android:textStyle="bold"
         android:textSize="14dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/change_password" />
+        app:layout_constraintTop_toBottomOf="@+id/txtChangePassword" />
 
     <TextView
-        android:id="@+id/about"
+        android:id="@+id/txtAbout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="22dp"
@@ -120,10 +120,10 @@
         android:textStyle="bold"
         android:textSize="14dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/terms_and_conditions" />
+        app:layout_constraintTop_toBottomOf="@+id/txtTermsCondition" />
 
     <TextView
-        android:id="@+id/change_photo"
+        android:id="@+id/txtChangePhoto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
@@ -134,10 +134,10 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profil_image" />
+        app:layout_constraintTop_toBottomOf="@+id/imgProfil" />
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/profil_image"
+        android:id="@+id/imgProfil"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginTop="30dp"
@@ -156,7 +156,7 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/change_photo" />
+        app:layout_constraintTop_toBottomOf="@+id/txtChangePhoto" />
 
     <Button
         android:id="@+id/sign_out"
@@ -164,6 +164,10 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="48dp"
         android:text="Sign Out"
+        android:textStyle="bold"
+        android:textAllCaps="false"
+        android:textColor="@color/green"
+        android:backgroundTint="#D2DBD9"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"

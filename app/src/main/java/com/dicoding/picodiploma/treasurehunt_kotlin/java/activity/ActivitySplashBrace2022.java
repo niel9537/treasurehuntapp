@@ -2,8 +2,6 @@ package com.dicoding.picodiploma.treasurehunt_kotlin.java.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -26,7 +24,7 @@ public class ActivitySplashBrace2022 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_brace2022);
         Bundle extras = getIntent().getExtras();
-        btnContinue = findViewById(R.id.btnContinue);
+        btnContinue = findViewById(R.id.txtContinue);
         txtContent = findViewById(R.id.txtContent);
 
         if (extras != null) {

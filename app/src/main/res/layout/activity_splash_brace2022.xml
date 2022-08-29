@@ -45,6 +45,7 @@
                 android:text="Pos"
                 android:layout_marginHorizontal="50dp"
                 android:textSize="20sp"
+                android:textStyle="bold"
                 android:textColor="@color/white"/>
             <TextView
                 android:gravity="center"
@@ -53,6 +54,7 @@
                 android:layout_marginTop="30dp"
                 android:text="Balkondes"
                 android:textStyle="bold"
+                android:fontFamily="@font/lora_regular"
                 android:textSize="30sp"
                 android:textColor="@color/yellow"/>
             <TextView
@@ -74,12 +76,15 @@
             android:orientation="vertical"
             android:gravity="center">
             <Button
-                android:id="@+id/btnContinue"
+                android:id="@+id/txtContinue"
                 android:backgroundTint="@color/yellow"
                 android:textColor="@color/white"
                 android:fontFamily="@font/inter"
                 android:textStyle="bold"
-                android:textSize="15sp"
+                android:textSize="20sp"
+                android:padding="10dp"
+                android:textAllCaps="false"
+                android:gravity="center_horizontal"
                 android:text="Continue"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

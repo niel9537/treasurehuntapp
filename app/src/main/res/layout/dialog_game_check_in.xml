@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/imageView7"
+            android:id="@+id/imgTransport"
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:layout_marginTop="76dp"
@@ -30,7 +30,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/title_checkin"
+            android:id="@+id/txtSubtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
@@ -39,9 +39,9 @@
             android:textColor="@color/green"
             android:textSize="20sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="@+id/imageView7"
-            app:layout_constraintStart_toStartOf="@+id/imageView7"
-            app:layout_constraintTop_toBottomOf="@+id/imageView7" />
+            app:layout_constraintEnd_toEndOf="@+id/imgTransport"
+            app:layout_constraintStart_toStartOf="@+id/imgTransport"
+            app:layout_constraintTop_toBottomOf="@+id/imgTransport" />
 
         <TextView
             android:id="@+id/desc_checkin"
@@ -55,9 +55,9 @@
             android:textAlignment="center"
             android:textColor="@color/text2"
             android:textSize="12sp"
-            app:layout_constraintEnd_toEndOf="@+id/title_checkin"
-            app:layout_constraintStart_toStartOf="@id/title_checkin"
-            app:layout_constraintTop_toBottomOf="@+id/title_checkin" />
+            app:layout_constraintEnd_toEndOf="@+id/txtSubtitle"
+            app:layout_constraintStart_toStartOf="@id/txtSubtitle"
+            app:layout_constraintTop_toBottomOf="@+id/txtSubtitle" />
 
         <TextView
             android:id="@+id/button_checkin"

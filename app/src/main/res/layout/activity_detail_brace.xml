@@ -23,7 +23,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
-                android:id="@+id/image_brace_detail"
+                android:id="@+id/imgDetail"
                 android:layout_width="match_parent"
                 android:layout_height="491dp"
                 android:scaleType="centerCrop"
@@ -38,13 +38,13 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="vertical"
-                app:layout_constraintBottom_toBottomOf="@+id/image_brace_detail"
+                app:layout_constraintBottom_toBottomOf="@+id/imgDetail"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/image_brace_detail"
-                app:layout_constraintTop_toTopOf="@+id/image_brace_detail">
+                app:layout_constraintStart_toStartOf="@+id/imgDetail"
+                app:layout_constraintTop_toTopOf="@+id/imgDetail">
 
                 <TextView
-                    android:id="@+id/detail_title1"
+                    android:id="@+id/txtTitle2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/passero_one"
@@ -52,7 +52,7 @@
                     android:text="BRACE"
                     android:textColor="@color/white"
                     android:textSize="32sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/image_brace_detail"
+                    app:layout_constraintBottom_toBottomOf="@+id/imgDetail"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -70,7 +70,7 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/detail_title3"
+                android:id="@+id/txtTitleDetail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="36dp"
@@ -81,10 +81,10 @@
                 android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/image_brace_detail" />
+                app:layout_constraintTop_toBottomOf="@+id/imgDetail" />
 
             <TextView
-                android:id="@+id/detail_desc"
+                android:id="@+id/txtDetailDesc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/plus_jakarta_sans_regular"
@@ -98,14 +98,14 @@ Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
                 android:layout_marginTop="2dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/detail_title3" />
+                app:layout_constraintTop_toBottomOf="@+id/txtTitleDetail" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/back_detail"
+        android:id="@+id/back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="37dp"

@@ -31,7 +31,7 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <ImageView
-                    android:id="@+id/image_brace_detail"
+                    android:id="@+id/imgDetail"
                     android:layout_width="match_parent"
                     android:layout_height="491dp"
                     android:scaleType="centerCrop"
@@ -47,12 +47,12 @@
                     android:gravity="center"
                     android:orientation="vertical"
                     android:layout_marginBottom="125dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/image_brace_detail"
-                    app:layout_constraintEnd_toEndOf="@id/image_brace_detail"
-                    app:layout_constraintStart_toStartOf="@+id/image_brace_detail">
+                    app:layout_constraintBottom_toBottomOf="@+id/imgDetail"
+                    app:layout_constraintEnd_toEndOf="@id/imgDetail"
+                    app:layout_constraintStart_toStartOf="@+id/imgDetail">
 
                     <TextView
-                        android:id="@+id/detail_title1"
+                        android:id="@+id/txtTitle2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/passero_one"
@@ -60,7 +60,7 @@
                         android:text="Manohara"
                         android:textColor="@color/white"
                         android:textSize="32sp"
-                        app:layout_constraintBottom_toBottomOf="@+id/image_brace_detail"
+                        app:layout_constraintBottom_toBottomOf="@+id/imgDetail"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -78,7 +78,7 @@
                 </LinearLayout>
 
                 <TextView
-                    android:id="@+id/detail_title3"
+                    android:id="@+id/txtTitleDetail"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="36dp"
@@ -89,10 +89,20 @@
                     android:textSize="20sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/image_brace_detail" />
+                    app:layout_constraintTop_toBottomOf="@+id/imgDetail" />
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/view_pager_detail_game"
+                    android:layout_width="match_parent"
+                    android:paddingStart="39dp"
+                    android:layout_height="300dp"
+                    android:layout_marginTop="15dp"
+                    app:layout_constraintTop_toBottomOf="@id/txtTitleDetail"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"/>
 
                 <TextView
-                    android:id="@+id/detail_desc"
+                    android:id="@+id/txtDetailDesc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="36dp"
@@ -106,38 +116,9 @@ Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
                     android:textSize="12sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/detail_title3" />
+                    app:layout_constraintTop_toBottomOf="@+id/view_pager_detail_game" />
 
-                <androidx.viewpager2.widget.ViewPager2
-                    android:id="@+id/view_pager_detail_game"
-                    android:layout_width="match_parent"
-                    android:paddingStart="39dp"
-                    android:layout_height="300dp"
-                    android:layout_marginTop="15dp"
-                    app:layout_constraintTop_toBottomOf="@id/detail_desc"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"/>
 
-                <TextView
-                    android:id="@+id/detail_desc2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-"
-
-                    android:layout_marginStart="36dp"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginEnd="36dp"
-                    android:fontFamily="@font/plus_jakarta_sans_regular"
-                    android:textColor="@color/text2"
-                    android:textSize="12sp"
-                    app:layout_constraintTop_toBottomOf="@id/view_pager_detail_game"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"/>
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -150,7 +131,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/back_detail"
+        android:id="@+id/back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="37dp"
@@ -183,7 +164,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             app:layout_constraintEnd_toEndOf="parent" />
 
         <ImageView
-            android:id="@+id/imageView5"
+            android:id="@+id/imgGame"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:scaleType="centerCrop"
@@ -192,7 +173,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             app:srcCompat="@drawable/brace2" />
 
         <TextView
-            android:id="@+id/textView7"
+            android:id="@+id/txtSubtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
@@ -200,21 +181,21 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             android:text="Manohara"
             android:textSize="14dp"
             android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@+id/imageView5"
-            app:layout_constraintTop_toTopOf="@+id/imageView5" />
+            app:layout_constraintStart_toEndOf="@+id/imgGame"
+            app:layout_constraintTop_toTopOf="@+id/imgGame" />
 
         <TextView
-            android:id="@+id/textView8"
+            android:id="@+id/txtDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:fontFamily="@font/plus_jakarta_sans_regular"
             android:text="Lorem ipsum dolor sit amet"
-            app:layout_constraintStart_toStartOf="@+id/textView7"
-            app:layout_constraintTop_toBottomOf="@+id/textView7" />
+            app:layout_constraintStart_toStartOf="@+id/txtSubtitle"
+            app:layout_constraintTop_toBottomOf="@+id/txtSubtitle" />
 
         <TextView
-            android:id="@+id/textView9"
+            android:id="@+id/txtTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
@@ -225,10 +206,10 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             android:text="Manghara"
             android:textColor="@color/white"
             android:textSize="18dp"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView5"
-            app:layout_constraintEnd_toEndOf="@+id/imageView5"
-            app:layout_constraintStart_toStartOf="@+id/imageView5"
-            app:layout_constraintTop_toTopOf="@+id/imageView5" />
+            app:layout_constraintBottom_toBottomOf="@+id/imgGame"
+            app:layout_constraintEnd_toEndOf="@+id/imgGame"
+            app:layout_constraintStart_toStartOf="@+id/imgGame"
+            app:layout_constraintTop_toTopOf="@+id/imgGame" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

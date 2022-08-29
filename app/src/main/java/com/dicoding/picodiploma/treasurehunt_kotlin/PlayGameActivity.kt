@@ -32,7 +32,7 @@ class PlayGameActivity : AppCompatActivity() {
         dialog.show()
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
-        val share = dialogView.findViewById<Button>(R.id.share_button)
+        val share = dialogView.findViewById<Button>(R.id.btnShare)
         share.setOnClickListener{
             val intent = packageManager.getLaunchIntentForPackage("com.instagram.android")
             val appUri = Uri.parse("https://instagram.com/_u/user_name")
@@ -61,10 +61,10 @@ class PlayGameActivity : AppCompatActivity() {
         dialog.show()
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
-        val share = dialogView.findViewById<Button>(R.id.buka_camera)
+        /*val share = dialogView.findViewById<Button>(R.id.buka_camera)
         share.setOnClickListener {
             startActivityForResult(Intent(MediaStore.ACTION_IMAGE_CAPTURE), 200)
-        }
+        }*/
     }
 
     private fun dismissDialog(){

@@ -59,6 +59,7 @@
             android:paddingEnd="20dp"
             android:paddingBottom="20dp"/>
         <Button
+            android:layout_marginHorizontal="20dp"
             android:id="@+id/submit_step"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

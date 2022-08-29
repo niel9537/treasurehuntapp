@@ -43,10 +43,10 @@ class DetailGameActivity : AppCompatActivity() {
 
             startActivity(intent)
         }
-
+/*
         binding.backDetail.setOnClickListener{
             val intentSplash = Intent(this, MainActivity::class.java)
             startActivity(intentSplash)
-        }
+        }*/
     }
 }
