@@ -38,7 +38,6 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="-59dp"
-            android:layout_marginBottom="20dp"
             android:fontFamily="@font/lora_regular"
             android:gravity="center"
             android:text="Petunjuk"
@@ -47,17 +46,18 @@
             android:textSize="20sp"
             android:textStyle="bold" />
 
+
         <TextView
             android:id="@+id/txtContent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/constraint_petunjuk"
+            android:layout_above="@+id/button_preview_petunjuk"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_marginStart="0dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="0dp"
-            android:layout_marginBottom="30dp"
+            android:layout_marginBottom="47dp"
             android:fontFamily="@font/plus_jakarta_sans_regular"
             android:paddingStart="30dp"
             android:paddingEnd="30dp"
@@ -66,7 +66,22 @@
             android:textColor="@color/text2"
             android:textSize="12sp" />
 
-
+        <TextView
+            android:id="@+id/button_preview_petunjuk"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/imgInstruction"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="-39dp"
+            android:backgroundTint="@color/bg_light_yellow"
+            android:fontFamily="@font/lora_regular"
+            android:gravity="center_horizontal"
+            android:text="Preview"
+            android:textAllCaps="false"
+            android:textColor="@color/green"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraint_petunjuk"
@@ -75,31 +90,33 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginStart="0dp"
-            android:layout_marginEnd="0dp"
             android:background="@color/white"
-            android:padding="20dp">
+            android:paddingVertical="20dp">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 tools:ignore="MissingConstraints">
                 <TextView
-                    android:id="@+id/button_preview_petunjuk"
+                    android:id="@+id/txtPrevious"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="20dp"
+                    android:gravity="left"
+                    android:layout_gravity="left"
+                    android:layout_marginLeft="20dp"
                     android:backgroundTint="@color/bg_light_yellow"
                     android:fontFamily="@font/lora_regular"
-                    android:text="Preview"
+                    android:text="Previous"
                     android:textAllCaps="false"
                     android:textColor="@color/green"
                     android:textSize="20sp"
                     android:textStyle="bold" />
                 <TextView
+                    android:layout_marginRight="20dp"
                     android:id="@+id/txtContinue"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="20dp"
+                    android:gravity="right"
+                    android:layout_gravity="right"
                     android:backgroundTint="@color/bg_light_yellow"
                     android:fontFamily="@font/lora_regular"
                     android:text="Continue"

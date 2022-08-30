@@ -9,9 +9,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -58,6 +61,7 @@ public class ActivityPlayGame extends AppCompatActivity {
 
     AlertDialog dialog;
     Button skip, lanjut;
+    Drawable drawable;
     TextView dialogContent;
     //VideoView videoView;
     PlayerView playerView;
@@ -1465,6 +1469,7 @@ public class ActivityPlayGame extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 bottomSheetDialog.dismiss();
+
                 nextFlow(FLOW_ID);
             }
         });
@@ -1478,6 +1483,7 @@ public class ActivityPlayGame extends AppCompatActivity {
         });
 
     }
+
     private void kainpercaGame(String id, String content, String file_id){
         AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
         View mView= LayoutInflater.from(this).inflate(R.layout.dialog_petunjuk,null);

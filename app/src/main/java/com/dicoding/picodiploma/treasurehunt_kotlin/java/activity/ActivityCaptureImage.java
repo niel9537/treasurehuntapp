@@ -7,8 +7,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -24,7 +28,11 @@ import com.budiyev.android.codescanner.CodeScannerView;
 import com.budiyev.android.codescanner.DecodeCallback;
 import com.dicoding.picodiploma.treasurehunt_kotlin.R;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.config.Config;
+import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.File;
 import com.google.zxing.Result;
+
+import java.io.FileOutputStream;
+
 
 public class ActivityCaptureImage extends AppCompatActivity {
     private CodeScanner mCodeScanner;
@@ -33,6 +41,8 @@ public class ActivityCaptureImage extends AppCompatActivity {
     TextView btnOpen;
     TextView btnUpload;
     TextView txtHint;
+    BitmapDrawable drawable;
+    Bitmap bitmap;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,9 +105,12 @@ public class ActivityCaptureImage extends AppCompatActivity {
             btnUpload.setVisibility(View.VISIBLE);
             Bitmap photo = (Bitmap) data.getExtras().get("data");
             imgOvj.setImageBitmap(photo);
+
             btnUpload.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
+                   // share();
                     Intent intent = new Intent(ActivityCaptureImage.this,ActivityPlayGame.class);
                     intent.putExtra("FLOW_ID",FLOW_ID);
                     intent.putExtra("STATUS", Config.CAPTURE_IMAGE);
@@ -107,5 +120,26 @@ public class ActivityCaptureImage extends AppCompatActivity {
         }
     }
 
+/*    private void share(){
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
+        drawable = (BitmapDrawable)  imgOvj.getDrawable();
+        bitmap = drawable.getBitmap();
+        File file = new File(getExternalCacheDir()+"/"+"treasurehunt"+".png");
+        Intent intent = null;
+        try{
+            FileOutputStream outputStream = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.JPEG,100,outputStream);
+            outputStream.flush();
+            outputStream.close();
+            intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("image/*");
+            intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        }catch (Exception e){
+            throw  new RuntimeException(e);
+        }
+        startActivity(Intent.createChooser(intent,"Share image via : "));
+    }*/
 
 }

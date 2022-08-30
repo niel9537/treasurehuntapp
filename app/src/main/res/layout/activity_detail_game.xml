@@ -134,13 +134,13 @@ Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
         android:id="@+id/back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="37dp"
         android:layout_marginTop="66dp"
-        android:src="@drawable/close_icon"
         android:backgroundTint="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="close" />
+        android:contentDescription="close"
+        android:layout_marginLeft="20dp"
+        android:src="@drawable/back_icon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/stick_on_top"

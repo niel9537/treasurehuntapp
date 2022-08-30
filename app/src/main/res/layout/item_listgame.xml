@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="73dp"
         android:layout_marginTop="25dp"
-        android:layout_marginEnd="31dp"
+        android:layout_marginEnd="0dp"
         android:layout_marginBottom="8dp"
         android:text="Play The Game"
         app:layout_constraintBottom_toBottomOf="@+id/imgGame"
@@ -38,6 +38,7 @@
         android:fontFamily="@font/plus_jakarta_sans_regular"
         android:text="Judul"
         android:textSize="14dp"
+        android:textAllCaps="true"
         app:layout_constraintStart_toEndOf="@+id/imgGame"
         app:layout_constraintTop_toTopOf="@+id/imgGame" />
 

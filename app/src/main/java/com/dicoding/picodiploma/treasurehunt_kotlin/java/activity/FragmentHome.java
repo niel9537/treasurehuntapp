@@ -65,6 +65,7 @@ public class FragmentHome extends Fragment {
     String FLOW_ID = "";
     ViewPager2 viewPager2;
     private Handler slideHandler = new Handler();
+    boolean isContinue = false;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -72,7 +73,7 @@ public class FragmentHome extends Fragment {
         sharedPreferences=this.getActivity().getSharedPreferences(SHARED_PREF_NAME,Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
         getKeyToken=sharedPreferences.getString(KEY_TOKEN,null);
-        getKeyTokenGame=sharedPreferences.getString(getKeyTokenGame,"");
+        getKeyTokenGame=sharedPreferences.getString(KEY_TOKEN_GAME,"");
         Log.d("CHECKING: ", getKeyToken.toString());
         Log.d("TOKEN GAME: ", getKeyTokenGame.toString());
         codeInput = view.findViewById(R.id.input_code);
@@ -107,9 +108,19 @@ public class FragmentHome extends Fragment {
                 play();
             }
         });
-/*        if(getKeyTokenGame!=null){
-            checkProgress();
-        }*/
+        checkProgress();
+        if(getKeyTokenGame!=null){
+            playButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.d("CHECK: ", "2");
+                    Intent intent = new Intent(getActivity(),ActivityPlayGame.class);
+                    intent.putExtra("FLOW_ID",FLOW_ID);
+                    intent.putExtra("STATUS", Config.CONTINUE_GAME);
+                    startActivity(intent);
+                }
+            });
+        }
 
 
         return view;
@@ -154,16 +165,14 @@ public class FragmentHome extends Fragment {
             public void onResponse(Call<CekProgressModel> call, Response<CekProgressModel> response) {
                 if(response.isSuccessful()){
                     codeInput.setEnabled(false);
+                    codeInput.setHeight(0);
                     codeInput.setVisibility(View.INVISIBLE);
+                    playButton.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.green));
+                    playButton.setEnabled(true);
                     playButton.setText("Continue");
                     FLOW_ID = response.body().getData().getLatestFlow().getId().toString();
                     Log.d("FLOW_ID ", " : " + FLOW_ID);
-                    playButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            lanjut();
-                        }
-                    });
+                    isContinue = true;
                 }
             }
             @Override
@@ -171,7 +180,7 @@ public class FragmentHome extends Fragment {
                 Toast.makeText(getActivity(),"Error Failure : "+t.getMessage().toString(),Toast.LENGTH_SHORT).show();
             }
         });
-        // return isContinue;
+/*         return FLOW_ID;*/
     }
 
     private void lanjut() {

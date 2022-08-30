@@ -147,6 +147,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/plus_jakarta_sans_regular"
                 android:text="or"
+                android:textColor="@android:color/transparent"
                 android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="@+id/logins_button"
                 app:layout_constraintStart_toStartOf="@+id/logins_button"

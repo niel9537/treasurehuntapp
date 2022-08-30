@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +37,7 @@ import retrofit2.Response;
 public class FragmentAccount extends Fragment {
     CircleImageView imgProfil;
     TextView txtTermsCondition, txtEmail, txtName, txtAbout;
+    Button sign_out;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     private static final String SHARED_PREF_NAME = "treasureHunt";
@@ -52,6 +54,7 @@ public class FragmentAccount extends Fragment {
         getKeyToken=sharedPreferences.getString(KEY_TOKEN,null);
         txtTermsCondition = view.findViewById(R.id.txtTermsCondition);
         context = getContext();
+        sign_out = view.findViewById(R.id.sign_out);
         txtName = view.findViewById(R.id.txtName);
         txtEmail = view.findViewById(R.id.txtEmail);
         imgProfil = view.findViewById(R.id.imgProfil);
@@ -69,7 +72,18 @@ public class FragmentAccount extends Fragment {
             }
         });
         meProfile();
+        sign_out.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SharedPreferences preferences =sharedPreferences;
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.clear();
+                editor.apply();
+                startActivity(new Intent(getActivity(),ActivityLogin.class));
+            }
+        });
         return view;
+
     }
 
     private void meProfile(){
