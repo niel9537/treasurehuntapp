@@ -154,6 +154,7 @@ public class ActivityPlayGame extends AppCompatActivity {
                         skip.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+                                simpleExoPlayer.stop();
                                 dialog.dismiss();
                                 nextFlow(FLOW_ID);
                             }
@@ -824,6 +825,7 @@ public class ActivityPlayGame extends AppCompatActivity {
         skip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                simpleExoPlayer.stop();
                 dialog.dismiss();
                 nextFlow(id);
             }
@@ -1262,7 +1264,8 @@ public class ActivityPlayGame extends AppCompatActivity {
 
         TextView txtDialog = mView.findViewById(R.id.txtDialog);
         TextView next = mView.findViewById(R.id.btnDialog);
-        next.setVisibility(View.INVISIBLE);
+        //next.setVisibility(View.INVISIBLE);
+        next.setText("Skip");
         ImageView img = mView.findViewById(R.id.imgDialog);
         Log.d("File Id Manohara Dialog",""+file_id+" "+Config.BASE_URL+"mobile/v1/file-uploads/"+file_id);
         GlideUrl glideUrl = new GlideUrl(Config.BASE_URL+"mobile/v1/file-uploads/"+file_id,
@@ -1274,7 +1277,7 @@ public class ActivityPlayGame extends AppCompatActivity {
                 .into(img);
         //txtDialog.setText(content);
         final TypeWritter tw = mView.findViewById(R.id.txtDialog);
-        tw.setCharacterDelay(70);
+        tw.setCharacterDelay(50);
         tw.animateText(content);
         tw.addTextChangedListener(new TextWatcher() {
             @Override
@@ -1284,42 +1287,47 @@ public class ActivityPlayGame extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+                next.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        tw.setCharacterDelay(0);
+                    }
+                });
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
                 Log.d("Editable", ""+editable);
                 if(editable.toString().equals(content.toString())){
+                    next.setText("Next");
                     next.setVisibility(View.VISIBLE);
+                    next.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                            ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
+                            Call<PlayModel> playCall = apiInterface.next(getKeyToken.toString(),getKeyTokenGame,new RequestNextFlow(id));
+                            playCall.enqueue(new Callback<PlayModel>() {
+                                @Override
+                                public void onResponse(Call<PlayModel> call, Response<PlayModel> response) {
+                                    if(response.isSuccessful()){
+                                        //FLOW_ID = response.body().getData().getNextFlow().getId();
+                                        nextFlow(id);
+                                    }else{
+                                        Toast.makeText(ActivityPlayGame.this,"Error : "+response.message().toString(),Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<PlayModel> call, Throwable t) {
+                                    Toast.makeText(ActivityPlayGame.this,"Error : "+t.getMessage().toString(),Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    });
                 }
             }
         });
-        next.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
-                Call<PlayModel> playCall = apiInterface.next(getKeyToken.toString(),getKeyTokenGame,new RequestNextFlow(id));
-                playCall.enqueue(new Callback<PlayModel>() {
-                    @Override
-                    public void onResponse(Call<PlayModel> call, Response<PlayModel> response) {
-                        if(response.isSuccessful()){
-                            //FLOW_ID = response.body().getData().getNextFlow().getId();
-                            nextFlow(id);
-                        }else{
-                            Toast.makeText(ActivityPlayGame.this,"Error : "+response.message().toString(),Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<PlayModel> call, Throwable t) {
-                        Toast.makeText(ActivityPlayGame.this,"Error : "+t.getMessage().toString(),Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-        });
-
         dialog = dBuilder.create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.setCanceledOnTouchOutside(false);
@@ -1587,75 +1595,6 @@ public class ActivityPlayGame extends AppCompatActivity {
             }
         });
 
-        /*AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
-        View mView= LayoutInflater.from(this).inflate(R.layout.dialog_kamera,null);
-        dBuilder.setView(mView);
-        ImageView imgView = mView.findViewById(R.id.icon_kamera);
-        Button buka_camera = mView.findViewById(R.id.buka_camera);
-        buka_camera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-                ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
-                Call<PlayModel> playCall = apiInterface.next(getKeyToken.toString(),getKeyTokenGame,new RequestNextFlow(id));
-                playCall.enqueue(new Callback<PlayModel>() {
-                    @Override
-                    public void onResponse(Call<PlayModel> call, Response<PlayModel> response) {
-                        if(response.isSuccessful()){
-                            //FLOW_ID = response.body().getData().getNextFlow().getId();
-                            nextFlow(id);
-                        }else{
-                            Toast.makeText(ActivityPlayGame.this,"Error : "+response.message().toString(),Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<PlayModel> call, Throwable t) {
-                        Toast.makeText(ActivityPlayGame.this,"Error : "+t.getMessage().toString(),Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-        });
-        dialog = dBuilder.create();
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.show();*/
-    }
-    private void patiArenGame(String id, String content, String file_id){
-        AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
-        View mView= LayoutInflater.from(this).inflate(R.layout.dialog_kamera,null);
-
-        dBuilder.setView(mView);
-        /*ImageView imgView = mView.findViewById(R.id.icon_kamera);
-        Button buka_camera = mView.findViewById(R.id.buka_camera);*/
-        /*buka_camera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-                ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
-                Call<PlayModel> playCall = apiInterface.next(getKeyToken.toString(),getKeyTokenGame,new RequestNextFlow(id));
-                playCall.enqueue(new Callback<PlayModel>() {
-                    @Override
-                    public void onResponse(Call<PlayModel> call, Response<PlayModel> response) {
-                        if(response.isSuccessful()){
-                            //FLOW_ID = response.body().getData().getNextFlow().getId();
-                            nextFlow(id);
-                        }else{
-                            Toast.makeText(ActivityPlayGame.this,"Error : "+response.message().toString(),Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<PlayModel> call, Throwable t) {
-                        Toast.makeText(ActivityPlayGame.this,"Error : "+t.getMessage().toString(),Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-        });*/
-        dialog = dBuilder.create();
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.show();
     }
     private void kopiGame(String id, String content, String file_id){
         AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
