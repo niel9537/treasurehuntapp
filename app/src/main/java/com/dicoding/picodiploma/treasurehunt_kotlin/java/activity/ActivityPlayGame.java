@@ -9,12 +9,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -165,7 +163,7 @@ public class ActivityPlayGame extends AppCompatActivity {
                         dialog.show();
                         break;
                     case Config.BRACE_2022:
-                        transportInstruction(FLOW_ID,CONTENT,"");
+                        transportInstruction(FLOW_ID,CONTENT,FILE_ID);
                         break;
                 }
                 break;
@@ -287,7 +285,7 @@ public class ActivityPlayGame extends AppCompatActivity {
                     switch(type){
                         case "manohara-instruction":
                             String content = response.body().getData().getNextFlow().getContent().toString();
-                            introInstructionDialog(FLOW_ID,content,"");
+                            manoharaInstruction(FLOW_ID,content,"");
                             break;
                         case "manohara-map":
                             introMapDialog(FLOW_ID,"");
@@ -464,7 +462,7 @@ public class ActivityPlayGame extends AppCompatActivity {
                     switch(type){
                         case "manohara-instruction":
                             String content = response.body().getData().getNextFlow().getContent().toString();
-                            introInstructionDialog(FLOW_ID,content,"");
+                            manoharaInstruction(FLOW_ID,content,"");
                             break;
                         case "manohara-map":
                             introMapDialog(FLOW_ID,"");
@@ -1207,7 +1205,7 @@ public class ActivityPlayGame extends AppCompatActivity {
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
     }
-    private void introInstructionDialog(String id, String content, String file_id) {
+    private void manoharaInstruction(String id, String content, String file_id) {
         AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
         View mView= LayoutInflater.from(this).inflate(R.layout.manohara_instruction,null);
         linearLayout.setBackground(ContextCompat.getDrawable(ActivityPlayGame.this, R.drawable.hutan_phalaka));
@@ -1333,7 +1331,6 @@ public class ActivityPlayGame extends AppCompatActivity {
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
     }
-
     private void manoharaFighting(String id, String content, String file_id) {
         AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
         linearLayout.setBackground(ContextCompat.getDrawable(ActivityPlayGame.this, R.drawable.manohara1));
@@ -1372,9 +1369,6 @@ public class ActivityPlayGame extends AppCompatActivity {
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
     }
-
-
-
     private void manoharaMediaSocial(String id, String content, String file_id) {
         AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
         View mView= LayoutInflater.from(this).inflate(R.layout.dialog_narasi_pengantar,null);
@@ -1491,7 +1485,6 @@ public class ActivityPlayGame extends AppCompatActivity {
         });
 
     }
-
     private void kainpercaGame(String id, String content, String file_id){
         AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
         View mView= LayoutInflater.from(this).inflate(R.layout.dialog_petunjuk,null);

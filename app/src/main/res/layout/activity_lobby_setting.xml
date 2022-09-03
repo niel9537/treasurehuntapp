@@ -14,24 +14,24 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_gravity="right"
+            android:layout_gravity="left"
             android:layout_marginTop="10dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
             android:orientation="horizontal">
 
             <TextView
                 android:padding="10dp"
                 android:background="@drawable/player"
-                android:drawableEnd="@drawable/setting"
+                android:drawableEnd="@drawable/back_icon"
                 android:layout_weight="3"
-                android:id="@+id/txtSetting"
+                android:id="@+id/txtBack"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/lora_regular"
                 android:textColor="@color/green"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:layout_gravity="right"
+                android:layout_gravity="left"
                 android:layout_marginTop="10dp" />
         </LinearLayout>
 
@@ -41,7 +41,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fontFamily="@font/lora_regular"
-            android:text="Lobby"
+            android:text="Lobby - Setting"
             android:layout_marginTop="20dp"
             android:gravity="center"
             android:textColor="@color/green"
@@ -60,7 +60,7 @@
             app:layout_constraintEnd_toEndOf="@+id/lobby_title"
             app:layout_constraintStart_toStartOf="@+id/lobby_title" />
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_player"
+            android:id="@+id/rv_player_setting"
             android:layout_marginTop="50dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/desc_lobby"
@@ -104,34 +104,15 @@
             android:layout_gravity="center"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
-            android:text="Ready"
+            android:text="Promote as Lobby Leader"
             android:textAllCaps="false"
-            android:textSize="20sp"
+            android:textSize="15sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/play_game_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/player1" />
 
-        <Button
-            android:id="@+id/play_game_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="39dp"
-            android:layout_marginEnd="39dp"
-            android:layout_marginBottom="34dp"
-            android:backgroundTint="#A0ABC0"
-            android:fontFamily="@font/lora_regular"
-            android:layout_gravity="center"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:text="Play!"
-            android:textAllCaps="false"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
 
     </LinearLayout>
 

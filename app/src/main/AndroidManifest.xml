@@ -3,7 +3,9 @@
     package="com.dicoding.picodiploma.treasurehunt_kotlin">
 
     <uses-permission android:name="android.permission.INTERNET" />
-
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-feature android:name="android.hardware.camera" />
 
     <uses-permission android:name="android.permission.CAMERA" />
@@ -87,37 +89,73 @@
         <!--Java-->
         <activity
             android:name=".java.activity.ActivityLogin"
-            android:exported="true" />
+            android:exported="true"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
         <activity android:name=".java.activity.ActivityHome"
-            android:exported="true"/>
+            android:exported="true"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
         <activity android:name=".java.activity.ActivitySplashBrace"
-            android:exported="true"/>
+            android:exported="true"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
         <activity android:name=".java.activity.ActivityLobby"
-            android:exported="true"/>
+            android:exported="true"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
         <activity android:name=".java.activity.ActivityPlayGame"
-            android:exported="true"/>
+            android:exported="true"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
         <activity android:name=".java.activity.ActivityScan"
-            android:exported="true"/>
+            android:exported="true"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
         <activity android:name=".java.activity.ActivitySplashBrace2022"
-            android:exported="true"/>
+            android:exported="true"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
         <activity android:name=".java.activity.ActivityScanCheckOut"
-            android:exported="true"/>
+            android:exported="true"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
         <activity android:name=".java.activity.ActivityScanOVJ"
-            android:exported="true"/>
+            android:exported="true"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
         <activity android:name=".java.activity.ActivityCaptureImage"
-            android:exported="true"/>
+            android:exported="true"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
         <activity android:name=".java.activity.ActivityPatiArenGame"
-            android:exported="true"/>
+            android:exported="true"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
         <activity android:name=".java.activity.ActivityBraceCredit"
-            android:exported="true"/>
+            android:exported="true"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
         <activity android:name=".java.activity.ActivityTransportInstruction"
-            android:exported="true"/>
+            android:exported="true"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
         <activity android:name=".java.activity.ActivityTermCondition"
-            android:exported="true"/>
+            android:exported="true"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
         <activity android:name=".java.activity.ActivityAbout"
-            android:exported="true"/>
+            android:exported="true"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
         <activity android:name=".java.activity.ActivityDetailGames"
-            android:exported="true"/>
+            android:exported="true"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".java.activity.ActivityLobbySetting"
+            android:exported="true"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
         <!--Java-->
     </application>
 

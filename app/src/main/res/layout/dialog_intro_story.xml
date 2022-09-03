@@ -18,10 +18,12 @@
             app:resize_mode="fit"
             app:use_controller="false" />
         <Button
+            android:layout_gravity="bottom"
+            android:layout_margin="10dp"
             android:id="@+id/videoSkip"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
+            android:backgroundTint="@color/green"
             android:fontFamily="@font/lora_regular"
             android:paddingStart="25dp"
             android:paddingTop="10dp"
@@ -30,6 +32,7 @@
             android:text="Skip"
             android:textAllCaps="false"
             android:textSize="20sp"
+            android:textColor="@color/yellow"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

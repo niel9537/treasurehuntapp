@@ -7,12 +7,14 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -20,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -110,36 +113,38 @@ public class ActivityCaptureImage extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
 
-                   // share();
-                    Intent intent = new Intent(ActivityCaptureImage.this,ActivityPlayGame.class);
+                    shareImageWhatsApp();
+                   /* Intent intent = new Intent(ActivityCaptureImage.this,ActivityPlayGame.class);
                     intent.putExtra("FLOW_ID",FLOW_ID);
                     intent.putExtra("STATUS", Config.CAPTURE_IMAGE);
-                    startActivity(intent);
+                    startActivity(intent);*/
                 }
             });
         }
+        if (requestCode == 100) {
+            if(resultCode == Activity.RESULT_OK){
+                Intent intent = new Intent(ActivityCaptureImage.this,ActivityPlayGame.class);
+                intent.putExtra("FLOW_ID",FLOW_ID);
+                intent.putExtra("STATUS", Config.CAPTURE_IMAGE);
+                startActivity(intent);
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                // Write your code if there's no result
+            }
+        }
     }
 
-/*    private void share(){
-        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
-        StrictMode.setVmPolicy(builder.build());
-        drawable = (BitmapDrawable)  imgOvj.getDrawable();
-        bitmap = drawable.getBitmap();
-        File file = new File(getExternalCacheDir()+"/"+"treasurehunt"+".png");
-        Intent intent = null;
-        try{
-            FileOutputStream outputStream = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.JPEG,100,outputStream);
-            outputStream.flush();
-            outputStream.close();
-            intent = new Intent(Intent.ACTION_SEND);
-            intent.setType("image/*");
-            intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        }catch (Exception e){
-            throw  new RuntimeException(e);
-        }
-        startActivity(Intent.createChooser(intent,"Share image via : "));
-    }*/
+    public void shareImageWhatsApp() {
+        Bitmap imgBitmap = ((BitmapDrawable)imgOvj.getDrawable()).getBitmap();
+        //Bitmap imgBitmap=BitmapFactory.decodeResource(getResources(),R.drawable.hutan_phalaka);
+        String imgBitmapPath= MediaStore.Images.Media.insertImage(getContentResolver(),imgBitmap,"Keseruanku",null);
+        Uri imgBitmapUri=Uri.parse(imgBitmapPath);
+        Intent shareIntent=new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("image/*");
+        shareIntent.putExtra(Intent.EXTRA_STREAM,imgBitmapUri);
+        //startActivity(Intent.createChooser(shareIntent,"Bagikan foto melalui"));
+        startActivityForResult(Intent.createChooser(shareIntent,"Bagikan foto melalui"), 100);
+
+    }
 
 }

@@ -64,7 +64,7 @@
             android:paddingEnd="30dp"
             android:text="Keberadaan Petapa Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
             android:textAlignment="center"
-            android:textColor="@color/text2"
+            android:textColor="@android:color/black"
             android:textSize="12sp" />
 
         <androidx.constraintlayout.widget.ConstraintLayout

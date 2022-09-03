@@ -24,3 +24,4 @@ public class ActivityAbout extends AppCompatActivity {
         });
     }
 }
+

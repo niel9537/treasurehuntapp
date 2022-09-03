@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/bg_light_yellow"
+    android:paddingVertical="10dp">
+    <TextView
+        android:id="@+id/txtPlayer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/inter"
+        android:text="Player 1"
+        android:layout_marginStart="39dp"
+        android:textColor="@color/dark_blue"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:padding="10dp"
+            android:paddingRight="20dp"
+            android:layout_weight="1"
+            android:id="@+id/txtName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/player"
+            android:fontFamily="@font/inter"
+            android:layout_marginTop="5dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingStart="15dp"
+            android:layout_marginStart="39dp"
+            android:layout_marginEnd="39dp"
+            android:text="Username / Nama"
+            android:textColor="@color/dark_blue"
+            android:textSize="16sp"/>
+        <TextView
+            android:padding="10dp"
+            android:drawableRight="@drawable/ic_kick"
+            android:layout_weight="3"
+            android:id="@+id/txtKick"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/inter"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="35dp"
+            android:textColor="@color/dark_blue"
+            android:textSize="16sp"/>
+    </LinearLayout>
+
+</LinearLayout>

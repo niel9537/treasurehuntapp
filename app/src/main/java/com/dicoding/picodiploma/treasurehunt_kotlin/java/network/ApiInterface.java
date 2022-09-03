@@ -4,12 +4,14 @@ package com.dicoding.picodiploma.treasurehunt_kotlin.java.network;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestCheckIn;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestCheckOut;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestJoinGame;
+import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestKick;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestLogin;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestNextFlow;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestRegister;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.DetailGameModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.FinishModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.InputGameCodeModel;
+import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.KickModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.ListGameModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.LobbyDetailModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.LoginModel;
@@ -69,4 +71,7 @@ public interface ApiInterface {
     Call<ListGameModel> listgame(@Header("Authorization") String token);
     @GET("/mobile/v1/games/{id}")
     Call<DetailGameModel> detailgame(@Header("Authorization") String token, @Path("id") String id);
+    @POST("/mobile/v1/game-controls/kick-member")
+    Call<KickModel> kick(@Header("Authorization") String token, @Query("game_token") String userGameToken, @Body RequestKick requestKick);
+
 }

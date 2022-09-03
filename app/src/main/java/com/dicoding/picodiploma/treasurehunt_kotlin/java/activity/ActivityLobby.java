@@ -5,27 +5,29 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.dicoding.picodiploma.treasurehunt_kotlin.R;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.config.Config;
+import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestKick;
+import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.KickModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.LobbyDetailModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.MeModel;
+import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.PartyMember;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.PlayModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.ReadyModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.checkprogress.CekProgressModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.socketresponse.GameStartedModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.socketresponse.MemberJoinModel;
-import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.socketresponse.DataMemberReadyModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.socketresponse.MemberReadyModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.network.ApiHelper;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.network.ApiInterface;
@@ -35,6 +37,7 @@ import com.shashank.sony.fancytoastlib.FancyToast;
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
+import java.util.List;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
@@ -44,7 +47,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ActivityLobby extends AppCompatActivity {
-    TextView player1,player2,player3,player4,player5;
+    TextView player1,player2,player3,player4,player5,txtSetting;
     Button ready,play;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
@@ -67,11 +70,17 @@ public class ActivityLobby extends AppCompatActivity {
     public String message;
     private Socket mSocket;
     String Member_Id = "";
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_lobby_game);
+        mRecyclerView = (RecyclerView) findViewById(R.id.rv_player);
+        mLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
         sharedPreferences=getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         getKeyToken=sharedPreferences.getString(KEY_TOKEN,null);
         getKeyTokenGame=sharedPreferences.getString(KEY_TOKEN_GAME,null);
@@ -86,13 +95,23 @@ public class ActivityLobby extends AppCompatActivity {
         player3 = findViewById(R.id.name_player3);
         player4 = findViewById(R.id.name_player4);
         player5 = findViewById(R.id.name_player5);
+        txtSetting = findViewById(R.id.txtSetting);
         ready = findViewById(R.id.ready_button);
         play = findViewById(R.id.play_game_button);
         play.setEnabled(false);
         //Initialize Socket
 
 
-
+        txtSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ActivityLobby.this,ActivityLobbySetting.class);
+                intent.putExtra("TOKEN",getKeyToken);
+                intent.putExtra("TOKENGAME",getKeyTokenGame);
+                intent.putExtra("LOBBY",getKeyLobbyId);
+                startActivity(intent);
+            }
+        });
         me();
         lobbyDetail();
 
@@ -133,7 +152,10 @@ public class ActivityLobby extends AppCompatActivity {
                         Log.d("Listen : ",""+data.getNextFlow().getFlowType().getName().toString());
                         Intent intent = new Intent(ActivityLobby.this,ActivityPlayGame.class);
                         intent.putExtra("FLOW_ID",data.getNextFlow().getId());
-                        intent.putExtra("STATUS",Config.GAME_STARTED);
+                        intent.putExtra("FILE_ID",data.getNextFlow().getFile().getFileId());
+                        intent.putExtra("CONTENT",data.getNextFlow().getContent().toString());
+                        intent.putExtra("GAME_ID", getKeyGameId);
+                        intent.putExtra("STATUS",Config.PLAY_GAME);
                         startActivity(intent);
                     }
                 });
@@ -264,7 +286,7 @@ public class ActivityLobby extends AppCompatActivity {
                         JSONObject json = (JSONObject) args[0];
                         Log.d("JSON Online: ",""+json.toString());
                         MemberReadyModel data = gson.fromJson(json.toString(), MemberReadyModel.class);
-                        FancyToast.makeText(ActivityLobby.this,"Player bernama "+data.getMember().getUser().getProfile().getFullName().toString()+" telah online !!",FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,true).show();
+                        //FancyToast.makeText(ActivityLobby.this,"Player bernama "+data.getMember().getUser().getProfile().getFullName().toString()+" telah online !!",FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,true).show();
                     }
                 });
 
@@ -299,10 +321,10 @@ public class ActivityLobby extends AppCompatActivity {
                         Log.d("JSON Online: ", "" + json.toString());
                         GameStartedModel data = gson.fromJson(json.toString(), GameStartedModel.class);
                         Log.d("Listen : ", "" + data.getNextFlow().getFlowType().getName().toString());
-                        /*Intent intent = new Intent(ActivityLobby.this,ActivityPlayGame.class);
+                        Intent intent = new Intent(ActivityLobby.this,ActivityPlayGame.class);
                         intent.putExtra("FLOW_ID",data.getNextFlow().getId());
                         intent.putExtra("STATUS",Config.GAME_STARTED);
-                        startActivity(intent);}*/
+                        startActivity(intent);
                     }
                 });
             }
@@ -310,15 +332,26 @@ public class ActivityLobby extends AppCompatActivity {
     }
 
     private void lobbyDetail() {
-        final LinearLayout ly = (LinearLayout) findViewById(R.id.ly);
-        ly.setOrientation(LinearLayout.VERTICAL);
+        /*final LinearLayout ly = (LinearLayout) findViewById(R.id.ly);
+        ly.setOrientation(LinearLayout.VERTICAL);*/
         ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
         Call<LobbyDetailModel> lobbydetailCall = apiInterface.lobbydetail(getKeyToken.toString(),getKeyLobbyId.toString(),getKeyTokenGame.toString());
         lobbydetailCall.enqueue(new Callback<LobbyDetailModel>() {
             @Override
             public void onResponse(Call<LobbyDetailModel> call, Response<LobbyDetailModel> response) {
                 if(response.isSuccessful()){
-                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                    List<PartyMember> partyMembers = response.body().getData().getPartyMembers();
+                    mAdapter = new ListPlayerAdapter(partyMembers);
+                    mRecyclerView.setAdapter(mAdapter);
+                    mAdapter.notifyDataSetChanged();
+                   /* mRecyclerView.setAdapter(new PlayerAdapter(partyMembers, new PlayerAdapter.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(PartyMember item) {
+                            kick(item.getId());
+
+                        }
+                    }));*/
+/*                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                     params.setMargins(0,20,0,10);
                     for(int i=0; i<response.body().getData().getPartyMembers().size(); i++){
                         TextView textView = new TextView(ActivityLobby.this);
@@ -329,7 +362,7 @@ public class ActivityLobby extends AppCompatActivity {
                         textView.setBackground(ContextCompat.getDrawable(ActivityLobby.this, R.drawable.player));
                         textView.setLayoutParams(params);
                         ly.addView(textView);
-                    }
+                    }*/
                 }else{
                     Toast.makeText(ActivityLobby.this,"Error : "+response.message().toString(),Toast.LENGTH_SHORT).show();
                 }
@@ -337,6 +370,27 @@ public class ActivityLobby extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<LobbyDetailModel> call, Throwable t) {
+                Toast.makeText(ActivityLobby.this,"Fail : "+t.getMessage().toString(),Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void kick(String id) {
+        ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
+        Call<KickModel> kickCall = apiInterface.kick(getKeyToken.toString(),getKeyTokenGame.toString(),new RequestKick(id));
+        kickCall.enqueue(new Callback<KickModel>() {
+            @Override
+            public void onResponse(Call<KickModel> call, Response<KickModel> response) {
+                if(response.isSuccessful()){
+                    FancyToast.makeText(ActivityLobby.this,"Player bernama "+response.body().getData().getMember().getUser().getProfile().getFullName().toString()+" berhasil di kick !!",FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,true).show();
+                    startActivity(new Intent(ActivityLobby.this,ActivityLobby.class));
+                }else{
+                    Toast.makeText(ActivityLobby.this,"Error : "+response.message().toString(),Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<KickModel> call, Throwable t) {
                 Toast.makeText(ActivityLobby.this,"Fail : "+t.getMessage().toString(),Toast.LENGTH_SHORT).show();
             }
         });

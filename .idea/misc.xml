@@ -12,6 +12,9 @@
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/drawable/dialog_bg.xml" value="0.1995" />
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/drawable/dialog_ovj.xml" value="0.184" />
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/drawable/ic_launcher_background.xml" value="0.2225" />
+        <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/drawable/ic_not_ready.xml" value="0.2425" />
+        <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/drawable/ic_notready.xml" value="0.2425" />
+        <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/drawable/ic_ready.xml" value="0.2425" />
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/drawable/ic_whatsapp.xml" value="0.2225" />
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/drawable/info.xml" value="0.2225" />
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/drawable/player.xml" value="0.2225" />
@@ -31,8 +34,9 @@
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/activity_detail_game.xml" value="0.25" />
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/activity_dialog_play_game.xml" value="0.21216216216216216" />
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/activity_lobby.xml" value="0.19166666666666668" />
-        <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/activity_lobby_game.xml" value="0.40043525571273125" />
+        <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/activity_lobby_game.xml" value="0.33" />
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/activity_lobby_game2.xml" value="0.19166666666666668" />
+        <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/activity_lobby_setting.xml" value="0.22117117117117116" />
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/activity_login.xml" value="0.15885416666666666" />
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/activity_main.xml" value="0.19166666666666668" />
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/activity_manohara_main.xml" value="0.2359375" />
@@ -59,7 +63,7 @@
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/dialog_gerabah_show_image.xml" value="0.371875" />
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/dialog_instruksi_akhir.xml" value="0.16576576576576577" />
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/dialog_instruksi_awal.xml" value="0.19166666666666668" />
-        <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/dialog_intro_story.xml" value="0.16576576576576577" />
+        <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/dialog_intro_story.xml" value="0.25" />
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/dialog_kamera.xml" value="0.19166666666666668" />
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/dialog_list_step.xml" value="0.2" />
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/dialog_narasi_backup.xml" value="0.2" />
@@ -96,11 +100,12 @@
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/item_list_step.xml" value="0.371875" />
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/item_listgame.xml" value="0.33" />
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/item_on_board.xml" value="0.21614583333333334" />
-        <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/manohara_dialog.xml" value="0.3216216216216216" />
+        <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/item_player.xml" value="0.25" />
+        <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/manohara_dialog.xml" value="0.33" />
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/manohara_dialogs.xml" value="0.2" />
-        <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/manohara_instruction.xml" value="0.2" />
+        <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/manohara_instruction.xml" value="0.33" />
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/manohara_map.xml" value="0.25" />
-        <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/manohara_wait.xml" value="0.3216216216216216" />
+        <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/manohara_wait.xml" value="0.33" />
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/registration_failed_dialog_layout.xml" value="0.15885416666666666" />
         <entry key="..\:/Project/TreasureHunt App_New/TreasureHunt App/app/src/main/res/layout/transport_instruction.xml" value="0.16576576576576577" />
       </map>
