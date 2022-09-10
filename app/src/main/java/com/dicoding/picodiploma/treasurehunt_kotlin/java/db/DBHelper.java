@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.NextFlow;
+import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.CurrentFlow;
 
 public class DBHelper extends SQLiteOpenHelper {
 
@@ -25,11 +25,11 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
 
-    public boolean insertFlow (NextFlow nf) {
+    public boolean insertFlow (String flowOrder, String postId) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues cv = new ContentValues();
-        cv.put("flow_order", nf.getFlowOrder());
-        cv.put("post_id", nf.getPostId());
+        cv.put("flow_order", flowOrder);
+        cv.put("post_id", postId);
         return db.insert("manoharaFlow", null, cv) > 0;
     }
 
@@ -39,7 +39,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return db.rawQuery("Select * from " + "manoharaFlow", null);
     }
 
-    public boolean updateFlow(NextFlow nf, int id) {
+    public boolean updateFlow(CurrentFlow nf, int id) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put("flow_order", nf.getFlowOrder());
@@ -75,4 +75,10 @@ public class DBHelper extends SQLiteOpenHelper {
         return false;
         //return db.rawQuery("Select * from " + "manoharaFlow" +" where "+" flow order = "+flowOrder+" and "+" post_id = "+ postId, null) > 0;
     }
+
+    public Cursor getPreviousFlow () {
+        SQLiteDatabase db = getReadableDatabase();
+        return db.rawQuery("SELECT * FROM manoharaFlow ORDER BY id DESC LIMIT 1", null);
+    }
+
 }

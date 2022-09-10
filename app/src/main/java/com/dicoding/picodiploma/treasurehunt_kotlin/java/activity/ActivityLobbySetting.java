@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,7 +32,9 @@ public class ActivityLobbySetting extends AppCompatActivity {
     String TOKEN = "";
     String TOKENGAME = "";
     String LOBBY = "";
+    String CHANGE_LEADER = "";
     TextView txtBack;
+    Button btnChange;
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -43,6 +46,8 @@ public class ActivityLobbySetting extends AppCompatActivity {
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_player_setting);
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
+        btnChange = findViewById(R.id.btnChange);
+        btnChange.setVisibility(View.INVISIBLE);
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             TOKEN= extras.getString("TOKEN");
@@ -76,9 +81,22 @@ public class ActivityLobbySetting extends AppCompatActivity {
                     mAdapter.notifyDataSetChanged();*/
                     mRecyclerView.setAdapter(new PlayerAdapter(partyMembers, new PlayerAdapter.OnItemClickListener() {
                         @Override
-                        public void onItemClick(PartyMember item) {
+                        public void onItemKick(PartyMember item) {
                             kick(item.getId());
 
+                        }
+
+                        @Override
+                        public void onItemChangeLeader(PartyMember item) {
+                            CHANGE_LEADER = item.getId();
+                            btnChange.setVisibility(View.VISIBLE);
+                            btnChange.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    changeLead(item.getId());
+                                }
+                            });
+                            //kick(item.getId());
                         }
                     }));
 /*                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -112,6 +130,26 @@ public class ActivityLobbySetting extends AppCompatActivity {
             public void onResponse(Call<KickModel> call, Response<KickModel> response) {
                 if(response.isSuccessful()){
                     FancyToast.makeText(ActivityLobbySetting.this,"Player bernama "+response.body().getData().getMember().getUser().getProfile().getFullName().toString()+" berhasil di kick !!",FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,true).show();
+                    startActivity(new Intent(ActivityLobbySetting.this,ActivityLobby.class));
+                }else{
+                    Toast.makeText(ActivityLobbySetting.this,"Error : "+response.message().toString(),Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<KickModel> call, Throwable t) {
+                Toast.makeText(ActivityLobbySetting.this,"Fail : "+t.getMessage().toString(),Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    private void changeLead(String id) {
+        ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
+        Call<KickModel> kickCall = apiInterface.changeLeader(TOKEN,TOKENGAME,new RequestKick(id));
+        kickCall.enqueue(new Callback<KickModel>() {
+            @Override
+            public void onResponse(Call<KickModel> call, Response<KickModel> response) {
+                if(response.isSuccessful()){
+                    FancyToast.makeText(ActivityLobbySetting.this,"Player bernama "+response.body().getData().getMember().getUser().getProfile().getFullName().toString()+" berhasil menjadi leader !!",FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,true).show();
                     startActivity(new Intent(ActivityLobbySetting.this,ActivityLobby.class));
                 }else{
                     Toast.makeText(ActivityLobbySetting.this,"Error : "+response.message().toString(),Toast.LENGTH_SHORT).show();

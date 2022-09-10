@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
-import com.dicoding.picodiploma.treasurehunt_kotlin.ListGameData;
+
 import com.dicoding.picodiploma.treasurehunt_kotlin.R;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.activity.ActivityDetailGames;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.config.Config;

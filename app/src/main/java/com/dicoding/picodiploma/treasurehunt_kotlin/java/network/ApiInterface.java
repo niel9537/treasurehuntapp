@@ -1,6 +1,7 @@
 package com.dicoding.picodiploma.treasurehunt_kotlin.java.network;
 
 
+import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestCarCheck;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestCheckIn;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestCheckOut;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestJoinGame;
@@ -51,6 +52,8 @@ public interface ApiInterface {
     Call<PlayModel> play(@Header("Authorization") String token, @Query("game_token") String userGameToken);
     @POST("/mobile/v1/game-controls/next-flow")
     Call<PlayModel> next(@Header("Authorization") String token,  @Query("game_token") String userGameToken,@Body RequestNextFlow requestNextFlow);
+    @POST("/mobile/v1/game-controls/previous-flow")
+    Call<PlayModel> prev(@Header("Authorization") String token,  @Query("game_token") String userGameToken,@Body RequestNextFlow requestNextFlow);
     @POST("/mobile/v1/game-controls/check-in")
     Call<PlayModel> cekin(@Header("Authorization") String token,  @Query("game_token") String userGameToken,@Body RequestCheckIn requestCheckIn);
     @POST("/mobile/v1/game-controls/check-out")
@@ -73,5 +76,8 @@ public interface ApiInterface {
     Call<DetailGameModel> detailgame(@Header("Authorization") String token, @Path("id") String id);
     @POST("/mobile/v1/game-controls/kick-member")
     Call<KickModel> kick(@Header("Authorization") String token, @Query("game_token") String userGameToken, @Body RequestKick requestKick);
-
+    @POST("/mobile/v1/game-controls/change-leader")
+    Call<KickModel> changeLeader(@Header("Authorization") String token, @Query("game_token") String userGameToken, @Body RequestKick requestKick);
+    @POST("/mobile/v1/game-controls/car-check")
+    Call<PlayModel> carCheck(@Header("Authorization") String token,  @Query("game_token") String userGameToken,@Body RequestCarCheck requestCarCheck);
 }

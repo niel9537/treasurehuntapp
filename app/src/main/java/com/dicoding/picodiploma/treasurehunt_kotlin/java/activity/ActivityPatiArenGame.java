@@ -160,6 +160,7 @@ public class ActivityPatiArenGame extends AppCompatActivity {
             public void onResponse(Call<MiePatiArenModel> call, Response<MiePatiArenModel> response) {
                 if(response.isSuccessful()){
                     patiArenDataList = response.body().getData();
+                    Collections.shuffle(patiArenDataList);
                     order = patiArenDataList.stream().map(MiePatiArenData::getOrder).collect(Collectors.toList());
                     Log.d("Size List",""+order);
                     recyclerAdapter = new RecyclerAdapter(patiArenDataList);

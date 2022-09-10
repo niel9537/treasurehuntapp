@@ -64,6 +64,7 @@ public class ActivityLobby extends AppCompatActivity {
     String getKeyLobbyId = "";
     String getKeyGameId = "";
     String getKeyMemberId = "";
+    String isLeader = "MEMBER";
     boolean isContinue;
     String FLOW_ID = "";
     boolean statusReady = false;
@@ -96,7 +97,8 @@ public class ActivityLobby extends AppCompatActivity {
         player4 = findViewById(R.id.name_player4);
         player5 = findViewById(R.id.name_player5);
         txtSetting = findViewById(R.id.txtSetting);
-        ready = findViewById(R.id.ready_button);
+        txtSetting.setVisibility(View.INVISIBLE);
+        ready = findViewById(R.id.btnChange);
         play = findViewById(R.id.play_game_button);
         play.setEnabled(false);
         //Initialize Socket
@@ -114,7 +116,6 @@ public class ActivityLobby extends AppCompatActivity {
         });
         me();
         lobbyDetail();
-
         ready.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -149,11 +150,11 @@ public class ActivityLobby extends AppCompatActivity {
                         JSONObject json = (JSONObject) args[0];
                         Log.d("JSON : Started",""+json.toString());
                         GameStartedModel data = gson.fromJson(json.toString(),GameStartedModel.class);
-                        Log.d("Listen : ",""+data.getNextFlow().getFlowType().getName().toString());
+                        Log.d("Listen : ",""+data.getCurrentFlow().getFlowType().getName().toString());
                         Intent intent = new Intent(ActivityLobby.this,ActivityPlayGame.class);
-                        intent.putExtra("FLOW_ID",data.getNextFlow().getId());
-                        intent.putExtra("FILE_ID",data.getNextFlow().getFile().getFileId());
-                        intent.putExtra("CONTENT",data.getNextFlow().getContent().toString());
+                        intent.putExtra("FLOW_ID",data.getCurrentFlow().getId());
+                        intent.putExtra("FILE_ID",data.getCurrentFlow().getFile().getFileId());
+                        intent.putExtra("CONTENT",data.getCurrentFlow().getContent().toString());
                         intent.putExtra("GAME_ID", getKeyGameId);
                         intent.putExtra("STATUS",Config.PLAY_GAME);
                         startActivity(intent);
@@ -291,25 +292,6 @@ public class ActivityLobby extends AppCompatActivity {
                 });
 
             }
-        }).on("checked-in", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Gson gson = new Gson();
-                        JSONObject json = (JSONObject) args[0];
-                        Log.d("JSON Online: ",""+json.toString());
-                        GameStartedModel data = gson.fromJson(json.toString(),GameStartedModel.class);
-                        Log.d("Listen : ",""+data.getNextFlow().getFlowType().getName().toString());
-                        Intent intent = new Intent(ActivityLobby.this,ActivityPlayGame.class);
-                        intent.putExtra("FLOW_ID",data.getNextFlow().getId());
-                        intent.putExtra("STATUS",Config.GAME_STARTED);
-                        startActivity(intent);
-                    }
-                });
-
-            }
         }).on("checked-out", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
@@ -320,9 +302,9 @@ public class ActivityLobby extends AppCompatActivity {
                         JSONObject json = (JSONObject) args[0];
                         Log.d("JSON Online: ", "" + json.toString());
                         GameStartedModel data = gson.fromJson(json.toString(), GameStartedModel.class);
-                        Log.d("Listen : ", "" + data.getNextFlow().getFlowType().getName().toString());
+                        Log.d("Listen : ", "" + data.getCurrentFlow().getFlowType().getName().toString());
                         Intent intent = new Intent(ActivityLobby.this,ActivityPlayGame.class);
-                        intent.putExtra("FLOW_ID",data.getNextFlow().getId());
+                        intent.putExtra("FLOW_ID",data.getCurrentFlow().getId());
                         intent.putExtra("STATUS",Config.GAME_STARTED);
                         startActivity(intent);
                     }
@@ -413,7 +395,7 @@ public class ActivityLobby extends AppCompatActivity {
                     intent.putExtra("STATUS", Config.PLAY_GAME);
                     startActivity(intent);
                 }else{
-                    Toast.makeText(ActivityLobby.this,"Error : "+response.message().toString(),Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivityLobby.this,"Error Play : "+response.message().toString(),Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -480,7 +462,7 @@ public class ActivityLobby extends AppCompatActivity {
                         //cekProgress();
                     }
                 }else{
-                    Toast.makeText(ActivityLobby.this,"Error : "+response.message().toString(),Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivityLobby.this,"Error Play : "+response.message().toString(),Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -501,7 +483,7 @@ public class ActivityLobby extends AppCompatActivity {
               if(response.isSuccessful()){
                   ready.setEnabled(false);
                   play.setText("Continue");
-                  FLOW_ID = response.body().getData().getLatestFlow().getId().toString();
+                  FLOW_ID = response.body().getData().getCurrentFlow().getId().toString();
                   Log.d("FLOW_ID ", " : " + FLOW_ID);
                   isContinue = true;
                   Log.d("CEK PROGRESS ", " : " + isContinue);
@@ -552,6 +534,9 @@ public class ActivityLobby extends AppCompatActivity {
                     editor.putString(KEY_TOKEN_GAME,""+getKeyTokenGame);
                     editor.putString(KEY_BADGE,""+response.body().getDataMeModel().getBadge().toString());
                     editor.apply();
+                    if(response.body().getDataMeModel().getBadge().equals("LEADER")){
+                        txtSetting.setVisibility(View.VISIBLE);
+                    }
                     //player1.setText(name);
                 }else{
                     Log.d("Status ", " : " + response.code());

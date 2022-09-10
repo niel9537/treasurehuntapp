@@ -22,7 +22,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.dicoding.picodiploma.treasurehunt_kotlin.LoginFragment;
+
 import com.dicoding.picodiploma.treasurehunt_kotlin.R;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestRegister;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.LoginModel;
@@ -52,7 +52,7 @@ public class FragmentForgotPassword extends Fragment {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Fragment newFragment = new LoginFragment();
+                Fragment newFragment = new FragmentLogin();
                 // consider using Java coding conventions (upper first char class names!!!)
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
 

@@ -21,16 +21,17 @@
             android:layout_marginBottom="681dp">
 
             <Button
-                android:backgroundTint="@android:color/darker_gray"
+                android:id="@+id/btnPrev"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="15sp"
-                android:textAllCaps="false"
                 android:layout_marginLeft="40dp"
                 android:alpha="0.75"
-                android:text="Prev"
+                android:backgroundTint="@android:color/darker_gray"
                 android:fontFamily="@font/lora_regular"
-                android:textColor="@color/white" />
+                android:text="Prev"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="15sp" />
         </LinearLayout>
 
         <RelativeLayout
@@ -59,6 +60,7 @@
                     app:cardCornerRadius="10dp">
 
                     <TextView
+                        android:id="@+id/txtTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
@@ -120,14 +122,18 @@
 
             </LinearLayout>
 
-            <ImageView
-
-                android:id="@+id/imgDialog"
+            <androidx.cardview.widget.CardView
+                app:cardCornerRadius="10dp"
                 android:layout_width="200dp"
                 android:layout_height="250dp"
                 android:layout_alignParentBottom="true"
-                android:layout_marginRight="20dp"
-                android:scaleType="fitXY" />
+                android:layout_marginRight="20dp">
+                <ImageView
+                    android:layout_height="match_parent"
+                    android:layout_width="match_parent"
+                    android:id="@+id/imgDialog"
+                    android:scaleType="fitXY" />
+            </androidx.cardview.widget.CardView>
 
         </RelativeLayout>
 

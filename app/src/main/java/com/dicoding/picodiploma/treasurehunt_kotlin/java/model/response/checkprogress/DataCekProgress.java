@@ -1,52 +1,56 @@
 package com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.checkprogress;
 
+import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.CurrentFlow;
+import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.CurrentPost;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.NextFlow;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class DataCekProgress {
-    @SerializedName("latest_post")
+    @SerializedName("current_post")
     @Expose
-    private LatestPost latestPost;
+    private CurrentPost currentPost;
     @SerializedName("next_post")
     @Expose
-    private NextPost nextPost;
-    @SerializedName("latest_flow")
+    private List<NextPost> nextPost = null;
+    @SerializedName("current_flow")
     @Expose
-    private LatestFlow latestFlow;
+    private CurrentFlow currentFlow;
     @SerializedName("next_flow")
     @Expose
     private NextFlow nextFlow;
 
-    public DataCekProgress(LatestPost latestPost, NextPost nextPost, LatestFlow latestFlow, NextFlow nextFlow) {
-        this.latestPost = latestPost;
+    public DataCekProgress(CurrentPost currentPost, List<NextPost> nextPost, CurrentFlow currentFlow, NextFlow nextFlow) {
+        this.currentPost = currentPost;
         this.nextPost = nextPost;
-        this.latestFlow = latestFlow;
+        this.currentFlow = currentFlow;
         this.nextFlow = nextFlow;
     }
 
-    public LatestPost getLatestPost() {
-        return latestPost;
+    public CurrentPost getCurrentPost() {
+        return currentPost;
     }
 
-    public void setLatestPost(LatestPost latestPost) {
-        this.latestPost = latestPost;
+    public void setCurrentPost(CurrentPost currentPost) {
+        this.currentPost = currentPost;
     }
 
-    public NextPost getNextPost() {
+    public List<NextPost> getNextPost() {
         return nextPost;
     }
 
-    public void setNextPost(NextPost nextPost) {
+    public void setNextPost(List<NextPost> nextPost) {
         this.nextPost = nextPost;
     }
 
-    public LatestFlow getLatestFlow() {
-        return latestFlow;
+    public CurrentFlow getCurrentFlow() {
+        return currentFlow;
     }
 
-    public void setLatestFlow(LatestFlow latestFlow) {
-        this.latestFlow = latestFlow;
+    public void setCurrentFlow(CurrentFlow currentFlow) {
+        this.currentFlow = currentFlow;
     }
 
     public NextFlow getNextFlow() {

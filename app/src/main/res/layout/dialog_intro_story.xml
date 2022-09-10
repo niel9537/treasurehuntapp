@@ -9,7 +9,20 @@
         android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
+        <Button
+            android:layout_marginTop="10dp"
+            android:id="@+id/btnPrev"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="40dp"
+            android:alpha="0.75"
+            android:backgroundTint="@android:color/darker_gray"
+            android:fontFamily="@font/lora_regular"
+            android:text="Prev"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="15sp" />
         <com.google.android.exoplayer2.ui.PlayerView
             android:id="@+id/videoView"
             android:layout_width="match_parent"
@@ -18,10 +31,10 @@
             app:resize_mode="fit"
             app:use_controller="false" />
         <Button
-            android:layout_gravity="bottom"
+            android:layout_gravity="bottom|right"
             android:layout_margin="10dp"
             android:id="@+id/videoSkip"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/green"
             android:fontFamily="@font/lora_regular"
@@ -32,7 +45,7 @@
             android:text="Skip"
             android:textAllCaps="false"
             android:textSize="20sp"
-            android:textColor="@color/yellow"
+            android:textColor="@color/white"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

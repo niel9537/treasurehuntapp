@@ -1,17 +1,12 @@
 package com.dicoding.picodiploma.treasurehunt_kotlin.java.activity;
 
-import static com.dicoding.picodiploma.treasurehunt_kotlin.java.config.Config.MY_CAMERA_PERMISSION_CODE;
-
-import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -25,7 +20,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
@@ -34,11 +28,13 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.dicoding.picodiploma.treasurehunt_kotlin.R;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.config.Config;
+import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestCarCheck;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestCheckIn;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestCheckOut;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestNextFlow;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.OvjQRModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.PlayModel;
+import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.socketresponse.GameStartedModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.network.ApiHelper;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.network.ApiInterface;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.util.TypeWritter;
@@ -50,13 +46,22 @@ import com.google.android.exoplayer2.upstream.DefaultDataSource;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSource;
 import com.google.android.exoplayer2.upstream.HttpDataSource;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.gson.Gson;
+import com.shashank.sony.fancytoastlib.FancyToast;
 
+import org.json.JSONObject;
+
+import java.net.URISyntaxException;
+
+import io.socket.client.IO;
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ActivityPlayGame extends AppCompatActivity {
-
+    boolean isBack = false;
     AlertDialog dialog;
     Button skip, lanjut;
     Drawable drawable;
@@ -72,6 +77,7 @@ public class ActivityPlayGame extends AppCompatActivity {
     private static final String KEY_LOBBY_ID = "key_lobby_id";
     private static final String KEY_MEMBER_ID = "key_member_id";
     private static final String KEY_BADGE = "key_badge";
+    private Socket mSocket;
     String getKeyLobbyId = "";
     String getKeyMemberId = "";
     String getKeyToken = "";
@@ -113,6 +119,120 @@ public class ActivityPlayGame extends AppCompatActivity {
             Log.d("FLOW_ID", " : " + FLOW_ID);
             //The key argument here must match that used in the other activity
         }
+        //hit Socket
+        Log.d("URL", ""+"https://th-main-api.kartala.id/mobile?member="+getKeyMemberId+"&lobby="+getKeyLobbyId+"");
+        try {
+            mSocket = IO.socket("https://th-main-api.kartala.id/mobile?member="+getKeyMemberId+"&lobby="+getKeyLobbyId+"");
+            mSocket.connect();
+            Log.d("IS_CONNECTED ", ""+mSocket.connected());
+            mSocket.on("checked-in", new Emitter.Listener() {
+                        @Override
+                        public void call(Object... args) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Gson gson = new Gson();
+                                    JSONObject json = (JSONObject) args[0];
+                                    Log.d("JSON Online: ", "" + json.toString());
+                                    GameStartedModel data = gson.fromJson(json.toString(), GameStartedModel.class);
+                                    Log.d("Listen Play Game : ", "" + data.getCurrentFlow().getFlowType().getName().toString());
+                                    //FancyToast.makeText(ActivityPlayGame.this,"Listen Play Game : "+data.getCurrentFlow().getFlowType().getName().toString(),FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,true).show();
+                                    String type = data.getCurrentFlow().getFlowType().getName();
+                                    switch (type) {
+                                        case "video":
+                                            FILE_ID = data.getCurrentFlow().getFile().getFileId();
+                                            FLOW_ID = data.getCurrentFlow().getId();
+                                            FancyToast.makeText(ActivityPlayGame.this, "Play Flow ID : " + data.getCurrentFlow().getId() + " FILE ID :" + data.getCurrentFlow().getFile().getFileId(), FancyToast.LENGTH_LONG, FancyToast.SUCCESS, true).show();
+                                            manoharaVideoDialog(FLOW_ID, FILE_ID);
+                                            break;
+                                        case "brace-post-desc":
+                                            FLOW_ID = data.getCurrentFlow().getId();
+                                            if (data.getCurrentFlow().getContent() != null) {
+                                                String contentsBrace = data.getCurrentFlow().getContent().toString();
+                                                braceDescDialog(FLOW_ID, contentsBrace, "");
+                                                break;
+                                            } else {
+                                                String contentsBrace = "Text";
+                                                braceDescDialog(FLOW_ID, contentsBrace, "");
+                                                break;
+                                            }
+                                        default:
+                                            break;
+                                    }
+                                }
+                            });
+
+                        }
+//            }).on("checked-out", new Emitter.Listener() {
+//                @Override
+//                public void call(Object... args) {
+//                    runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            Gson gson = new Gson();
+//                            JSONObject json = (JSONObject) args[0];
+//                            Log.d("JSON Online: ", "" + json.toString());
+//                            GameStartedModel data = gson.fromJson(json.toString(), GameStartedModel.class);
+//                            Log.d("Listen Play Game : ", "" + data.getCurrentFlow().getFlowType().getName().toString());
+//                            //FancyToast.makeText(ActivityPlayGame.this,"Listen Play Game : "+data.getCurrentFlow().getFlowType().getName().toString(),FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,true).show();
+//                            String type = data.getCurrentFlow().getFlowType().getName();
+//                            switch (type) {
+//                                case "transport-instruction":
+//                                    String contentsTransportInstruction = data.getCurrentFlow().getContent().toString();
+//                                    String fileTransportInstruction =data.getCurrentFlow().getFile().getFileId().toString();
+//                                    transportInstruction(FLOW_ID, contentsTransportInstruction, fileTransportInstruction);
+//                                    break;
+//                                default:
+//                                    break;
+//                            }
+//                        }
+//                    });
+//
+//                }
+            }).on("mobilize-party", new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Gson gson = new Gson();
+                            JSONObject json = (JSONObject) args[0];
+                            Log.d("JSON Online: ",""+json.toString());
+                            GameStartedModel data = gson.fromJson(json.toString(),GameStartedModel.class);
+                            Log.d("Listen Play Game : ",""+data.getCurrentFlow().getFlowType().getName().toString());
+                            //FancyToast.makeText(ActivityPlayGame.this,"Listen Play Game : "+data.getCurrentFlow().getFlowType().getName().toString(),FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,true).show();
+                            String type = data.getCurrentFlow().getFlowType().getName();
+                            switch(type){
+                                case "checkin-instruction":
+                                    FILE_ID = data.getCurrentFlow().getFile().getFileId();
+                                    FLOW_ID = data.getCurrentFlow().getId();
+                                    CONTENT = data.getCurrentFlow().getContent();
+                                    //FancyToast.makeText(ActivityPlayGame.this,"Play Flow ID : "+data.getCurrentFlow().getId() +" FILE ID :"+data.getCurrentFlow().getFile().getFileId(),FancyToast.LENGTH_LONG,FancyToast.SUCCESS,true).show();
+                                    checkInInstructionDialog(FLOW_ID,CONTENT,FILE_ID);
+                                    break;
+                                case "brace-credit-title":
+                                    FLOW_ID = data.getCurrentFlow().getId();
+                                    if (data.getCurrentFlow().getContent() != null) {
+                                        String contentsCredit = data.getCurrentFlow().getContent().toString();
+                                        braceCreditTitle(FLOW_ID, contentsCredit, "");
+                                        break;
+                                    } else {
+                                        String contentsCredit = "Text";
+                                        braceCreditTitle(FLOW_ID, contentsCredit, "");
+                                        break;
+                                    }
+                                default:
+                                    break;
+                            }
+                        }
+                    });
+
+                }
+            });
+        } catch (URISyntaxException e) {
+            Log.d("Error Socket :",""+e.getMessage());
+        }
+
 
         switch(STATUS){
             case 1 :
@@ -171,7 +291,7 @@ public class ActivityPlayGame extends AppCompatActivity {
                 Log.d("POST_ID 2", " : " + POST_ID);
                 Log.d("FLOW_ID 2", " : " + FLOW_ID);
                 Log.d("STATUS 2", " : " + STATUS);
-                checkIn(POST_ID);
+                checkIn(POST_ID,FLOW_ID);
                 //posVideoDialog("",POST_ID);
                 break;
             case 3 :
@@ -257,8 +377,52 @@ public class ActivityPlayGame extends AppCompatActivity {
                 nextFlow(FLOW_ID);
                 //posVideoDialog("",POST_ID);
                 break;
+            case 77 :
+                Log.d("POST_ID 20", " : " + POST_ID);
+                Log.d("FLOW_ID 20", " : " + FLOW_ID);
+                Log.d("STATUS 20", " : " + STATUS);
+                carCheck(POST_ID,FLOW_ID);
+                //posVideoDialog("",POST_ID);
+                break;
         }
 
+    }
+
+    private void carCheck(String post_id, String flow_id) {
+        ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
+        Call<PlayModel> playCall = apiInterface.carCheck(getKeyToken.toString(),getKeyTokenGame,new RequestCarCheck(post_id,flow_id));
+        playCall.enqueue(new Callback<PlayModel>() {
+            @Override
+            public void onResponse(Call<PlayModel> call, Response<PlayModel> response) {
+                if (response.isSuccessful()) {
+                    FLOW_ID = response.body().getData().getNextFlow().getId();
+                    String type = response.body().getData().getNextFlow().getFlowType().getName();
+                    switch (type){
+                        case "checkin-instruction" :
+                            checkInInstructionDialog(FLOW_ID,response.body().getData().getNextFlow().getContent().toString(),response.body().getData().getNextFlow().getFile().getFileId());
+                            break;
+                        case "brace-credit-title":
+                            if (response.body().getData().getNextFlow().getContent() != null) {
+                                String contentsCredit = response.body().getData().getNextFlow().getContent().toString();
+                                braceCreditTitle(FLOW_ID, contentsCredit, "");
+                                break;
+                            } else {
+                                String contentsCredit = "Text";
+                                braceCreditTitle(FLOW_ID, contentsCredit, "");
+                                break;
+                            }
+                    }
+
+                }else{
+                    Toast.makeText(ActivityPlayGame.this,"Error : "+response.body().getMessage().toString(),Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PlayModel> call, Throwable t) {
+                Toast.makeText(ActivityPlayGame.this,"Error : "+t.getMessage().toString(),Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 
@@ -269,164 +433,191 @@ public class ActivityPlayGame extends AppCompatActivity {
             @Override
             public void onResponse(Call<PlayModel> call, Response<PlayModel> response) {
                 if(response.isSuccessful()){
-                    String type = response.body().getData().getNextFlow().getFlowType().getName().toString();
-                    FLOW_ID = response.body().getData().getNextFlow().getId();
+                    if(response.body().getMessage().equals("Wait for your party member")){
+                        waitDialog();
+                    }else {
+                        //dialog.dismiss();
+                        String type = response.body().getData().getNextFlow().getFlowType().getName().toString();
+                        FLOW_ID = response.body().getData().getNextFlow().getId();
+
 //                    if (FILE_ID != null && !FILE_ID.isEmpty() && !FILE_ID.equals("null")){
 //                        FILE_ID = response.body().getData().getNextFlow().getFile().getFileId();
 //                    }else{
 //                        FILE_ID = "NOT_FOUND";
 //                    }
-                    if(response.body().getData().getNextFlow().getLast() == true){
-                        //Toast.makeText(ActivityPlayGame.this,"End Game",Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(ActivityPlayGame.this,ActivityHome.class));
-                    }
-                    Log.d("TYPE",""+type);
-                    Log.d("FLOW_ID",""+FLOW_ID);
-                    switch(type){
-                        case "manohara-instruction":
-                            String content = response.body().getData().getNextFlow().getContent().toString();
-                            manoharaInstruction(FLOW_ID,content,"");
-                            break;
-                        case "manohara-map":
-                            introMapDialog(FLOW_ID,"");
-                            break;
-                        case "checkin":
-                            startActivity(new Intent(ActivityPlayGame.this,ActivityScan.class));
-                            break;
-                        case "video":
-                            posVideoDialog(FLOW_ID,FILE_ID);
-                            break;
-                        case "manohara-dialogs":
-                            String content2 = response.body().getData().getNextFlow().getContent().toString();
-                            String fileId = response.body().getData().getNextFlow().getFile().getFileId().toString();
-                            manoharaDialog(FLOW_ID,content2,fileId);
-                            break;
-                        case "manohara-weding-rings":
-                            //String content3 = response.body().getData().getNextFlow().getContent().toString();
-                            //manoharaWeddingRings(FLOW_ID,"Bantu Sudhana Menemukan Pecahan Cincin","");
-                            manoharaFighting(FLOW_ID,"Fighting","");
-                            break;
-                        case "manohara-fighting":
-                            //String content3 = response.body().getData().getNextFlow().getContent().toString();
-                            manoharaFighting(FLOW_ID,"Fighting","");
-                            break;
-                        case "manohara-pottery":
-                            //String content3 = response.body().getData().getNextFlow().getContent().toString();
-                            //manoharaPottery(FLOW_ID,"Pottery Unity","");
-                            manoharaFighting(FLOW_ID,"Fighting","");
-                            break;
-                        case "manohara-archery":
-                            //String content3 = response.body().getData().getNextFlow().getContent().toString();
-                            //manoharaArchery(FLOW_ID,"Archery Unity","");
-                            manoharaFighting(FLOW_ID,"Fighting","");
-                            break;
-                        case "manohara-pick-me":
-                            //String content3 = response.body().getData().getNextFlow().getContent().toString();
-                            //manoharaPickMe(FLOW_ID,"Pick Me","");
-                            manoharaFighting(FLOW_ID,"Fighting","");
-                            break;
-                        case "manohara-come-back-home":
-                            //String content3 = response.body().getData().getNextFlow().getContent().toString();
-                            //manoharaComeBackHome(FLOW_ID,"Come Back Home","");
-                            manoharaFighting(FLOW_ID,"Fighting","");
-                            break;
-                        case "manohara-media-social":
-                            //String content3 = response.body().getData().getNextFlow().getContent().toString();
-                            manoharaMediaSocial(FLOW_ID,"Share to Media Social","");
-                            break;
-                        case "transport-instruction":
-                            String contentsTransportInstruction = response.body().getData().getNextFlow().getContent().toString();
-                            String fileTransportInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
-                            transportInstruction(FLOW_ID,contentsTransportInstruction,fileTransportInstruction);
-                            break;
-                        case "checkin-instruction":
-                            String contentsCheckinInstruction = response.body().getData().getNextFlow().getContent().toString();
-                            String fileCheckinInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
-                            checkInInstructionDialog(FLOW_ID,contentsCheckinInstruction,fileCheckinInstruction);
-                            break;
-                        case "brace-post-desc":
-                            if(response.body().getData().getNextFlow().getContent() != null){
-                                String contentsBrace = response.body().getData().getNextFlow().getContent().toString();
-                                braceDescDialog(FLOW_ID,contentsBrace,"");
+                        if (response.body().getData().getNextFlow().getLast() == true) {
+                            //Toast.makeText(ActivityPlayGame.this,"End Game",Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(ActivityPlayGame.this, ActivityHome.class));
+                        }
+                        isBack = response.body().getData().getNextFlow().getPrev();
+                        Log.d("TYPE", "" + type);
+                        Log.d("FLOW_ID", "" + FLOW_ID);
+                        switch (type) {
+                            case "manohara-instruction":
+                                String content = response.body().getData().getNextFlow().getContent().toString();
+                                String file_id = response.body().getData().getNextFlow().getFile().getFileId().toString();
+                                manoharaInstruction(FLOW_ID, content, file_id);
                                 break;
-                            }else{
-                                String contentsBrace = "Text";
-                                braceDescDialog(FLOW_ID,contentsBrace,"");
+                            case "manohara-map":
+                                String imgMap = response.body().getData().getNextFlow().getFile().getFileId().toString();
+                                manoharaMapDialog(FLOW_ID, imgMap);
                                 break;
-                            }
-                        case "brace-game-instruction":
-                            String contentsBraceInstruction = response.body().getData().getNextFlow().getContent().toString();
-                            String fileBraceInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
-                            braceGameInstruction(FLOW_ID,contentsBraceInstruction,fileBraceInstruction);
-                            break;
-                        case "ovj-game":
-                            Intent ovjIntent = new Intent(ActivityPlayGame.this,ActivityScanOVJ.class);
-                            ovjIntent.putExtra("FLOW_ID",FLOW_ID);
-                            startActivity(ovjIntent);
-                            //ovjGame(FLOW_ID,"","");
-                            break;
-                        case "checkout-instruction":
-                            String contentsCheckoutInstruction = response.body().getData().getNextFlow().getContent().toString();
-                            String fileCheckoutInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
-                            checkoutInstruction(FLOW_ID,contentsCheckoutInstruction,fileCheckoutInstruction);
-                            break;
-                        case "checkout":
-                            Intent intent = new Intent(ActivityPlayGame.this,ActivityScanCheckOut.class);
-                            intent.putExtra("FLOW_ID",FLOW_ID);
-                            Log.d("FLOW_ID CEKOUT",""+FLOW_ID);
-                            startActivity(intent);
-                            break;
-                        case "kain-perca-game":
-                            manoharaFighting(FLOW_ID,"Fighting","");
-                            //kainpercaGame(FLOW_ID,"","");
-                            break;
-                        case "gerabah-game":
-                            gerabahGame(FLOW_ID,"","");
-                            break;
-                        case "gerabah-game-instruction":
-                            String contentsGerabahInstruction = response.body().getData().getNextFlow().getContent().toString();
-                            String fileGerabahInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
-                            gerabahGameInstruction(FLOW_ID,contentsGerabahInstruction,fileGerabahInstruction);
-                            break;
-                        case "socmed":
-                            patiArenSocmed(FLOW_ID,"","");
-                            break;
-                        case "pati-aren-game":
-                            Intent pati = new Intent(ActivityPlayGame.this,ActivityPatiArenGame.class);
-                            pati.putExtra("FLOW_ID",FLOW_ID);
-                            startActivity(pati);
-                            break;
-                        case "mie-pati-game-instruction":
-                            String contentsMiePatiInstruction = response.body().getData().getNextFlow().getContent().toString();
-                            String fileMiePatiInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
-                            miePatiArenGameInstruction(FLOW_ID,contentsMiePatiInstruction,fileMiePatiInstruction);
-                            break;
-                        case "kopi-game":
-                            kopiGame(FLOW_ID,"","");
-                            break;
-                        case "ovj-game-instruction":
-                            String contentsOvjInstruction = response.body().getData().getNextFlow().getContent().toString();
-                            String fileOvjInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
-                            ovjGameInstruction(FLOW_ID,contentsOvjInstruction,fileOvjInstruction);
-                            break;
-                        case "kain-perca-game-instruction":
-                            String kainPercaInstruction = response.body().getData().getNextFlow().getContent().toString();
-                            String fileKainPercaInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
-                            kainpercaGameInstruction(FLOW_ID,kainPercaInstruction,fileKainPercaInstruction);
-                            break;
-                        case "brace-credit-title":
-                            if(response.body().getData().getNextFlow().getContent() != null){
-                                String contentsCredit = response.body().getData().getNextFlow().getContent().toString();
-                                braceCreditTitle(FLOW_ID,contentsCredit,"");
+                            case "checkin":
+                                Intent checkinIntent = new Intent(ActivityPlayGame.this, ActivityScan.class);
+                                checkinIntent.putExtra("FLOW_ID", flow_id);
+                                startActivity(checkinIntent);
                                 break;
-                            }else{
-                                String contentsCredit = "Text";
-                                braceCreditTitle(FLOW_ID,contentsCredit,"");
+                            case "video":
+                                FILE_ID = response.body().getData().getNextFlow().getFile().getFileId();
+                                FancyToast.makeText(ActivityPlayGame.this,"Next Flow ID : "+response.body().getData().getNextFlow().getId() +" FILE ID :"+response.body().getData().getNextFlow().getFile().getFileId(),FancyToast.LENGTH_LONG,FancyToast.SUCCESS,true).show();
+                                manoharaVideoDialog(FLOW_ID, FILE_ID);
                                 break;
-                            }
-                        default:
-                            Toast.makeText(ActivityPlayGame.this,"Type : "+type,Toast.LENGTH_SHORT).show();
-                            break;
+                            case "manohara-dialogs":
+                                String content2 = response.body().getData().getNextFlow().getContent().toString();
+                                String fileId = response.body().getData().getNextFlow().getFile().getFileId().toString();
+                                String title = response.body().getData().getNextFlow().getTitle().toString();
+                                manoharaDialog(FLOW_ID, content2, fileId, title);
+                                break;
+                            case "manohara-weding-rings":
+                                //String content3 = response.body().getData().getNextFlow().getContent().toString();
+                                //manoharaWeddingRings(FLOW_ID,"Bantu Sudhana Menemukan Pecahan Cincin","");
+                                manoharaFighting(FLOW_ID, "Fighting", "");
+                                break;
+                            case "manohara-fighting":
+                                //String content3 = response.body().getData().getNextFlow().getContent().toString();
+                                manoharaFighting(FLOW_ID, "Fighting", "");
+                                break;
+                            case "manohara-pottery":
+                                //String content3 = response.body().getData().getNextFlow().getContent().toString();
+                                //manoharaPottery(FLOW_ID,"Pottery Unity","");
+                                manoharaFighting(FLOW_ID, "Fighting", "");
+                                break;
+                            case "manohara-archery":
+                                //String content3 = response.body().getData().getNextFlow().getContent().toString();
+                                //manoharaArchery(FLOW_ID,"Archery Unity","");
+                                manoharaFighting(FLOW_ID, "Fighting", "");
+                                break;
+                            case "manohara-pick-me":
+                                //String content3 = response.body().getData().getNextFlow().getContent().toString();
+                                //manoharaPickMe(FLOW_ID,"Pick Me","");
+                                manoharaFighting(FLOW_ID, "Fighting", "");
+                                break;
+                            case "manohara-come-back-home":
+                                //String content3 = response.body().getData().getNextFlow().getContent().toString();
+                                //manoharaComeBackHome(FLOW_ID,"Come Back Home","");
+                                manoharaFighting(FLOW_ID, "Fighting", "");
+                                break;
+                            case "manohara-media-social":
+                                //String content3 = response.body().getData().getNextFlow().getContent().toString();
+                                manoharaMediaSocial(FLOW_ID, "Share to Media Social", "");
+                                break;
+                            case "transport-instruction":
+                                Log.d("isBack ", "" + response.body().getData().getNextFlow().getPrev());
+                                String contentsTransportInstruction = response.body().getData().getNextFlow().getContent().toString();
+                                String fileTransportInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
+                                transportInstruction(FLOW_ID, contentsTransportInstruction, fileTransportInstruction);
+                                break;
+                            case "transport-claim":
+                                Intent intentCar = new Intent(ActivityPlayGame.this, ActivityScanCar.class);
+                                intentCar.putExtra("FLOW_ID", FLOW_ID);
+                                Log.d("FLOW_ID CAR", "" + FLOW_ID);
+                                startActivity(intentCar);
+                                break;
+                            case "checkin-instruction":
+                                Log.d("isBack ", "" + response.body().getData().getNextFlow().getPrev());
+                                String contentsCheckinInstruction = response.body().getData().getNextFlow().getContent().toString();
+                                String fileCheckinInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
+                                checkInInstructionDialog(FLOW_ID, contentsCheckinInstruction, fileCheckinInstruction);
+                                break;
+                            case "brace-post-desc":
+                                if (response.body().getData().getNextFlow().getContent() != null) {
+                                    String contentsBrace = response.body().getData().getNextFlow().getContent().toString();
+                                    braceDescDialog(FLOW_ID, contentsBrace, "");
+                                    break;
+                                } else {
+                                    String contentsBrace = "Text";
+                                    braceDescDialog(FLOW_ID, contentsBrace, "");
+                                    break;
+                                }
+                            case "brace-game-instruction":
+                                Log.d("isBack ", "" + response.body().getData().getNextFlow().getPrev());
+                                String contentsBraceInstruction = response.body().getData().getNextFlow().getContent().toString();
+                                String fileBraceInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
+                                braceGameInstruction(FLOW_ID, contentsBraceInstruction, fileBraceInstruction);
+                                break;
+                            case "ovj-game":
+                                Log.d("isBack ", "" + response.body().getData().getNextFlow().getPrev());
+                                Intent ovjIntent = new Intent(ActivityPlayGame.this, ActivityScanOVJ.class);
+                                ovjIntent.putExtra("FLOW_ID", FLOW_ID);
+                                startActivity(ovjIntent);
+                                //ovjGame(FLOW_ID,"","");
+                                break;
+                            case "checkout-instruction":
+                                Log.d("isBack ", "" + response.body().getData().getNextFlow().getPrev());
+                                String contentsCheckoutInstruction = response.body().getData().getNextFlow().getContent().toString();
+                                String fileCheckoutInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
+                                checkoutInstruction(FLOW_ID, contentsCheckoutInstruction, fileCheckoutInstruction);
+                                break;
+                            case "checkout":
+                                Intent intent = new Intent(ActivityPlayGame.this, ActivityScanCheckOut.class);
+                                intent.putExtra("FLOW_ID", FLOW_ID);
+                                Log.d("FLOW_ID CEKOUT", "" + FLOW_ID);
+                                startActivity(intent);
+                                break;
+                            case "kain-perca-game":
+                                manoharaFighting(FLOW_ID, "Fighting", "");
+                                //kainpercaGame(FLOW_ID,"","");
+                                break;
+                            case "gerabah-game":
+                                Log.d("isBack ", "" + response.body().getData().getNextFlow().getPrev());
+                                gerabahGame(FLOW_ID, "", "");
+                                break;
+                            case "gerabah-game-instruction":
+                                Log.d("isBack ", "" + response.body().getData().getNextFlow().getPrev());
+                                String contentsGerabahInstruction = response.body().getData().getNextFlow().getContent().toString();
+                                String fileGerabahInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
+                                gerabahGameInstruction(FLOW_ID, contentsGerabahInstruction, fileGerabahInstruction);
+                                break;
+                            case "socmed":
+                                Socmed(FLOW_ID, "", "");
+                                break;
+                            case "pati-aren-game":
+                                Intent pati = new Intent(ActivityPlayGame.this, ActivityPatiArenGame.class);
+                                pati.putExtra("FLOW_ID", FLOW_ID);
+                                startActivity(pati);
+                                break;
+                            case "mie-pati-game-instruction":
+                                String contentsMiePatiInstruction = response.body().getData().getNextFlow().getContent().toString();
+                                String fileMiePatiInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
+                                miePatiArenGameInstruction(FLOW_ID, contentsMiePatiInstruction, fileMiePatiInstruction);
+                                break;
+                            case "kopi-game":
+                                kopiGame(FLOW_ID, "", "");
+                                break;
+                            case "ovj-game-instruction":
+                                String contentsOvjInstruction = response.body().getData().getNextFlow().getContent().toString();
+                                String fileOvjInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
+                                ovjGameInstruction(FLOW_ID, contentsOvjInstruction, fileOvjInstruction);
+                                break;
+                            case "kain-perca-game-instruction":
+                                String kainPercaInstruction = response.body().getData().getNextFlow().getContent().toString();
+                                String fileKainPercaInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
+                                kainpercaGameInstruction(FLOW_ID, kainPercaInstruction, fileKainPercaInstruction);
+                                break;
+                            case "brace-credit-title":
+                                if (response.body().getData().getNextFlow().getContent() != null) {
+                                    String contentsCredit = response.body().getData().getNextFlow().getContent().toString();
+                                    braceCreditTitle(FLOW_ID, contentsCredit, "");
+                                    break;
+                                } else {
+                                    String contentsCredit = "Text";
+                                    braceCreditTitle(FLOW_ID, contentsCredit, "");
+                                    break;
+                                }
+                            default:
+                                Toast.makeText(ActivityPlayGame.this, "Type : " + type, Toast.LENGTH_SHORT).show();
+                                break;
+                        }
                     }
                 }else{
                     Toast.makeText(ActivityPlayGame.this,"Nextflow Gagal : "+response.message().toString(),Toast.LENGTH_SHORT).show();
@@ -439,169 +630,187 @@ public class ActivityPlayGame extends AppCompatActivity {
             }
         });
     }
-    private void checkIn(String post_id) {
+    private void checkIn(String post_id, String flow_id) {
         ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
-        Call<PlayModel> playCall = apiInterface.cekin(getKeyToken.toString(),getKeyTokenGame,new RequestCheckIn(post_id));
+        Call<PlayModel> playCall = apiInterface.cekin(getKeyToken.toString(),getKeyTokenGame,new RequestCheckIn(post_id,flow_id));
         playCall.enqueue(new Callback<PlayModel>() {
             @Override
             public void onResponse(Call<PlayModel> call, Response<PlayModel> response) {
                 if(response.isSuccessful()){
-                    String type = response.body().getData().getNextFlow().getFlowType().getName().toString();
-                    FLOW_ID = response.body().getData().getNextFlow().getId();
+                    Log.d("Response ",""+response.body().getMessage().toString());
+                    if(response.body().getMessage().equals("Wait for your party member")){
+                        waitDialog();
+                    }else {
+                        //dialog.dismiss();
+                        String type = response.body().getData().getNextFlow().getFlowType().getName().toString();
+                        FLOW_ID = response.body().getData().getNextFlow().getId();
+
 //                    if (FILE_ID != null && !FILE_ID.isEmpty() && !FILE_ID.equals("null")){
 //                        FILE_ID = response.body().getData().getNextFlow().getFile().getFileId();
 //                    }else{
 //                        FILE_ID = "NOT_FOUND";
 //                    }
-                    if(response.body().getData().getNextFlow().getLast() == true){
-                        //Toast.makeText(ActivityPlayGame.this,"End Game",Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(ActivityPlayGame.this,ActivityHome.class));
-                    }
-                    Log.d("TYPE",""+type);
-                    Log.d("FLOW_ID",""+FLOW_ID);
-                    switch(type){
-                        case "manohara-instruction":
-                            String content = response.body().getData().getNextFlow().getContent().toString();
-                            manoharaInstruction(FLOW_ID,content,"");
-                            break;
-                        case "manohara-map":
-                            introMapDialog(FLOW_ID,"");
-                            break;
-                        case "checkin":
-                            startActivity(new Intent(ActivityPlayGame.this,ActivityScan.class));
-                            break;
-                        case "video":
-                            posVideoDialog(FLOW_ID,FILE_ID);
-                            break;
-                        case "manohara-dialogs":
-                            String content2 = response.body().getData().getNextFlow().getContent().toString();
-                            manoharaDialog(FLOW_ID,content2,"");
-                            break;
-                        case "manohara-weding-rings":
-                            String content3 = response.body().getData().getNextFlow().getContent().toString();
-                            //manoharaWeddingRings(FLOW_ID,content3,"");
-                            manoharaFighting(FLOW_ID,"Fighting","");
-                            break;
-                        case "manohara-fighting":
-                            //String content3 = response.body().getData().getNextFlow().getContent().toString();
-                            manoharaFighting(FLOW_ID,"Fighting","");
-                            break;
-                        case "manohara-pottery":
-                            //String content3 = response.body().getData().getNextFlow().getContent().toString();
-                            //manoharaPottery(FLOW_ID,"Pottery Unity","");
-                            manoharaFighting(FLOW_ID,"Fighting","");
-                            break;
-                        case "manohara-archery":
-                            //String content3 = response.body().getData().getNextFlow().getContent().toString();
-                            //manoharaArchery(FLOW_ID,"Archery Unity","");
-                            manoharaFighting(FLOW_ID,"Fighting","");
-                            break;
-                        case "manohara-pick-me":
-                            //String content3 = response.body().getData().getNextFlow().getContent().toString();
-                            //manoharaPickMe(FLOW_ID,"Pick Me","");
-                            manoharaFighting(FLOW_ID,"Fighting","");
-                            break;
-                        case "manohara-come-back-home":
-                            //String content3 = response.body().getData().getNextFlow().getContent().toString();
-                            //manoharaComeBackHome(FLOW_ID,"Come Back Home","");
-                            manoharaFighting(FLOW_ID,"Fighting","");
-                            break;
-                        case "manohara-media-social":
-                            //String content3 = response.body().getData().getNextFlow().getContent().toString();
-                            manoharaMediaSocial(FLOW_ID,"Share to Media Social","");
-                            break;
-                        case "transport-instruction":
-                            String contentsTransportInstruction = response.body().getData().getNextFlow().getContent().toString();
-                            String fileTransportInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
-                            transportInstruction(FLOW_ID,contentsTransportInstruction,fileTransportInstruction);
-                            break;
-                        case "checkin-instruction":
-                            String contentsCheckinInstruction = response.body().getData().getNextFlow().getContent().toString();
-                            String fileCheckinInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
-                            checkInInstructionDialog(FLOW_ID,contentsCheckinInstruction,fileCheckinInstruction);
-                            break;
-                        case "brace-post-desc":
-                            //nextFlow(FLOW_ID);
-                            if(response.body().getData().getNextFlow().getContent() != null){
-                                String contentsBrace = response.body().getData().getNextFlow().getContent().toString();
-                                braceDescDialog(FLOW_ID,contentsBrace,"");
+                        if (response.body().getData().getNextFlow().getLast() == true) {
+                            //Toast.makeText(ActivityPlayGame.this,"End Game",Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(ActivityPlayGame.this, ActivityHome.class));
+                        }
+                        isBack = response.body().getData().getNextFlow().getPrev();
+                        Log.d("TYPE", "" + type);
+                        Log.d("FLOW_ID", "" + FLOW_ID);
+
+                        switch (type) {
+                            case "manohara-instruction":
+                                String content = response.body().getData().getNextFlow().getContent().toString();
+                                String file_id = response.body().getData().getNextFlow().getFile().getFileId().toString();
+                                manoharaInstruction(FLOW_ID, content, file_id);
                                 break;
-                            }else{
-                                String contentsBrace = "Text";
-                                braceDescDialog(FLOW_ID,contentsBrace,"");
+                            case "manohara-map":
+                                String imgMap = response.body().getData().getNextFlow().getFile().getFileId().toString();
+                                manoharaMapDialog(FLOW_ID, imgMap);
                                 break;
-                            }
-                        case "brace-game-instruction":
-                            String contentsBraceInstruction = response.body().getData().getNextFlow().getContent().toString();
-                            String fileBraceInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
-                            braceGameInstruction(FLOW_ID,contentsBraceInstruction,fileBraceInstruction);
-                            break;
-                        case "ovj-game":
-                            Intent ovjIntent = new Intent(ActivityPlayGame.this,ActivityScanOVJ.class);
-                            ovjIntent.putExtra("FLOW_ID",FLOW_ID);
-                            startActivity(ovjIntent);
-                            //ovjGame(FLOW_ID,"","");
-                            break;
-                        case "checkout-instruction":
-                            String contentsCheckoutInstruction = response.body().getData().getNextFlow().getContent().toString();
-                            String fileCheckoutInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
-                            checkoutInstruction(FLOW_ID,contentsCheckoutInstruction,fileCheckoutInstruction);
-                            break;
-                        case "checkout":
-                            Intent intent = new Intent(ActivityPlayGame.this,ActivityScanCheckOut.class);
-                            intent.putExtra("FLOW_ID",FLOW_ID);
-                            Log.d("FLOW_ID CEKOUT",""+FLOW_ID);
-                            startActivity(intent);
-                            break;
-                        case "kain-perca-game":
-                            manoharaFighting(FLOW_ID,"Fighting","");
-                            //kainpercaGame(FLOW_ID,"","");
-                            break;
-                        case "gerabah-game":
-                            gerabahGame(FLOW_ID,"","");
-                            break;
-                        case "gerabah-game-instruction":
-                            String contentsGerabahInstruction = response.body().getData().getNextFlow().getContent().toString();
-                            String fileGerabahInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
-                            gerabahGameInstruction(FLOW_ID,contentsGerabahInstruction,fileGerabahInstruction);
-                            break;
-                        case "socmed":
-                            patiArenSocmed(FLOW_ID,"","");
-                            break;
-                        case "pati-aren-game":
-                            Intent pati = new Intent(ActivityPlayGame.this,ActivityPatiArenGame.class);
-                            pati.putExtra("FLOW_ID",FLOW_ID);
-                            startActivity(pati);
-                            break;
-                        case "mie-pati-game-instruction":
-                            String contentsMiePatiInstruction = response.body().getData().getNextFlow().getContent().toString();
-                            String fileMiePatiInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
-                            miePatiArenGameInstruction(FLOW_ID,contentsMiePatiInstruction,fileMiePatiInstruction);
-                            break;
-                        case "kopi-game":
-                            kopiGame(FLOW_ID,"","");
-                            break;
-                        case "ovj-game-instruction":
-                            String contentsOvjInstruction = response.body().getData().getNextFlow().getContent().toString();
-                            String fileOvjInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
-                            ovjGameInstruction(FLOW_ID,contentsOvjInstruction,fileOvjInstruction);
-                            break;
-                        case "kain-perca-game-instruction":
-                            kainpercaGameInstruction(FLOW_ID,"","");
-                            break;
-                        case "brace-credit-title":
-                            if(response.body().getData().getNextFlow().getContent() != null){
-                                String contentsCredit = response.body().getData().getNextFlow().getContent().toString();
-                                braceCreditTitle(FLOW_ID,contentsCredit,"");
+                            case "checkin":
+                                Intent checkinIntent = new Intent(ActivityPlayGame.this, ActivityScan.class);
+                                checkinIntent.putExtra("FLOW_ID", flow_id);
+                                startActivity(checkinIntent);
                                 break;
-                            }else{
-                                String contentsCredit = "Text";
-                                braceCreditTitle(FLOW_ID,contentsCredit,"");
+                            case "video":
+                                FILE_ID = response.body().getData().getNextFlow().getFile().getFileId();
+                                FancyToast.makeText(ActivityPlayGame.this,"Check Flow ID : "+response.body().getData().getNextFlow().getId() +" FILE ID :"+response.body().getData().getNextFlow().getFile().getFileId(),FancyToast.LENGTH_LONG,FancyToast.SUCCESS,true).show();
+
+                                manoharaVideoDialog(FLOW_ID, FILE_ID);
                                 break;
-                            }
-                        default:
-                            Toast.makeText(ActivityPlayGame.this,"Type : "+type,Toast.LENGTH_SHORT).show();
-                            break;
+                            case "manohara-dialogs":
+                                String content2 = response.body().getData().getNextFlow().getContent().toString();
+                                String fileId = response.body().getData().getNextFlow().getFile().getFileId().toString();
+                                String title = response.body().getData().getNextFlow().getTitle().toString();
+                                manoharaDialog(FLOW_ID, content2, fileId, title);
+                                break;
+                            case "manohara-weding-rings":
+                                String content3 = response.body().getData().getNextFlow().getContent().toString();
+                                //manoharaWeddingRings(FLOW_ID,content3,"");
+                                manoharaFighting(FLOW_ID, "Fighting", "");
+                                break;
+                            case "manohara-fighting":
+                                //String content3 = response.body().getData().getNextFlow().getContent().toString();
+                                manoharaFighting(FLOW_ID, "Fighting", "");
+                                break;
+                            case "manohara-pottery":
+                                //String content3 = response.body().getData().getNextFlow().getContent().toString();
+                                //manoharaPottery(FLOW_ID,"Pottery Unity","");
+                                manoharaFighting(FLOW_ID, "Fighting", "");
+                                break;
+                            case "manohara-archery":
+                                //String content3 = response.body().getData().getNextFlow().getContent().toString();
+                                //manoharaArchery(FLOW_ID,"Archery Unity","");
+                                manoharaFighting(FLOW_ID, "Fighting", "");
+                                break;
+                            case "manohara-pick-me":
+                                //String content3 = response.body().getData().getNextFlow().getContent().toString();
+                                //manoharaPickMe(FLOW_ID,"Pick Me","");
+                                manoharaFighting(FLOW_ID, "Fighting", "");
+                                break;
+                            case "manohara-come-back-home":
+                                //String content3 = response.body().getData().getNextFlow().getContent().toString();
+                                //manoharaComeBackHome(FLOW_ID,"Come Back Home","");
+                                manoharaFighting(FLOW_ID, "Fighting", "");
+                                break;
+                            case "manohara-media-social":
+                                //String content3 = response.body().getData().getNextFlow().getContent().toString();
+                                manoharaMediaSocial(FLOW_ID, "Share to Media Social", "");
+                                break;
+                            case "transport-instruction":
+                                String contentsTransportInstruction = response.body().getData().getNextFlow().getContent().toString();
+                                String fileTransportInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
+                                transportInstruction(FLOW_ID, contentsTransportInstruction, fileTransportInstruction);
+                                break;
+                            case "checkin-instruction":
+                                String contentsCheckinInstruction = response.body().getData().getNextFlow().getContent().toString();
+                                String fileCheckinInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
+                                checkInInstructionDialog(FLOW_ID, contentsCheckinInstruction, fileCheckinInstruction);
+                                break;
+                            case "brace-post-desc":
+                                //nextFlow(FLOW_ID);
+                                if (response.body().getData().getNextFlow().getContent() != null) {
+                                    String contentsBrace = response.body().getData().getNextFlow().getContent().toString();
+                                    braceDescDialog(FLOW_ID, contentsBrace, "");
+                                    break;
+                                } else {
+                                    String contentsBrace = "Text";
+                                    braceDescDialog(FLOW_ID, contentsBrace, "");
+                                    break;
+                                }
+                            case "brace-game-instruction":
+                                String contentsBraceInstruction = response.body().getData().getNextFlow().getContent().toString();
+                                String fileBraceInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
+                                braceGameInstruction(FLOW_ID, contentsBraceInstruction, fileBraceInstruction);
+                                break;
+                            case "ovj-game":
+                                Intent ovjIntent = new Intent(ActivityPlayGame.this, ActivityScanOVJ.class);
+                                ovjIntent.putExtra("FLOW_ID", FLOW_ID);
+                                startActivity(ovjIntent);
+                                //ovjGame(FLOW_ID,"","");
+                                break;
+                            case "checkout-instruction":
+                                String contentsCheckoutInstruction = response.body().getData().getNextFlow().getContent().toString();
+                                String fileCheckoutInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
+                                checkoutInstruction(FLOW_ID, contentsCheckoutInstruction, fileCheckoutInstruction);
+                                break;
+                            case "checkout":
+                                Intent intent = new Intent(ActivityPlayGame.this, ActivityScanCheckOut.class);
+                                intent.putExtra("FLOW_ID", FLOW_ID);
+                                Log.d("FLOW_ID CEKOUT", "" + FLOW_ID);
+                                startActivity(intent);
+                                break;
+                            case "kain-perca-game":
+                                manoharaFighting(FLOW_ID, "Fighting", "");
+                                //kainpercaGame(FLOW_ID,"","");
+                                break;
+                            case "gerabah-game":
+                                gerabahGame(FLOW_ID, "", "");
+                                break;
+                            case "gerabah-game-instruction":
+                                String contentsGerabahInstruction = response.body().getData().getNextFlow().getContent().toString();
+                                String fileGerabahInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
+                                gerabahGameInstruction(FLOW_ID, contentsGerabahInstruction, fileGerabahInstruction);
+                                break;
+                            case "socmed":
+                                Socmed(FLOW_ID, "", "");
+                                break;
+                            case "pati-aren-game":
+                                Intent pati = new Intent(ActivityPlayGame.this, ActivityPatiArenGame.class);
+                                pati.putExtra("FLOW_ID", FLOW_ID);
+                                startActivity(pati);
+                                break;
+                            case "mie-pati-game-instruction":
+                                String contentsMiePatiInstruction = response.body().getData().getNextFlow().getContent().toString();
+                                String fileMiePatiInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
+                                miePatiArenGameInstruction(FLOW_ID, contentsMiePatiInstruction, fileMiePatiInstruction);
+                                break;
+                            case "kopi-game":
+                                kopiGame(FLOW_ID, "", "");
+                                break;
+                            case "ovj-game-instruction":
+                                String contentsOvjInstruction = response.body().getData().getNextFlow().getContent().toString();
+                                String fileOvjInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
+                                ovjGameInstruction(FLOW_ID, contentsOvjInstruction, fileOvjInstruction);
+                                break;
+                            case "kain-perca-game-instruction":
+                                kainpercaGameInstruction(FLOW_ID, "", "");
+                                break;
+                            case "brace-credit-title":
+                                if (response.body().getData().getNextFlow().getContent() != null) {
+                                    String contentsCredit = response.body().getData().getNextFlow().getContent().toString();
+                                    braceCreditTitle(FLOW_ID, contentsCredit, "");
+                                    break;
+                                } else {
+                                    String contentsCredit = "Text";
+                                    braceCreditTitle(FLOW_ID, contentsCredit, "");
+                                    break;
+                                }
+                            default:
+                                Toast.makeText(ActivityPlayGame.this, "Type : " + type, Toast.LENGTH_SHORT).show();
+                                break;
+                        }
                     }
                 }else{
                     Toast.makeText(ActivityPlayGame.this,"Chekin gagal : "+response.message().toString(),Toast.LENGTH_SHORT).show();
@@ -615,7 +824,197 @@ public class ActivityPlayGame extends AppCompatActivity {
             }
         });
     }
+    private void prevFlow(String flow_id) {
+        ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
+        Call<PlayModel> playCall = apiInterface.prev(getKeyToken.toString(),getKeyTokenGame,new RequestNextFlow(flow_id));
+        playCall.enqueue(new Callback<PlayModel>() {
+            @Override
+            public void onResponse(Call<PlayModel> call, Response<PlayModel> response) {
+                if(response.isSuccessful()){
+                    if(response.body().getMessage().equals("Wait for your party member")){
+                        waitDialog();
+                    }else {
+                        //dialog.dismiss();
+                        String type = response.body().getData().getNextFlow().getFlowType().getName().toString();
+                        FLOW_ID = response.body().getData().getNextFlow().getId();
 
+//                    if (FILE_ID != null && !FILE_ID.isEmpty() && !FILE_ID.equals("null")){
+//                        FILE_ID = response.body().getData().getNextFlow().getFile().getFileId();
+//                    }else{
+//                        FILE_ID = "NOT_FOUND";
+//                    }
+                        if (response.body().getData().getNextFlow().getLast() == true) {
+                            //Toast.makeText(ActivityPlayGame.this,"End Game",Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(ActivityPlayGame.this, ActivityHome.class));
+                        }
+                        isBack = response.body().getData().getNextFlow().getPrev();
+                        Log.d("TYPE", "" + type);
+                        Log.d("FLOW_ID", "" + FLOW_ID);
+                        switch (type) {
+                            case "manohara-instruction":
+                                String content = response.body().getData().getNextFlow().getContent().toString();
+                                String file_id = response.body().getData().getNextFlow().getFile().getFileId().toString();
+                                manoharaInstruction(FLOW_ID, content, file_id);
+                                break;
+                            case "manohara-map":
+                                String imgMap = response.body().getData().getNextFlow().getFile().getFileId().toString();
+                                manoharaMapDialog(FLOW_ID, imgMap);
+                                break;
+                            case "checkin":
+                                Intent checkinIntent = new Intent(ActivityPlayGame.this, ActivityScan.class);
+                                checkinIntent.putExtra("FLOW_ID", flow_id);
+                                startActivity(checkinIntent);
+                                break;
+                            case "video":
+                                FILE_ID = response.body().getData().getNextFlow().getFile().getFileId();
+                                FancyToast.makeText(ActivityPlayGame.this,"Prev Flow ID : "+response.body().getData().getNextFlow().getId() +" FILE ID :"+response.body().getData().getNextFlow().getFile().getFileId(),FancyToast.LENGTH_LONG,FancyToast.SUCCESS,true).show();
+                                manoharaVideoDialog(FLOW_ID, FILE_ID);
+                                break;
+                            case "manohara-dialogs":
+                                String content2 = response.body().getData().getNextFlow().getContent().toString();
+                                String fileId = response.body().getData().getNextFlow().getFile().getFileId().toString();
+                                String title = response.body().getData().getNextFlow().getTitle().toString();
+                                manoharaDialog(FLOW_ID, content2, fileId, title);
+                                break;
+                            case "manohara-weding-rings":
+                                //String content3 = response.body().getData().getNextFlow().getContent().toString();
+                                //manoharaWeddingRings(FLOW_ID,"Bantu Sudhana Menemukan Pecahan Cincin","");
+                                manoharaFighting(FLOW_ID, "Fighting", "");
+                                break;
+                            case "manohara-fighting":
+                                //String content3 = response.body().getData().getNextFlow().getContent().toString();
+                                manoharaFighting(FLOW_ID, "Fighting", "");
+                                break;
+                            case "manohara-pottery":
+                                //String content3 = response.body().getData().getNextFlow().getContent().toString();
+                                //manoharaPottery(FLOW_ID,"Pottery Unity","");
+                                manoharaFighting(FLOW_ID, "Fighting", "");
+                                break;
+                            case "manohara-archery":
+                                //String content3 = response.body().getData().getNextFlow().getContent().toString();
+                                //manoharaArchery(FLOW_ID,"Archery Unity","");
+                                manoharaFighting(FLOW_ID, "Fighting", "");
+                                break;
+                            case "manohara-pick-me":
+                                //String content3 = response.body().getData().getNextFlow().getContent().toString();
+                                //manoharaPickMe(FLOW_ID,"Pick Me","");
+                                manoharaFighting(FLOW_ID, "Fighting", "");
+                                break;
+                            case "manohara-come-back-home":
+                                //String content3 = response.body().getData().getNextFlow().getContent().toString();
+                                //manoharaComeBackHome(FLOW_ID,"Come Back Home","");
+                                manoharaFighting(FLOW_ID, "Fighting", "");
+                                break;
+                            case "manohara-media-social":
+                                //String content3 = response.body().getData().getNextFlow().getContent().toString();
+                                manoharaMediaSocial(FLOW_ID, "Share to Media Social", "");
+                                break;
+                            case "transport-instruction":
+                                String contentsTransportInstruction = response.body().getData().getNextFlow().getContent().toString();
+                                String fileTransportInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
+                                transportInstruction(FLOW_ID, contentsTransportInstruction, fileTransportInstruction);
+                                break;
+                            case "checkin-instruction":
+                                String contentsCheckinInstruction = response.body().getData().getNextFlow().getContent().toString();
+                                String fileCheckinInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
+                                checkInInstructionDialog(FLOW_ID, contentsCheckinInstruction, fileCheckinInstruction);
+                                break;
+                            case "brace-post-desc":
+                                if (response.body().getData().getNextFlow().getContent() != null) {
+                                    String contentsBrace = response.body().getData().getNextFlow().getContent().toString();
+                                    braceDescDialog(FLOW_ID, contentsBrace, "");
+                                    break;
+                                } else {
+                                    String contentsBrace = "Text";
+                                    braceDescDialog(FLOW_ID, contentsBrace, "");
+                                    break;
+                                }
+                            case "brace-game-instruction":
+                                String contentsBraceInstruction = response.body().getData().getNextFlow().getContent().toString();
+                                String fileBraceInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
+                                braceGameInstruction(FLOW_ID, contentsBraceInstruction, fileBraceInstruction);
+                                break;
+                            case "ovj-game":
+                                Intent ovjIntent = new Intent(ActivityPlayGame.this, ActivityScanOVJ.class);
+                                ovjIntent.putExtra("FLOW_ID", FLOW_ID);
+                                startActivity(ovjIntent);
+                                //ovjGame(FLOW_ID,"","");
+                                break;
+                            case "checkout-instruction":
+                                String contentsCheckoutInstruction = response.body().getData().getNextFlow().getContent().toString();
+                                String fileCheckoutInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
+                                checkoutInstruction(FLOW_ID, contentsCheckoutInstruction, fileCheckoutInstruction);
+                                break;
+                            case "checkout":
+                                Intent intent = new Intent(ActivityPlayGame.this, ActivityScanCheckOut.class);
+                                intent.putExtra("FLOW_ID", FLOW_ID);
+                                Log.d("FLOW_ID CEKOUT", "" + FLOW_ID);
+                                startActivity(intent);
+                                break;
+                            case "kain-perca-game":
+                                manoharaFighting(FLOW_ID, "Fighting", "");
+                                //kainpercaGame(FLOW_ID,"","");
+                                break;
+                            case "gerabah-game":
+                                gerabahGame(FLOW_ID, "", "");
+                                break;
+                            case "gerabah-game-instruction":
+                                String contentsGerabahInstruction = response.body().getData().getNextFlow().getContent().toString();
+                                String fileGerabahInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
+                                gerabahGameInstruction(FLOW_ID, contentsGerabahInstruction, fileGerabahInstruction);
+                                break;
+                            case "socmed":
+                                Socmed(FLOW_ID, "", "");
+                                break;
+                            case "pati-aren-game":
+                                Intent pati = new Intent(ActivityPlayGame.this, ActivityPatiArenGame.class);
+                                pati.putExtra("FLOW_ID", FLOW_ID);
+                                startActivity(pati);
+                                break;
+                            case "mie-pati-game-instruction":
+                                String contentsMiePatiInstruction = response.body().getData().getNextFlow().getContent().toString();
+                                String fileMiePatiInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
+                                miePatiArenGameInstruction(FLOW_ID, contentsMiePatiInstruction, fileMiePatiInstruction);
+                                break;
+                            case "kopi-game":
+                                kopiGame(FLOW_ID, "", "");
+                                break;
+                            case "ovj-game-instruction":
+                                String contentsOvjInstruction = response.body().getData().getNextFlow().getContent().toString();
+                                String fileOvjInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
+                                ovjGameInstruction(FLOW_ID, contentsOvjInstruction, fileOvjInstruction);
+                                break;
+                            case "kain-perca-game-instruction":
+                                String kainPercaInstruction = response.body().getData().getNextFlow().getContent().toString();
+                                String fileKainPercaInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
+                                kainpercaGameInstruction(FLOW_ID, kainPercaInstruction, fileKainPercaInstruction);
+                                break;
+                            case "brace-credit-title":
+                                if (response.body().getData().getNextFlow().getContent() != null) {
+                                    String contentsCredit = response.body().getData().getNextFlow().getContent().toString();
+                                    braceCreditTitle(FLOW_ID, contentsCredit, "");
+                                    break;
+                                } else {
+                                    String contentsCredit = "Text";
+                                    braceCreditTitle(FLOW_ID, contentsCredit, "");
+                                    break;
+                                }
+                            default:
+                                Toast.makeText(ActivityPlayGame.this, "Type : " + type, Toast.LENGTH_SHORT).show();
+                                break;
+                        }
+                    }
+                }else{
+                    Toast.makeText(ActivityPlayGame.this,"Nextflow Gagal : "+response.message().toString(),Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PlayModel> call, Throwable t) {
+                Toast.makeText(ActivityPlayGame.this,"Error : "+t.getMessage().toString(),Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
     private void miePatiArenGameInstruction(String flow_id, String content, String file_id) {
         AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
         View mView= LayoutInflater.from(this).inflate(R.layout.brace_instruction,null);
@@ -631,6 +1030,12 @@ public class ActivityPlayGame extends AppCompatActivity {
                 .into(img_petunjuk);
         TextView button_checkin = mView.findViewById(R.id.txtContinue);
         TextView desc_checkin = mView.findViewById(R.id.txtContent);
+        Button btnPrev = mView.findViewById(R.id.btnPrev);
+        if(isBack == false){
+            btnPrev.setVisibility(View.INVISIBLE);
+        }else{
+            btnPrev.setVisibility(View.VISIBLE);
+        }
         desc_checkin.setText(content);
         button_checkin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -639,7 +1044,13 @@ public class ActivityPlayGame extends AppCompatActivity {
                     nextFlow(flow_id);
             }
         });
-
+        btnPrev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                prevFlow(flow_id);
+            }
+        });
         dialog = dBuilder.create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.setCanceledOnTouchOutside(false);
@@ -651,6 +1062,12 @@ public class ActivityPlayGame extends AppCompatActivity {
         dBuilder.setView(mView);
         TextView btnContinue = mView.findViewById(R.id.txtContinue);
         ImageView imageOVJ = mView.findViewById(R.id.imgOvj);
+        Button btnPrev = mView.findViewById(R.id.btnPrev);
+        if(isBack == false){
+            btnPrev.setVisibility(View.INVISIBLE);
+        }else{
+            btnPrev.setVisibility(View.VISIBLE);
+        }
         GlideUrl glideUrl = new GlideUrl(Config.BASE_URL+"mobile/v1/file-uploads/"+ file_id,
                 new LazyHeaders.Builder()
                         .addHeader("Authorization",getKeyToken)
@@ -666,6 +1083,13 @@ public class ActivityPlayGame extends AppCompatActivity {
                 nextFlow(flow_id);
             }
         });
+        btnPrev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                prevFlow(flow_id);
+            }
+        });
         dialog = dBuilder.create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.setCanceledOnTouchOutside(false);
@@ -677,6 +1101,12 @@ public class ActivityPlayGame extends AppCompatActivity {
         dBuilder.setView(mView);
         TextView btnContinue = mView.findViewById(R.id.txtContinue);
         ImageView imageGerabah = mView.findViewById(R.id.imgOvj);
+        Button btnPrev = mView.findViewById(R.id.btnPrev);
+        if(isBack == false){
+            btnPrev.setVisibility(View.INVISIBLE);
+        }else{
+            btnPrev.setVisibility(View.VISIBLE);
+        }
         GlideUrl glideUrl = new GlideUrl(Config.BASE_URL+"mobile/v1/file-uploads/"+ file_id,
                 new LazyHeaders.Builder()
                         .addHeader("Authorization",getKeyToken)
@@ -690,6 +1120,13 @@ public class ActivityPlayGame extends AppCompatActivity {
             public void onClick(View view) {
                 dialog.dismiss();
                 nextFlow(flow_id);
+            }
+        });
+        btnPrev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                prevFlow(flow_id);
             }
         });
         dialog = dBuilder.create();
@@ -733,36 +1170,6 @@ public class ActivityPlayGame extends AppCompatActivity {
                     String type = response.body().getData().getNextFlow().getFlowType().getName().toString();
                     FLOW_ID = response.body().getData().getNextFlow().getId();
                     transportInstruction(FLOW_ID,response.body().getData().getNextFlow().getContent(),response.body().getData().getNextFlow().getFile().getFileId());
-/*
-                    AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
-                    View mView= LayoutInflater.from(ActivityPlayGame.this).inflate(R.layout.dialog_transport,null);
-                    dBuilder.setView(mView);
-                    ImageView img_transport = mView.findViewById(R.id.imgTransport);
-                    GlideUrl glideUrl = new GlideUrl(Config.BASE_URL+"mobile/v1/file-uploads/"+ response.body().getData().getNextFlow().getFile().getFileId(),
-                            new LazyHeaders.Builder()
-                                    .addHeader("Authorization",getKeyToken)
-                                    .build());
-
-                    Glide.with(ActivityPlayGame.this)
-                            .load(glideUrl)
-                            .into(img_transport);
-                    TextView button_berangkat = mView.findViewById(R.id.btnTransport);
-                    TextView desc_berangkat = mView.findViewById(R.id.txtContent);
-                    desc_berangkat.setText(response.body().getData().getNextFlow().getContent());
-                    button_berangkat.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            dialog.dismiss();
-                            nextFlow(FLOW_ID);
-                        }
-                    });
-
-                    dialog = dBuilder.create();
-                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                    dialog.setCanceledOnTouchOutside(false);
-                    dialog.show();
-*/
-
                 }else {
                     Toast.makeText(ActivityPlayGame.this,"Error : "+response.message().toString(),Toast.LENGTH_SHORT).show();
                 }
@@ -789,13 +1196,14 @@ public class ActivityPlayGame extends AppCompatActivity {
         Log.d("CONTENT TITLE",""+id);
         startActivity(intent);
     }
-    private void posVideoDialog(String id,String file_id) {
+    private void manoharaVideoDialog(String id, String file_id) {
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
         View mView= LayoutInflater.from(this).inflate(R.layout.dialog_intro_story,null);
         mBuilder.setView(mView);
         //String web = "http://videocdn.bodybuilding.com/video/mp4/62000/62792m.mp4";
         skip = mView.findViewById(R.id.videoSkip);
         playerView = mView.findViewById(R.id.videoView);
+        Button btnPrev = mView.findViewById(R.id.btnPrev);
         // Build a HttpDataSource.Factory with cross-protocol redirects enabled.
         HttpDataSource.Factory httpDataSourceFactory =
                 new DefaultHttpDataSource.Factory().setAllowCrossProtocolRedirects(true);
@@ -828,18 +1236,40 @@ public class ActivityPlayGame extends AppCompatActivity {
                 nextFlow(id);
             }
         });
-
+        btnPrev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                prevFlow(id);
+            }
+        });
         dialog = mBuilder.create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
     }
-    private void introMapDialog(String id,String file_id) {
+    private void manoharaMapDialog(String id, String file_id) {
         AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
         View mView= LayoutInflater.from(this).inflate(R.layout.manohara_map,null);
         dBuilder.setView(mView);
 
         TextView lanjut = mView.findViewById(R.id.continue_peta);
+        ImageView img = mView.findViewById(R.id.img_peta);
+        Button btnPrev = mView.findViewById(R.id.btnPrev);
+        if(isBack == false){
+            btnPrev.setVisibility(View.INVISIBLE);
+        }else{
+            btnPrev.setVisibility(View.VISIBLE);
+        }
+        GlideUrl glideUrl = new GlideUrl(Config.BASE_URL+"mobile/v1/file-uploads/"+file_id,
+                new LazyHeaders.Builder()
+                        .addHeader("Authorization",getKeyToken)
+                        .build());
+
+        Glide.with(this)
+                .load(glideUrl)
+                .placeholder(R.drawable.empty_image_state)
+                .into(img);
         lanjut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -864,7 +1294,13 @@ public class ActivityPlayGame extends AppCompatActivity {
                 });
             }
         });
-
+        btnPrev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                prevFlow(id);
+            }
+        });
         dialog = dBuilder.create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.setCanceledOnTouchOutside(false);
@@ -886,6 +1322,12 @@ public class ActivityPlayGame extends AppCompatActivity {
                 .into(img_petunjuk);
         TextView button_checkin = mView.findViewById(R.id.txtContinue);
         TextView desc_checkin = mView.findViewById(R.id.txtContent);
+        Button btnPrev = mView.findViewById(R.id.btnPrev);
+        if(isBack == false){
+            btnPrev.setVisibility(View.INVISIBLE);
+        }else{
+            btnPrev.setVisibility(View.VISIBLE);
+        }
         desc_checkin.setText(content);
         button_checkin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -913,7 +1355,13 @@ public class ActivityPlayGame extends AppCompatActivity {
                 });
             }
         });
-
+        btnPrev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                prevFlow(id);
+            }
+        });
         dialog = dBuilder.create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.setCanceledOnTouchOutside(false);
@@ -938,6 +1386,12 @@ public class ActivityPlayGame extends AppCompatActivity {
                 .into(img_petunjuk);
         TextView button_checkin = mView.findViewById(R.id.txtContinue);
         TextView desc_checkin = mView.findViewById(R.id.txtContent);
+        Button btnPrev = mView.findViewById(R.id.btnPrev);
+        if(isBack == false){
+            btnPrev.setVisibility(View.INVISIBLE);
+        }else{
+            btnPrev.setVisibility(View.VISIBLE);
+        }
         desc_checkin.setText(content);
         button_checkin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -946,7 +1400,13 @@ public class ActivityPlayGame extends AppCompatActivity {
                 ovjOpenCamera(id);
             }
         });
-
+        btnPrev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                prevFlow(id);
+            }
+        });
         dialog = dBuilder.create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.setCanceledOnTouchOutside(false);
@@ -966,6 +1426,12 @@ public class ActivityPlayGame extends AppCompatActivity {
         Glide.with(this)
                 .load(glideUrl)
                 .into(img_petunjuk);
+        Button btnPrev = mView.findViewById(R.id.btnPrev);
+        if(isBack == false){
+            btnPrev.setVisibility(View.INVISIBLE);
+        }else{
+            btnPrev.setVisibility(View.VISIBLE);
+        }
         TextView button_checkin = mView.findViewById(R.id.txtContinue);
         TextView button_preview = mView.findViewById(R.id.button_preview_petunjuk);
         TextView desc_checkin = mView.findViewById(R.id.txtContent);
@@ -1002,7 +1468,13 @@ public class ActivityPlayGame extends AppCompatActivity {
                 gerabahOpenCamera(id);
             }
         });
-
+        btnPrev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                prevFlow(id);
+            }
+        });
         dialog = dBuilder.create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.setCanceledOnTouchOutside(false);
@@ -1020,35 +1492,7 @@ public class ActivityPlayGame extends AppCompatActivity {
         Log.d("FLOW_ID CAPTURE IMAGE",""+flow_id);
         startActivity(intent);
     }
-    private void ovjCaptureImage(String flow_id) {
-        AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
-        View mView= LayoutInflater.from(this).inflate(R.layout.dialog_ovj_capture_image,null);
-        dBuilder.setView(mView);
-        ImageView imgOvj = mView.findViewById(R.id.imgOvj);
-        TextView btnUpload = mView.findViewById(R.id.btnUpload);
-        TextView btnOpen = mView.findViewById(R.id.btnOpen);
-        btnOpen.setVisibility(View.INVISIBLE);
-        btnOpen.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.M)
-            @Override
-            public void onClick(View v) {
-                if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
-                {
-                    requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_PERMISSION_CODE);
-                }
-                else
-                {
-                    Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(cameraIntent, Config.CAMERA_REQUEST);
-                }
-            }
-        });
 
-        dialog = dBuilder.create();
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.show();
-    }
     private void braceGameInstruction(String id, String content, String file_id) {
         AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
         View mView= LayoutInflater.from(this).inflate(R.layout.brace_instruction,null);
@@ -1065,6 +1509,12 @@ public class ActivityPlayGame extends AppCompatActivity {
                 .into(img_petunjuk);
         TextView button_checkin = mView.findViewById(R.id.txtContinue);
         TextView desc_checkin = mView.findViewById(R.id.txtContent);
+        Button btnPrev = mView.findViewById(R.id.btnPrev);
+        if(isBack == false){
+            btnPrev.setVisibility(View.INVISIBLE);
+        }else{
+            btnPrev.setVisibility(View.VISIBLE);
+        }
         desc_checkin.setText(content);
         button_checkin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1090,7 +1540,13 @@ public class ActivityPlayGame extends AppCompatActivity {
                 });
             }
         });
-
+        btnPrev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                prevFlow(id);
+            }
+        });
         dialog = dBuilder.create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.setCanceledOnTouchOutside(false);
@@ -1112,6 +1568,12 @@ public class ActivityPlayGame extends AppCompatActivity {
                 .into(img_petunjuk);
         TextView button_checkin = mView.findViewById(R.id.txtContinue);
         TextView desc_checkin = mView.findViewById(R.id.txtContent);
+        Button btnPrev = mView.findViewById(R.id.btnPrev);
+        if(isBack == false){
+            btnPrev.setVisibility(View.INVISIBLE);
+        }else{
+            btnPrev.setVisibility(View.VISIBLE);
+        }
         desc_checkin.setText(content);
         button_checkin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1137,7 +1599,13 @@ public class ActivityPlayGame extends AppCompatActivity {
                 });
             }
         });
-
+        btnPrev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                prevFlow(id);
+            }
+        });
         dialog = dBuilder.create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.setCanceledOnTouchOutside(false);
@@ -1150,52 +1618,8 @@ public class ActivityPlayGame extends AppCompatActivity {
         intent.putExtra("FILE_ID",file_id);
         Log.d("FLOW_ID ID TRANSPORT",""+id);
         startActivity(intent);
-        /*AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
-        View mView= LayoutInflater.from(this).inflate(R.layout.dialog_transport,null);
-        dBuilder.setView(mView);
-        ImageView img_transport = mView.findViewById(R.id.img_transport);
-        GlideUrl glideUrl = new GlideUrl(Config.BASE_URL+"mobile/v1/file-uploads/"+file_id,
-                new LazyHeaders.Builder()
-                        .addHeader("Authorization",getKeyToken)
-                        .build());
-
-        Glide.with(this)
-                .load(glideUrl)
-                .into(img_transport);
-        TextView button_berangkat = mView.findViewById(R.id.btnTransport);
-        TextView desc_berangkat = mView.findViewById(R.id.txtContent);
-        desc_berangkat.setText(content);
-        button_berangkat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
-                Call<PlayModel> playCall = apiInterface.next(getKeyToken.toString(),getKeyTokenGame,new RequestNextFlow(id));
-                playCall.enqueue(new Callback<PlayModel>() {
-                    @Override
-                    public void onResponse(Call<PlayModel> call, Response<PlayModel> response) {
-                        if(response.isSuccessful()){
-                            //FLOW_ID = response.body().getData().getNextFlow().getId();
-                            nextFlow(id);
-                        }else{
-                            Toast.makeText(ActivityPlayGame.this,"Error : "+response.message().toString(),Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<PlayModel> call, Throwable t) {
-                        Toast.makeText(ActivityPlayGame.this,"Error : "+t.getMessage().toString(),Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-        });
-
-        dialog = dBuilder.create();
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.show();*/
     }
-    private void waitDialog(String id, String content, String file_id) {
+    private void waitDialog() {
         AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
         View mView= LayoutInflater.from(this).inflate(R.layout.manohara_wait,null);
         linearLayout.setBackground(ContextCompat.getDrawable(ActivityPlayGame.this, R.drawable.hutan_phalaka));
@@ -1212,6 +1636,12 @@ public class ActivityPlayGame extends AppCompatActivity {
         dBuilder.setView(mView);
         dialogContent = mView.findViewById(R.id.txtInstruction);
         TextView lanjut = mView.findViewById(R.id.btnInstruction);
+        Button btnPrev = mView.findViewById(R.id.btnPrev);
+        if(isBack == false){
+            btnPrev.setVisibility(View.INVISIBLE);
+        }else{
+            btnPrev.setVisibility(View.VISIBLE);
+        }
         ImageView imgInstruction = mView.findViewById(R.id.imgInstruction);
         GlideUrl glideUrl = new GlideUrl(Config.BASE_URL+"mobile/v1/file-uploads/"+file_id,
                 new LazyHeaders.Builder()
@@ -1247,23 +1677,38 @@ public class ActivityPlayGame extends AppCompatActivity {
                 });
             }
         });
-
+        btnPrev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                prevFlow(id);
+            }
+        });
         dialog = dBuilder.create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
     }
-    private void manoharaDialog(String id, String content, String file_id) {
+    private void manoharaDialog(String id, String content, String file_id, String title) {
+
         AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
         linearLayout.setBackground(ContextCompat.getDrawable(ActivityPlayGame.this, R.drawable.hutan_phalaka));
         //View mView= LayoutInflater.from(this).inflate(R.layout.dialog_narasi_pengantar_v2,null);
         View mView= LayoutInflater.from(this).inflate(R.layout.manohara_dialog,null);
         dBuilder.setView(mView);
 
+        TextView txtTitle = mView.findViewById(R.id.txtTitle);
         TextView txtDialog = mView.findViewById(R.id.txtDialog);
         TextView next = mView.findViewById(R.id.btnDialog);
+        Button btnPrev = mView.findViewById(R.id.btnPrev);
+        if(isBack == false){
+            btnPrev.setVisibility(View.INVISIBLE);
+        }else{
+            btnPrev.setVisibility(View.VISIBLE);
+        }
         //next.setVisibility(View.INVISIBLE);
         next.setText("Skip");
+        txtTitle.setText(title.toUpperCase());
         ImageView img = mView.findViewById(R.id.imgDialog);
         Log.d("File Id Manohara Dialog",""+file_id+" "+Config.BASE_URL+"mobile/v1/file-uploads/"+file_id);
         GlideUrl glideUrl = new GlideUrl(Config.BASE_URL+"mobile/v1/file-uploads/"+file_id,
@@ -1324,6 +1769,13 @@ public class ActivityPlayGame extends AppCompatActivity {
                         }
                     });
                 }
+            }
+        });
+        btnPrev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                prevFlow(id);
             }
         });
         dialog = dBuilder.create();
@@ -1406,42 +1858,7 @@ public class ActivityPlayGame extends AppCompatActivity {
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
     }
-    private void ovjGame(String id, String content, String file_id){
-        AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
-        View mView= LayoutInflater.from(this).inflate(R.layout.dialog_kamera,null);
-        dBuilder.setView(mView);
-        /*ImageView imgView = mView.findViewById(R.id.icon_kamera);
-        Button buka_camera = mView.findViewById(R.id.buka_camera);
-        buka_camera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-                ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
-                Call<PlayModel> playCall = apiInterface.next(getKeyToken.toString(),getKeyTokenGame,new RequestNextFlow(id));
-                playCall.enqueue(new Callback<PlayModel>() {
-                    @Override
-                    public void onResponse(Call<PlayModel> call, Response<PlayModel> response) {
-                        if(response.isSuccessful()){
-                            //FLOW_ID = response.body().getData().getNextFlow().getId();
-                            nextFlow(id);
-                        }else{
-                            Toast.makeText(ActivityPlayGame.this,"Error : "+response.message().toString(),Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<PlayModel> call, Throwable t) {
-                        Toast.makeText(ActivityPlayGame.this,"Error : "+t.getMessage().toString(),Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-        });*/
-        dialog = dBuilder.create();
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.show();
-    }
-    private void patiArenSocmed(String id, String content, String file_id){
+    private void Socmed(String id, String content, String file_id){
         AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
         View mView= LayoutInflater.from(this).inflate(R.layout.dialog_share,null);
         linearLayout.setBackground(ContextCompat.getDrawable(ActivityPlayGame.this, R.drawable.bg_brace));
@@ -1451,7 +1868,8 @@ public class ActivityPlayGame extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
-                showBottomSheetDialog(id);
+                nextFlow(id);
+                //showBottomSheetDialog(id);
             }
         });
 
@@ -1485,42 +1903,7 @@ public class ActivityPlayGame extends AppCompatActivity {
         });
 
     }
-    private void kainpercaGame(String id, String content, String file_id){
-        AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
-        View mView= LayoutInflater.from(this).inflate(R.layout.dialog_petunjuk,null);
-        dBuilder.setView(mView);
-        TextView descPetunjuk = mView.findViewById(R.id.txtContent);
-        TextView btnContinue = mView.findViewById(R.id.txtContinue);
-        descPetunjuk.setText("Kain Perca Game Instruction");
-        btnContinue.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-                ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
-                Call<PlayModel> playCall = apiInterface.next(getKeyToken.toString(),getKeyTokenGame,new RequestNextFlow(id));
-                playCall.enqueue(new Callback<PlayModel>() {
-                    @Override
-                    public void onResponse(Call<PlayModel> call, Response<PlayModel> response) {
-                        if(response.isSuccessful()){
-                            //FLOW_ID = response.body().getData().getNextFlow().getId();
-                            nextFlow(id);
-                        }else{
-                            Toast.makeText(ActivityPlayGame.this,"Error : "+response.message().toString(),Toast.LENGTH_SHORT).show();
-                        }
-                    }
 
-                    @Override
-                    public void onFailure(Call<PlayModel> call, Throwable t) {
-                        Toast.makeText(ActivityPlayGame.this,"Error : "+t.getMessage().toString(),Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-        });
-        dialog = dBuilder.create();
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.show();
-    }
     private void kainpercaGameInstruction(String id, String content, String file_id){
         AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
         View mView= LayoutInflater.from(this).inflate(R.layout.dialog_petunjuk,null);
@@ -1529,6 +1912,12 @@ public class ActivityPlayGame extends AppCompatActivity {
         ImageView imgInstruction = mView.findViewById(R.id.imgInstruction);
         TextView descPetunjuk = mView.findViewById(R.id.txtContent);
         TextView btnContinue = mView.findViewById(R.id.txtContinue);
+        Button btnPrev = mView.findViewById(R.id.btnPrev);
+        if(isBack == false){
+            btnPrev.setVisibility(View.INVISIBLE);
+        }else{
+            btnPrev.setVisibility(View.VISIBLE);
+        }
         descPetunjuk.setText(content);
         GlideUrl glideUrl = new GlideUrl(Config.BASE_URL+"mobile/v1/file-uploads/"+file_id,
                 new LazyHeaders.Builder()
@@ -1560,6 +1949,13 @@ public class ActivityPlayGame extends AppCompatActivity {
                         Toast.makeText(ActivityPlayGame.this,"Error : "+t.getMessage().toString(),Toast.LENGTH_SHORT).show();
                     }
                 });
+            }
+        });
+        btnPrev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                prevFlow(id);
             }
         });
         dialog = dBuilder.create();

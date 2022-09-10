@@ -94,7 +94,7 @@
 
 
         <Button
-            android:id="@+id/ready_button"
+            android:id="@+id/btnChange"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="39dp"

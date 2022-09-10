@@ -3,16 +3,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
+    <Button
+        android:id="@+id/btnPrev"
+        android:layout_marginTop="40dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:alpha="0.75"
+        android:backgroundTint="@android:color/darker_gray"
+        android:fontFamily="@font/lora_regular"
+        android:text="Prev"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="15sp" />
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
-        android:layout_marginStart="50dp"
-        android:layout_marginEnd="50dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
         android:layout_marginBottom="60dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="10dp"
         app:cardCornerRadius="10dp">
     <RelativeLayout
         android:id="@+id/peta_area"
@@ -97,26 +110,11 @@
                 android:layout_height="wrap_content"
                 tools:ignore="MissingConstraints">
                 <TextView
-                    android:id="@+id/txtPrevious"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="left"
-                    android:layout_gravity="left"
-                    android:layout_marginLeft="20dp"
-                    android:backgroundTint="@color/bg_light_yellow"
-                    android:fontFamily="@font/lora_regular"
-                    android:text="Previous"
-                    android:textAllCaps="false"
-                    android:textColor="@color/green"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-                <TextView
-                    android:layout_marginRight="20dp"
                     android:id="@+id/txtContinue"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
-                    android:layout_gravity="right"
+                    android:gravity="center"
+                    android:layout_gravity="center"
                     android:backgroundTint="@color/bg_light_yellow"
                     android:fontFamily="@font/lora_regular"
                     android:text="Continue"

@@ -34,6 +34,7 @@ public class ListPlayerAdapter extends RecyclerView.Adapter<ListPlayerAdapter.My
         int player = position + 1;
         holder.txtName.setText(partyMembers.get(position).getUser().getProfile().getFullName());
         holder.txtPlayer.setText("Player "+player);
+        holder.txtAsk.setVisibility(View.INVISIBLE);
         if(partyMembers.get(position).getBadge().equals("LEADER")){
             holder.txtName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.leader, 0);
         }
@@ -63,12 +64,13 @@ public class ListPlayerAdapter extends RecyclerView.Adapter<ListPlayerAdapter.My
         return partyMembers.size();
     }
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView txtKick, txtPlayer, txtName;
+        public TextView txtKick, txtPlayer, txtName, txtAsk;
         public MyViewHolder(View itemView) {
             super(itemView);
             txtKick = (TextView) itemView.findViewById(R.id.txtKick);
             txtPlayer = (TextView) itemView.findViewById(R.id.txtPlayer);
             txtName = (TextView) itemView.findViewById(R.id.txtName);
+            txtAsk = (TextView) itemView.findViewById(R.id.txtAsk);
         }
     }
     public interface OnItemClickListener {

@@ -5,19 +5,19 @@ import com.google.gson.annotations.SerializedName;
 
 public class DataPlayModel {
 
-    @SerializedName("next_flow")
+    @SerializedName("current_flow")
     @Expose
-    private NextFlow nextFlow;
+    private CurrentFlow currentFlow;
 
-    public DataPlayModel(NextFlow nextFlow) {
-        this.nextFlow = nextFlow;
+    public DataPlayModel(CurrentFlow currentFlow) {
+        this.currentFlow = currentFlow;
     }
 
-    public NextFlow getNextFlow() {
-        return nextFlow;
+    public CurrentFlow getNextFlow() {
+        return currentFlow;
     }
 
-    public void setNextFlow(NextFlow nextFlow) {
-        this.nextFlow = nextFlow;
+    public void setNextFlow(CurrentFlow currentFlow) {
+        this.currentFlow = currentFlow;
     }
 }

@@ -19,17 +19,23 @@ import androidx.core.content.ContextCompat;
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
 import com.budiyev.android.codescanner.DecodeCallback;
-import com.dicoding.picodiploma.treasurehunt_kotlin.MainActivity;
+
 import com.dicoding.picodiploma.treasurehunt_kotlin.R;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.config.Config;
 import com.google.zxing.Result;
 
 public class ActivityScan extends AppCompatActivity {
     private CodeScanner mCodeScanner;
-
+    String FLOW_ID = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            FLOW_ID= extras.getString("FLOW_ID");
+            Log.d("FLOW_ID", " : " + FLOW_ID);
+            //The key argument here must match that used in the other activity
+        }
         setContentView(R.layout.activity_scan_qr_activity);
             CodeScannerView scannerView = findViewById(R.id.scanner_view);
             mCodeScanner = new CodeScanner(this, scannerView);
@@ -41,6 +47,7 @@ public class ActivityScan extends AppCompatActivity {
                         public void run() {
                             Intent intent = new Intent(ActivityScan.this,ActivityPlayGame.class);
                             intent.putExtra("POST_ID",result.getText().toString());
+                            intent.putExtra("FLOW_ID",FLOW_ID);
                             intent.putExtra("STATUS", Config.CEK_IN);
                             Log.d("POST ID SCAN",""+result.getText().toString());
                             startActivity(intent);

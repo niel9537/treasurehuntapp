@@ -3,7 +3,7 @@ package com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class NextFlow {
+public class CurrentFlow {
     @SerializedName("id")
     @Expose
     private String id;
@@ -38,7 +38,7 @@ public class NextFlow {
     @Expose
     private File file;
 
-    public NextFlow(String id, String title, String subTitle, String content, Integer flowOrder, FlowType flowType, Boolean isLast, Boolean next, Boolean prev, String postId, File file) {
+    public CurrentFlow(String id, String title, String subTitle, String content, Integer flowOrder, FlowType flowType, Boolean isLast, Boolean next, Boolean prev, String postId, File file) {
         this.id = id;
         this.title = title;
         this.subTitle = subTitle;

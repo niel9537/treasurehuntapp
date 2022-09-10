@@ -1,23 +1,23 @@
 package com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.socketresponse;
 
-import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.NextFlow;
+import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.CurrentFlow;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class GameStartedModel {
-    @SerializedName("next_flow")
+    @SerializedName("current_flow")
     @Expose
-    private NextFlow nextFlow;
+    private CurrentFlow currentFlow;
 
-    public GameStartedModel(NextFlow nextFlow) {
-        this.nextFlow = nextFlow;
+    public GameStartedModel(CurrentFlow currentFlow) {
+        this.currentFlow = currentFlow;
     }
 
-    public NextFlow getNextFlow() {
-        return nextFlow;
+    public CurrentFlow getCurrentFlow() {
+        return currentFlow;
     }
 
-    public void setNextFlow(NextFlow nextFlow) {
-        this.nextFlow = nextFlow;
+    public void setCurrentFlow(CurrentFlow currentFlow) {
+        this.currentFlow = currentFlow;
     }
 }

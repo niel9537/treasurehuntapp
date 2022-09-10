@@ -13,6 +13,7 @@ public class Config {
     public static final int CAPTURE_IMAGE = 8;
     public static final int PATI_GAME = 9;
     public static final int TRANSPORT_INSTRUCTION = 11;
+    public static final int CAR_CHECK = 77;
     public static final int UNITY = 20;
     public static final String BRACE_2022 = "6eb664d3-a2e7-470d-8526-21715f64f4b2";
     public static final String MANOHARA = "f1155130-1c4b-4f40-a3d9-cf9346cba2de";

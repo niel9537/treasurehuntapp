@@ -44,6 +44,7 @@ public class ActivityCaptureImage extends AppCompatActivity {
     TextView btnOpen;
     TextView btnUpload;
     TextView txtHint;
+    TextView txtTitle;
     BitmapDrawable drawable;
     Bitmap bitmap;
     @Override
@@ -57,6 +58,7 @@ public class ActivityCaptureImage extends AppCompatActivity {
             Log.d("FLOW_ID CAMERA", " : " + FLOW_ID);
             //The key argument here must match that used in the other activity
         }
+        txtTitle = findViewById(R.id.txtTitle);
         imgOvj = findViewById(R.id.imgOvj);
         txtHint = findViewById(R.id.txtHint);
         btnUpload= findViewById(R.id.btnUpload);
@@ -108,7 +110,7 @@ public class ActivityCaptureImage extends AppCompatActivity {
             btnUpload.setVisibility(View.VISIBLE);
             Bitmap photo = (Bitmap) data.getExtras().get("data");
             imgOvj.setImageBitmap(photo);
-
+            txtTitle.setText("UPLOAD FOTOMU");
             btnUpload.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

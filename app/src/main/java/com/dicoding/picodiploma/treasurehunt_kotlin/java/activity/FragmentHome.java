@@ -170,14 +170,14 @@ public class FragmentHome extends Fragment {
                     playButton.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.green));
                     playButton.setEnabled(true);
                     playButton.setText("Continue");
-                    FLOW_ID = response.body().getData().getLatestFlow().getId().toString();
+                    FLOW_ID = response.body().getData().getCurrentFlow().getId().toString();
                     Log.d("FLOW_ID ", " : " + FLOW_ID);
                     isContinue = true;
                 }
             }
             @Override
             public void onFailure(Call<CekProgressModel> call, Throwable t) {
-                Toast.makeText(getActivity(),"Error Failure : "+t.getMessage().toString(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(),"Error Failure Cek Progress: "+t.getMessage().toString(),Toast.LENGTH_SHORT).show();
             }
         });
 /*         return FLOW_ID;*/
@@ -212,7 +212,7 @@ public class FragmentHome extends Fragment {
                                 meGame(response.body().getData().getGameToken().toString());
 
                             }else{
-                                Toast.makeText(getActivity(), "Error "+response.body().getResponseMessage().toString(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), "Masukkan Kode Permainan Yang Tepat!", Toast.LENGTH_SHORT).show();
                             }
                         }
 

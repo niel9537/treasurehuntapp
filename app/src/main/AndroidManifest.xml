@@ -19,10 +19,10 @@
         <activity
             android:name=".manohara.ManoharaMainActivity"
             android:exported="false" />
-        <activity
+<!--        <activity
             android:name=".ApiTestActivity"
             android:exported="true">
-        </activity>
+        </activity>-->
         <activity
             android:name=".brace.ScanQRActivity"
             android:exported="false" />
@@ -41,7 +41,7 @@
         <activity
             android:name=".brace.BraceCheckInActivity"
             android:exported="false" />
-        <activity
+<!--        <activity
             android:name=".TermsAndConditionsActivity"
             android:exported="false" />
         <activity
@@ -64,7 +64,7 @@
             android:exported="false" />
         <activity
             android:name=".DetailBraceActivity"
-            android:exported="false" />
+            android:exported="false" />-->
         <activity
             android:name=".java.activity.ActivitySplash"
             android:exported="true">
@@ -74,7 +74,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
+<!--        <activity
             android:name=".PlayGameActivity"
             android:exported="false" />
         <activity
@@ -85,7 +85,7 @@
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="true" />
+            android:exported="true" />-->
         <!--Java-->
         <activity
             android:name=".java.activity.ActivityLogin"
@@ -153,6 +153,10 @@
             android:configChanges="orientation"
             android:screenOrientation="portrait"/>
         <activity android:name=".java.activity.ActivityLobbySetting"
+            android:exported="true"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".java.activity.ActivityScanCar"
             android:exported="true"
             android:configChanges="orientation"
             android:screenOrientation="portrait"/>
