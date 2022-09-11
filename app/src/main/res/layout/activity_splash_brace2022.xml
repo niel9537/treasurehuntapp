@@ -38,6 +38,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <TextView
+                android:id="@+id/txtSubtitle"
                 android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -48,6 +49,7 @@
                 android:textStyle="bold"
                 android:textColor="@color/white"/>
             <TextView
+                android:id="@+id/txtTitle"
                 android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

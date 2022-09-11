@@ -164,15 +164,18 @@ public class FragmentHome extends Fragment {
             @Override
             public void onResponse(Call<CekProgressModel> call, Response<CekProgressModel> response) {
                 if(response.isSuccessful()){
-                    codeInput.setEnabled(false);
-                    codeInput.setHeight(0);
-                    codeInput.setVisibility(View.INVISIBLE);
-                    playButton.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.green));
-                    playButton.setEnabled(true);
-                    playButton.setText("Continue");
-                    FLOW_ID = response.body().getData().getCurrentFlow().getId().toString();
-                    Log.d("FLOW_ID ", " : " + FLOW_ID);
-                    isContinue = true;
+                    if(!response.body().getData().getCurrentFlow().getLast()){
+                        codeInput.setEnabled(false);
+                        codeInput.setHeight(0);
+                        codeInput.setVisibility(View.INVISIBLE);
+                        playButton.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.green));
+                        playButton.setEnabled(true);
+                        playButton.setText("Continue");
+                        FLOW_ID = response.body().getData().getCurrentFlow().getId().toString();
+                        Log.d("FLOW_ID ", " : " + FLOW_ID);
+                        isContinue = true;
+                    }
+
                 }
             }
             @Override

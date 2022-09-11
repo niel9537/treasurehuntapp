@@ -32,6 +32,8 @@ import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestCa
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestCheckIn;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestCheckOut;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestNextFlow;
+import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.CarCheckModel;
+import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.FinishModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.OvjQRModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.PlayModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.socketresponse.GameStartedModel;
@@ -46,6 +48,7 @@ import com.google.android.exoplayer2.upstream.DefaultDataSource;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSource;
 import com.google.android.exoplayer2.upstream.HttpDataSource;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.shashank.sony.fancytoastlib.FancyToast;
 
@@ -149,11 +152,11 @@ public class ActivityPlayGame extends AppCompatActivity {
                                             FLOW_ID = data.getCurrentFlow().getId();
                                             if (data.getCurrentFlow().getContent() != null) {
                                                 String contentsBrace = data.getCurrentFlow().getContent().toString();
-                                                braceDescDialog(FLOW_ID, contentsBrace, "");
+                                                braceDescDialog(FLOW_ID,data.getCurrentFlow().getTitle().toString(),data.getCurrentFlow().getSubTitle().toString(), contentsBrace, "");
                                                 break;
                                             } else {
                                                 String contentsBrace = "Text";
-                                                braceDescDialog(FLOW_ID, contentsBrace, "");
+                                                braceDescDialog(FLOW_ID,data.getCurrentFlow().getTitle().toString(),data.getCurrentFlow().getSubTitle().toString(), contentsBrace, "");
                                                 break;
                                             }
                                         default:
@@ -163,32 +166,32 @@ public class ActivityPlayGame extends AppCompatActivity {
                             });
 
                         }
-//            }).on("checked-out", new Emitter.Listener() {
-//                @Override
-//                public void call(Object... args) {
-//                    runOnUiThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            Gson gson = new Gson();
-//                            JSONObject json = (JSONObject) args[0];
-//                            Log.d("JSON Online: ", "" + json.toString());
-//                            GameStartedModel data = gson.fromJson(json.toString(), GameStartedModel.class);
-//                            Log.d("Listen Play Game : ", "" + data.getCurrentFlow().getFlowType().getName().toString());
-//                            //FancyToast.makeText(ActivityPlayGame.this,"Listen Play Game : "+data.getCurrentFlow().getFlowType().getName().toString(),FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,true).show();
-//                            String type = data.getCurrentFlow().getFlowType().getName();
-//                            switch (type) {
-//                                case "transport-instruction":
-//                                    String contentsTransportInstruction = data.getCurrentFlow().getContent().toString();
-//                                    String fileTransportInstruction =data.getCurrentFlow().getFile().getFileId().toString();
-//                                    transportInstruction(FLOW_ID, contentsTransportInstruction, fileTransportInstruction);
-//                                    break;
-//                                default:
-//                                    break;
-//                            }
-//                        }
-//                    });
-//
-//                }
+            }).on("checked-out", new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Gson gson = new Gson();
+                            JSONObject json = (JSONObject) args[0];
+                            Log.d("JSON Online: ", "" + json.toString());
+                            GameStartedModel data = gson.fromJson(json.toString(), GameStartedModel.class);
+                            Log.d("Listen Play Game : ", "" + data.getCurrentFlow().getFlowType().getName().toString());
+                            //FancyToast.makeText(ActivityPlayGame.this,"Listen Play Game : "+data.getCurrentFlow().getFlowType().getName().toString(),FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,true).show();
+                            String type = data.getCurrentFlow().getFlowType().getName();
+                            switch (type) {
+                                case "transport-instruction":
+                                    String contentsTransportInstruction = data.getCurrentFlow().getContent().toString();
+                                    String fileTransportInstruction =data.getCurrentFlow().getFile().getFileId().toString();
+                                    transportInstruction(FLOW_ID, contentsTransportInstruction, fileTransportInstruction);
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    });
+
+                }
             }).on("mobilize-party", new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
@@ -337,7 +340,10 @@ public class ActivityPlayGame extends AppCompatActivity {
                             Log.d("FILE_ID", " : " + FILE_ID+" "+response.body().getData().getGameClassification().toString());
                             ovjDialog(FLOW_ID,FILE_ID);
                         }else{
-                            Toast.makeText(ActivityPlayGame.this,"Error "+response.message().toString(),Toast.LENGTH_SHORT).show();
+                            Intent ovjIntent = new Intent(ActivityPlayGame.this, ActivityScanOVJ.class);
+                            ovjIntent.putExtra("FLOW_ID", FLOW_ID);
+                            startActivity(ovjIntent);
+//                            Toast.makeText(ActivityPlayGame.this,"Error "+response.message().toString(),Toast.LENGTH_SHORT).show();
                         }
                     }
 
@@ -384,42 +390,61 @@ public class ActivityPlayGame extends AppCompatActivity {
                 carCheck(POST_ID,FLOW_ID);
                 //posVideoDialog("",POST_ID);
                 break;
+            case 88 :
+                Log.d("POST_ID 88", " : " + POST_ID);
+                Log.d("FLOW_ID 88", " : " + FLOW_ID);
+                Log.d("STATUS 88", " : " + STATUS);
+                prevFlow(FLOW_ID);
+                //posVideoDialog("",POST_ID);
+                break;
         }
 
     }
 
     private void carCheck(String post_id, String flow_id) {
+        String flowid = flow_id;
         ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
-        Call<PlayModel> playCall = apiInterface.carCheck(getKeyToken.toString(),getKeyTokenGame,new RequestCarCheck(post_id,flow_id));
-        playCall.enqueue(new Callback<PlayModel>() {
+        Call<CarCheckModel> playCall = apiInterface.carCheck(getKeyToken.toString(),getKeyTokenGame,new RequestCarCheck(post_id,flow_id));
+        playCall.enqueue(new Callback<CarCheckModel>() {
             @Override
-            public void onResponse(Call<PlayModel> call, Response<PlayModel> response) {
+            public void onResponse(Call<CarCheckModel> call, Response<CarCheckModel> response) {
                 if (response.isSuccessful()) {
-                    FLOW_ID = response.body().getData().getNextFlow().getId();
-                    String type = response.body().getData().getNextFlow().getFlowType().getName();
-                    switch (type){
-                        case "checkin-instruction" :
-                            checkInInstructionDialog(FLOW_ID,response.body().getData().getNextFlow().getContent().toString(),response.body().getData().getNextFlow().getFile().getFileId());
-                            break;
-                        case "brace-credit-title":
-                            if (response.body().getData().getNextFlow().getContent() != null) {
-                                String contentsCredit = response.body().getData().getNextFlow().getContent().toString();
-                                braceCreditTitle(FLOW_ID, contentsCredit, "");
-                                break;
-                            } else {
-                                String contentsCredit = "Text";
-                                braceCreditTitle(FLOW_ID, contentsCredit, "");
-                                break;
-                            }
-                    }
+                    if (response.body().getMessage().equals("Wait for your party member")) {
+                        waitDialog();
+                    } else {
+                        FLOW_ID = response.body().getData().getCurrentFlow().getId();
+                        Log.d("FLOW_ID ", " : " + FLOW_ID);
 
+                        String type = response.body().getData().getCurrentFlow().getFlowType().getName();
+                        switch (type) {
+                            case "checkin-instruction":
+                                checkInInstructionDialog(FLOW_ID, response.body().getData().getCurrentFlow().getContent().toString(), response.body().getData().getCurrentFlow().getFile().getFileId());
+                                break;
+                            case "brace-credit-title":
+                                if (response.body().getData().getCurrentFlow().getContent() != null) {
+                                    String contentsCredit = response.body().getData().getCurrentFlow().getContent().toString();
+                                    braceCreditTitle(FLOW_ID, contentsCredit, "");
+                                    break;
+                                } else {
+                                    String contentsCredit = "Text";
+                                    braceCreditTitle(FLOW_ID, contentsCredit, "");
+                                    break;
+                                }
+                        }
+
+                    }
                 }else{
-                    Toast.makeText(ActivityPlayGame.this,"Error : "+response.body().getMessage().toString(),Toast.LENGTH_SHORT).show();
+                    Log.d("Response", "" + response.code());
+                    Intent intentCar = new Intent(ActivityPlayGame.this, ActivityScanCar.class);
+                    intentCar.putExtra("FLOW_ID", flowid);
+                    Log.d("FLOW_ID CAR", "" + flowid);
+                    startActivity(intentCar);
                 }
+
             }
 
             @Override
-            public void onFailure(Call<PlayModel> call, Throwable t) {
+            public void onFailure(Call<CarCheckModel> call, Throwable t) {
                 Toast.makeText(ActivityPlayGame.this,"Error : "+t.getMessage().toString(),Toast.LENGTH_SHORT).show();
             }
         });
@@ -447,7 +472,22 @@ public class ActivityPlayGame extends AppCompatActivity {
 //                    }
                         if (response.body().getData().getNextFlow().getLast() == true) {
                             //Toast.makeText(ActivityPlayGame.this,"End Game",Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(ActivityPlayGame.this, ActivityHome.class));
+                            ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
+                            Call<FinishModel> finishCall = apiInterface.finish(getKeyToken.toString(),getKeyTokenGame,new RequestNextFlow(FLOW_ID));
+                            finishCall.enqueue(new Callback<FinishModel>() {
+                                @Override
+                                public void onResponse(Call<FinishModel> call, Response<FinishModel> response) {
+                                    if(response.isSuccessful()){
+                                        startActivity(new Intent(ActivityPlayGame.this, ActivityHome.class));
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<FinishModel> call, Throwable t) {
+
+                                }
+                            });
+
                         }
                         isBack = response.body().getData().getNextFlow().getPrev();
                         Log.d("TYPE", "" + type);
@@ -464,7 +504,7 @@ public class ActivityPlayGame extends AppCompatActivity {
                                 break;
                             case "checkin":
                                 Intent checkinIntent = new Intent(ActivityPlayGame.this, ActivityScan.class);
-                                checkinIntent.putExtra("FLOW_ID", flow_id);
+                                checkinIntent.putExtra("FLOW_ID", FLOW_ID);
                                 startActivity(checkinIntent);
                                 break;
                             case "video":
@@ -532,11 +572,11 @@ public class ActivityPlayGame extends AppCompatActivity {
                             case "brace-post-desc":
                                 if (response.body().getData().getNextFlow().getContent() != null) {
                                     String contentsBrace = response.body().getData().getNextFlow().getContent().toString();
-                                    braceDescDialog(FLOW_ID, contentsBrace, "");
+                                    braceDescDialog(FLOW_ID,response.body().getData().getNextFlow().getTitle().toString(),response.body().getData().getNextFlow().getSubTitle().toString(), contentsBrace, "");
                                     break;
                                 } else {
                                     String contentsBrace = "Text";
-                                    braceDescDialog(FLOW_ID, contentsBrace, "");
+                                    braceDescDialog(FLOW_ID,response.body().getData().getNextFlow().getTitle().toString(),response.body().getData().getNextFlow().getSubTitle().toString(), contentsBrace, "");
                                     break;
                                 }
                             case "brace-game-instruction":
@@ -594,6 +634,9 @@ public class ActivityPlayGame extends AppCompatActivity {
                             case "kopi-game":
                                 kopiGame(FLOW_ID, "", "");
                                 break;
+                            case "mie-pati-socmed":
+                                openCamera(FLOW_ID);
+                                break;
                             case "ovj-game-instruction":
                                 String contentsOvjInstruction = response.body().getData().getNextFlow().getContent().toString();
                                 String fileOvjInstruction = response.body().getData().getNextFlow().getFile().getFileId().toString();
@@ -631,6 +674,7 @@ public class ActivityPlayGame extends AppCompatActivity {
         });
     }
     private void checkIn(String post_id, String flow_id) {
+        Log.d("Checkin UUU","post_id :"+post_id+" flow_id :"+flow_id);
         ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
         Call<PlayModel> playCall = apiInterface.cekin(getKeyToken.toString(),getKeyTokenGame,new RequestCheckIn(post_id,flow_id));
         playCall.enqueue(new Callback<PlayModel>() {
@@ -670,7 +714,7 @@ public class ActivityPlayGame extends AppCompatActivity {
                                 break;
                             case "checkin":
                                 Intent checkinIntent = new Intent(ActivityPlayGame.this, ActivityScan.class);
-                                checkinIntent.putExtra("FLOW_ID", flow_id);
+                                checkinIntent.putExtra("FLOW_ID", FLOW_ID);
                                 startActivity(checkinIntent);
                                 break;
                             case "video":
@@ -732,11 +776,11 @@ public class ActivityPlayGame extends AppCompatActivity {
                                 //nextFlow(FLOW_ID);
                                 if (response.body().getData().getNextFlow().getContent() != null) {
                                     String contentsBrace = response.body().getData().getNextFlow().getContent().toString();
-                                    braceDescDialog(FLOW_ID, contentsBrace, "");
+                                    braceDescDialog(FLOW_ID,response.body().getData().getNextFlow().getTitle().toString(),response.body().getData().getNextFlow().getSubTitle().toString(), contentsBrace, "");
                                     break;
                                 } else {
                                     String contentsBrace = "Text";
-                                    braceDescDialog(FLOW_ID, contentsBrace, "");
+                                    braceDescDialog(FLOW_ID,response.body().getData().getNextFlow().getTitle().toString(),response.body().getData().getNextFlow().getSubTitle().toString(), contentsBrace, "");
                                     break;
                                 }
                             case "brace-game-instruction":
@@ -814,7 +858,9 @@ public class ActivityPlayGame extends AppCompatActivity {
                     }
                 }else{
                     Toast.makeText(ActivityPlayGame.this,"Chekin gagal : "+response.message().toString(),Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(ActivityPlayGame.this,ActivityLobby.class));
+                    Intent checkinIntent = new Intent(ActivityPlayGame.this, ActivityScan.class);
+                    checkinIntent.putExtra("FLOW_ID", flow_id);
+                    startActivity(checkinIntent);
                 }
             }
 
@@ -862,7 +908,7 @@ public class ActivityPlayGame extends AppCompatActivity {
                                 break;
                             case "checkin":
                                 Intent checkinIntent = new Intent(ActivityPlayGame.this, ActivityScan.class);
-                                checkinIntent.putExtra("FLOW_ID", flow_id);
+                                checkinIntent.putExtra("FLOW_ID", FLOW_ID);
                                 startActivity(checkinIntent);
                                 break;
                             case "video":
@@ -922,11 +968,11 @@ public class ActivityPlayGame extends AppCompatActivity {
                             case "brace-post-desc":
                                 if (response.body().getData().getNextFlow().getContent() != null) {
                                     String contentsBrace = response.body().getData().getNextFlow().getContent().toString();
-                                    braceDescDialog(FLOW_ID, contentsBrace, "");
+                                    braceDescDialog(FLOW_ID,response.body().getData().getNextFlow().getTitle().toString(),response.body().getData().getNextFlow().getSubTitle().toString(),contentsBrace, "");
                                     break;
                                 } else {
                                     String contentsBrace = "Text";
-                                    braceDescDialog(FLOW_ID, contentsBrace, "");
+                                    braceDescDialog(FLOW_ID,response.body().getData().getNextFlow().getTitle().toString(),response.body().getData().getNextFlow().getSubTitle().toString(), contentsBrace, "");
                                     break;
                                 }
                             case "brace-game-instruction":
@@ -1166,12 +1212,19 @@ public class ActivityPlayGame extends AppCompatActivity {
         playCall.enqueue(new Callback<PlayModel>() {
             @Override
             public void onResponse(Call<PlayModel> call, Response<PlayModel> response) {
-                if(response.isSuccessful()){
-                    String type = response.body().getData().getNextFlow().getFlowType().getName().toString();
-                    FLOW_ID = response.body().getData().getNextFlow().getId();
-                    transportInstruction(FLOW_ID,response.body().getData().getNextFlow().getContent(),response.body().getData().getNextFlow().getFile().getFileId());
+                if (response.isSuccessful()) {
+                    if(response.body().getMessage().equals("Wait for your party member")){
+                        waitDialog();
+                    }else {
+                        String type = response.body().getData().getNextFlow().getFlowType().getName().toString();
+                        FLOW_ID = response.body().getData().getNextFlow().getId();
+                        transportInstruction(FLOW_ID, response.body().getData().getNextFlow().getContent(), response.body().getData().getNextFlow().getFile().getFileId());
+                    }
                 }else {
-                    Toast.makeText(ActivityPlayGame.this,"Error : "+response.message().toString(),Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(ActivityPlayGame.this, ActivityScanCheckOut.class);
+                    intent.putExtra("FLOW_ID", flow_id);
+                    Log.d("FLOW_ID CEKOUT", "" + flow_id);
+                    startActivity(intent);
                 }
 
             }
@@ -1182,10 +1235,12 @@ public class ActivityPlayGame extends AppCompatActivity {
             }
         });
     }
-    private void braceDescDialog(String id, String content, String file_id) {
+    private void braceDescDialog(String id,String title, String subtitle, String content, String file_id) {
         Intent intent = new Intent(ActivityPlayGame.this,ActivitySplashBrace2022.class);
         intent.putExtra("FLOW_ID",id);
         intent.putExtra("CONTENT",content);
+        intent.putExtra("TITLE",title);
+        intent.putExtra("SUBTITLE",subtitle);
         Log.d("FLOW_ID ID DESC",""+id);
         startActivity(intent);
     }
@@ -1204,6 +1259,11 @@ public class ActivityPlayGame extends AppCompatActivity {
         skip = mView.findViewById(R.id.videoSkip);
         playerView = mView.findViewById(R.id.videoView);
         Button btnPrev = mView.findViewById(R.id.btnPrev);
+        if(isBack == false){
+            btnPrev.setVisibility(View.INVISIBLE);
+        }else{
+            btnPrev.setVisibility(View.VISIBLE);
+        }
         // Build a HttpDataSource.Factory with cross-protocol redirects enabled.
         HttpDataSource.Factory httpDataSourceFactory =
                 new DefaultHttpDataSource.Factory().setAllowCrossProtocolRedirects(true);
@@ -1397,7 +1457,7 @@ public class ActivityPlayGame extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                ovjOpenCamera(id);
+                openCamera(id);
             }
         });
         btnPrev.setOnClickListener(new View.OnClickListener() {
@@ -1465,7 +1525,8 @@ public class ActivityPlayGame extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                gerabahOpenCamera(id);
+                //gerabahOpenCamera(id);
+                openCamera(id);
             }
         });
         btnPrev.setOnClickListener(new View.OnClickListener() {
@@ -1480,18 +1541,18 @@ public class ActivityPlayGame extends AppCompatActivity {
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
     }
-    private void ovjOpenCamera(String flow_id) {
+    private void openCamera(String flow_id) {
         Intent intent = new Intent(ActivityPlayGame.this,ActivityCaptureImage.class);
         intent.putExtra("FLOW_ID",flow_id);
         Log.d("FLOW_ID CAPTURE IMAGE",""+flow_id);
         startActivity(intent);
     }
-    private void gerabahOpenCamera(String flow_id) {
+/*    private void gerabahOpenCamera(String flow_id) {
         Intent intent = new Intent(ActivityPlayGame.this,ActivityCaptureImage.class);
         intent.putExtra("FLOW_ID",flow_id);
         Log.d("FLOW_ID CAPTURE IMAGE",""+flow_id);
         startActivity(intent);
-    }
+    }*/
 
     private void braceGameInstruction(String id, String content, String file_id) {
         AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
@@ -1622,7 +1683,7 @@ public class ActivityPlayGame extends AppCompatActivity {
     private void waitDialog() {
         AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
         View mView= LayoutInflater.from(this).inflate(R.layout.manohara_wait,null);
-        linearLayout.setBackground(ContextCompat.getDrawable(ActivityPlayGame.this, R.drawable.hutan_phalaka));
+        linearLayout.setBackground(ContextCompat.getDrawable(ActivityPlayGame.this, R.drawable.manohara2));
         dBuilder.setView(mView);
         dialog = dBuilder.create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -1931,24 +1992,25 @@ public class ActivityPlayGame extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
-                ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
-                Call<PlayModel> playCall = apiInterface.next(getKeyToken.toString(),getKeyTokenGame,new RequestNextFlow(id));
-                playCall.enqueue(new Callback<PlayModel>() {
-                    @Override
-                    public void onResponse(Call<PlayModel> call, Response<PlayModel> response) {
-                        if(response.isSuccessful()){
-                            //FLOW_ID = response.body().getData().getNextFlow().getId();
-                            nextFlow(id);
-                        }else{
-                            Toast.makeText(ActivityPlayGame.this,"Error : "+response.message().toString(),Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<PlayModel> call, Throwable t) {
-                        Toast.makeText(ActivityPlayGame.this,"Error : "+t.getMessage().toString(),Toast.LENGTH_SHORT).show();
-                    }
-                });
+                openCamera(id);
+//                ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
+//                Call<PlayModel> playCall = apiInterface.next(getKeyToken.toString(),getKeyTokenGame,new RequestNextFlow(id));
+//                playCall.enqueue(new Callback<PlayModel>() {
+//                    @Override
+//                    public void onResponse(Call<PlayModel> call, Response<PlayModel> response) {
+//                        if(response.isSuccessful()){
+//                            //FLOW_ID = response.body().getData().getNextFlow().getId();
+//                            nextFlow(id);
+//                        }else{
+//                            Toast.makeText(ActivityPlayGame.this,"Error : "+response.message().toString(),Toast.LENGTH_SHORT).show();
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<PlayModel> call, Throwable t) {
+//                        Toast.makeText(ActivityPlayGame.this,"Error : "+t.getMessage().toString(),Toast.LENGTH_SHORT).show();
+//                    }
+//                });
             }
         });
         btnPrev.setOnClickListener(new View.OnClickListener() {
@@ -1986,43 +2048,44 @@ public class ActivityPlayGame extends AppCompatActivity {
 
     }
     private void kopiGame(String id, String content, String file_id){
-        AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
-        View mView= LayoutInflater.from(this).inflate(R.layout.dialog_kamera,null);
-        linearLayout.setBackground(ContextCompat.getDrawable(ActivityPlayGame.this, R.drawable.bg_brace));
-        //View mView= LayoutInflater.from(this).inflate(R.layout.activity_open_camera,null);
-        dBuilder.setView(mView);
-        //ImageView imgView = mView.findViewById(R.id.icon_kamera);
-        TextView btnOpen = mView.findViewById(R.id.btnOpen);
-        TextView btnUpload = mView.findViewById(R.id.btnUpload);
-        btnUpload.setVisibility(View.INVISIBLE);
-        btnOpen.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-                ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
-                Call<PlayModel> playCall = apiInterface.next(getKeyToken.toString(),getKeyTokenGame,new RequestNextFlow(id));
-                playCall.enqueue(new Callback<PlayModel>() {
-                    @Override
-                    public void onResponse(Call<PlayModel> call, Response<PlayModel> response) {
-                        if(response.isSuccessful()){
-                            //FLOW_ID = response.body().getData().getNextFlow().getId();
-                            nextFlow(id);
-                        }else{
-                            Toast.makeText(ActivityPlayGame.this,"Error : "+response.message().toString(),Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<PlayModel> call, Throwable t) {
-                        Toast.makeText(ActivityPlayGame.this,"Error : "+t.getMessage().toString(),Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-        });
-        dialog = dBuilder.create();
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.show();
+        openCamera(id);
+//        AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
+//        View mView= LayoutInflater.from(this).inflate(R.layout.dialog_kamera,null);
+//        linearLayout.setBackground(ContextCompat.getDrawable(ActivityPlayGame.this, R.drawable.bg_brace));
+//        //View mView= LayoutInflater.from(this).inflate(R.layout.activity_open_camera,null);
+//        dBuilder.setView(mView);
+//        //ImageView imgView = mView.findViewById(R.id.icon_kamera);
+//        TextView btnOpen = mView.findViewById(R.id.btnOpen);
+//        TextView btnUpload = mView.findViewById(R.id.btnUpload);
+//        btnUpload.setVisibility(View.INVISIBLE);
+//        btnOpen.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                dialog.dismiss();
+//                ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
+//                Call<PlayModel> playCall = apiInterface.next(getKeyToken.toString(),getKeyTokenGame,new RequestNextFlow(id));
+//                playCall.enqueue(new Callback<PlayModel>() {
+//                    @Override
+//                    public void onResponse(Call<PlayModel> call, Response<PlayModel> response) {
+//                        if(response.isSuccessful()){
+//                            //FLOW_ID = response.body().getData().getNextFlow().getId();
+//                            nextFlow(id);
+//                        }else{
+//                            Toast.makeText(ActivityPlayGame.this,"Error : "+response.message().toString(),Toast.LENGTH_SHORT).show();
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<PlayModel> call, Throwable t) {
+//                        Toast.makeText(ActivityPlayGame.this,"Error : "+t.getMessage().toString(),Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+//            }
+//        });
+//        dialog = dBuilder.create();
+//        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//        dialog.setCanceledOnTouchOutside(false);
+//        dialog.show();
     }
 
 }

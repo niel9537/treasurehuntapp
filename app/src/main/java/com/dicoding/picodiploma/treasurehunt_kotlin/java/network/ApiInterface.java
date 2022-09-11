@@ -9,6 +9,7 @@ import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestKi
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestLogin;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestNextFlow;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestRegister;
+import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.CarCheckModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.DetailGameModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.FinishModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.InputGameCodeModel;
@@ -79,5 +80,5 @@ public interface ApiInterface {
     @POST("/mobile/v1/game-controls/change-leader")
     Call<KickModel> changeLeader(@Header("Authorization") String token, @Query("game_token") String userGameToken, @Body RequestKick requestKick);
     @POST("/mobile/v1/game-controls/car-check")
-    Call<PlayModel> carCheck(@Header("Authorization") String token,  @Query("game_token") String userGameToken,@Body RequestCarCheck requestCarCheck);
+    Call<CarCheckModel> carCheck(@Header("Authorization") String token, @Query("game_token") String userGameToken, @Body RequestCarCheck requestCarCheck);
 }

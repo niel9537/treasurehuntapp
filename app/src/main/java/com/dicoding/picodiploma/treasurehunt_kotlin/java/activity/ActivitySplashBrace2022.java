@@ -15,9 +15,11 @@ public class ActivitySplashBrace2022 extends AppCompatActivity {
     private int delayValue=2500;
     String FLOW_ID = "";
     String CONTENT = "";
+    String TITLE = "";
+    String SUBTITLE = "";
     //4000=4 detik
     Button btnContinue;
-    TextView txtContent;
+    TextView txtContent,txtTitle,txtSubtitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,13 +28,18 @@ public class ActivitySplashBrace2022 extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         btnContinue = findViewById(R.id.txtContinue);
         txtContent = findViewById(R.id.txtContent);
-
+        txtTitle = findViewById(R.id.txtTitle);
+        txtSubtitle = findViewById(R.id.txtSubtitle);
         if (extras != null) {
             FLOW_ID= extras.getString("FLOW_ID");
             CONTENT= extras.getString("CONTENT");
+            TITLE= extras.getString("TITLE");
+            SUBTITLE = extras.getString("SUBTITLE");
             //The key argument here must match that used in the other activity
         }
         txtContent.setText(CONTENT);
+        txtTitle.setText(TITLE);
+        txtSubtitle.setText(SUBTITLE);
         btnContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

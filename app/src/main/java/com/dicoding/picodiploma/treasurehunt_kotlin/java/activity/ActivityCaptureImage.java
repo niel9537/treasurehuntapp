@@ -47,6 +47,7 @@ public class ActivityCaptureImage extends AppCompatActivity {
     TextView txtTitle;
     BitmapDrawable drawable;
     Bitmap bitmap;
+    boolean isUpload = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,7 +105,10 @@ public class ActivityCaptureImage extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Log.d("Activity","requestCode : "+requestCode+" resultCode : "+resultCode);
+
         if (requestCode == Config.CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
+            isUpload = false;
             btnOpen.setVisibility(View.INVISIBLE);
             txtHint.setVisibility(View.INVISIBLE);
             btnUpload.setVisibility(View.VISIBLE);
@@ -123,6 +127,12 @@ public class ActivityCaptureImage extends AppCompatActivity {
                 }
             });
         }
+        if(isUpload == true){
+            Intent intent = new Intent(ActivityCaptureImage.this,ActivityPlayGame.class);
+            intent.putExtra("FLOW_ID",FLOW_ID);
+            intent.putExtra("STATUS", Config.CAPTURE_IMAGE);
+            startActivity(intent);
+        }
         if (requestCode == 100) {
             if(resultCode == Activity.RESULT_OK){
                 Intent intent = new Intent(ActivityCaptureImage.this,ActivityPlayGame.class);
@@ -131,21 +141,29 @@ public class ActivityCaptureImage extends AppCompatActivity {
                 startActivity(intent);
             }
             if (resultCode == Activity.RESULT_CANCELED) {
-                // Write your code if there's no result
+
             }
         }
     }
 
     public void shareImageWhatsApp() {
+
         Bitmap imgBitmap = ((BitmapDrawable)imgOvj.getDrawable()).getBitmap();
         //Bitmap imgBitmap=BitmapFactory.decodeResource(getResources(),R.drawable.hutan_phalaka);
         String imgBitmapPath= MediaStore.Images.Media.insertImage(getContentResolver(),imgBitmap,"Keseruanku",null);
-        Uri imgBitmapUri=Uri.parse(imgBitmapPath);
-        Intent shareIntent=new Intent(Intent.ACTION_SEND);
-        shareIntent.setType("image/*");
-        shareIntent.putExtra(Intent.EXTRA_STREAM,imgBitmapUri);
-        //startActivity(Intent.createChooser(shareIntent,"Bagikan foto melalui"));
-        startActivityForResult(Intent.createChooser(shareIntent,"Bagikan foto melalui"), 100);
+        if(imgBitmapPath!=null){
+            Uri imgBitmapUri=Uri.parse(imgBitmapPath);
+            Intent shareIntent=new Intent(Intent.ACTION_SEND);
+            shareIntent.setType("image/*");
+            shareIntent.putExtra(Intent.EXTRA_STREAM,imgBitmapUri);
+            //startActivity(Intent.createChooser(shareIntent,"Bagikan foto melalui"));
+//            ActivityCaptureImage.this.setResult(RESULT_OK);
+            isUpload = true;
+            startActivityForResult(Intent.createChooser(shareIntent,"Bagikan foto melalui"), 100);
+
+        }else{
+            Toast.makeText(ActivityCaptureImage.this,""+imgBitmapPath.toString(),Toast.LENGTH_LONG).show();
+        }
 
     }
 
