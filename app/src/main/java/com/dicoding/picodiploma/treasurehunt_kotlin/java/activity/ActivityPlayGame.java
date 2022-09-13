@@ -35,6 +35,7 @@ import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestCh
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestNextFlow;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.CarCheckModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.FinishModel;
+import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.KainPercaModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.OvjQRModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.PlayModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.socketresponse.GameStartedModel;
@@ -100,6 +101,7 @@ public class ActivityPlayGame extends AppCompatActivity {
     LinearLayout linearLayout;
     RelativeLayout relativeLayout;
     AlertClass alertClass;
+    private int result = 1;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -2079,7 +2081,27 @@ public class ActivityPlayGame extends AppCompatActivity {
         dialog.setCancelable(false);
         dialog.show();
     }
+    private int kainPercaGroup(){
+        ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
+        Call<KainPercaModel> kainperca = apiInterface.kainperca(getKeyToken.toString(),getKeyTokenGame);
+        kainperca.enqueue(new Callback<KainPercaModel>() {
+            @Override
+            public void onResponse(Call<KainPercaModel> call, Response<KainPercaModel> response) {
+                if(response.isSuccessful()){
+                  result =  response.body().getData().getGroup();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<KainPercaModel> call, Throwable t) {
+
+            }
+        });
+        return result;
+    }
+
     private void manoharaFighting(String id, String content, String file_id) {
+        int kainPercaGroup = kainPercaGroup();
         AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
         linearLayout.setBackground(ContextCompat.getDrawable(ActivityPlayGame.this, R.drawable.manohara1));
         View mView= LayoutInflater.from(this).inflate(R.layout.dialog_narasi_pengantar,null);
@@ -2203,6 +2225,7 @@ public class ActivityPlayGame extends AppCompatActivity {
 
     }
     private void kainpercaGameInstruction(String id, String content, String file_id){
+        int kainGame = 1;
         AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
         View mView= LayoutInflater.from(this).inflate(R.layout.dialog_petunjuk,null);
         linearLayout.setBackground(ContextCompat.getDrawable(ActivityPlayGame.this, R.drawable.bg_brace));
@@ -2217,14 +2240,46 @@ public class ActivityPlayGame extends AppCompatActivity {
             btnPrev.setVisibility(View.VISIBLE);
         }
         descPetunjuk.setText(content);
-        GlideUrl glideUrl = new GlideUrl(Config.BASE_URL+"mobile/v1/file-uploads/"+file_id,
-                new LazyHeaders.Builder()
-                        .addHeader("Authorization",getKeyToken)
-                        .build());
-
-        Glide.with(this)
-                .load(glideUrl)
-                .into(imgInstruction);
+        switch (kainGame){
+            case 1 :
+                Glide.with(this)
+                        .load(R.drawable.satu_klipoh)
+                        .into(imgInstruction);
+                break;
+            case 2 :
+                Glide.with(this)
+                        .load(R.drawable.dua_mendalan)
+                        .into(imgInstruction);
+                break;
+            case 3 :
+                Glide.with(this)
+                        .load(R.drawable.tiga_ngasem)
+                        .into(imgInstruction);
+                break;
+            case 4 :
+                Glide.with(this)
+                        .load(R.drawable.empat_punthuk)
+                        .into(imgInstruction);
+                break;
+            case 5 :
+                Glide.with(this)
+                        .load(R.drawable.lima_tanjung)
+                        .into(imgInstruction);
+                break;
+            case 6 :
+                Glide.with(this)
+                        .load(R.drawable.enam_terminal)
+                        .into(imgInstruction);
+                break;
+        }
+//        GlideUrl glideUrl = new GlideUrl(Config.BASE_URL+"mobile/v1/file-uploads/"+file_id,
+//                new LazyHeaders.Builder()
+//                        .addHeader("Authorization",getKeyToken)
+//                        .build());
+//
+//        Glide.with(this)
+//                .load(glideUrl)
+//                .into(imgInstruction);
         btnContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
