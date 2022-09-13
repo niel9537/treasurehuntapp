@@ -227,6 +227,7 @@ public class ActivityPlayGame extends AppCompatActivity {
                             String type = data.getCurrentFlow().getFlowType().getName();
                             switch(type){
                                 case "checkin-instruction":
+                                    dialog.dismiss();
                                     FILE_ID = data.getCurrentFlow().getFile().getFileId();
                                     FLOW_ID = data.getCurrentFlow().getId();
                                     CONTENT = data.getCurrentFlow().getContent();
@@ -1444,6 +1445,9 @@ public class ActivityPlayGame extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<FinishModel> call, Response<FinishModel> response) {
                         if(response.isSuccessful()){
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.remove(KEY_TOKEN_GAME);
+                            editor.apply();
                             startActivity(new Intent(ActivityPlayGame.this,ActivityHome.class));
                         }else{
                             Toast.makeText(ActivityPlayGame.this,"Error "+response.message().toString(),Toast.LENGTH_SHORT).show();

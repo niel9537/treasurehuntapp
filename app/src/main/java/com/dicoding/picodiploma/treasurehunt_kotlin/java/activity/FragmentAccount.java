@@ -44,6 +44,7 @@ public class FragmentAccount extends Fragment {
     private static final String KEY_TOKEN = "key_token";
     private static final String KEY_TOKEN_GAME = "key_token_game";
     String getKeyToken = "";
+    String getKeyTokenGame = "";
     public static Context context;
 
     @Nullable
@@ -52,6 +53,7 @@ public class FragmentAccount extends Fragment {
         View view = inflater.inflate(R.layout.fragment_account,container,false);
         sharedPreferences=this.getActivity().getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         getKeyToken=sharedPreferences.getString(KEY_TOKEN,null);
+        getKeyTokenGame=sharedPreferences.getString(KEY_TOKEN_GAME,null);
         txtTermsCondition = view.findViewById(R.id.txtTermsCondition);
         context = getContext();
         sign_out = view.findViewById(R.id.sign_out);
@@ -71,6 +73,7 @@ public class FragmentAccount extends Fragment {
                 startActivity(new Intent(getActivity(),ActivityTermCondition.class));
             }
         });
+
         meProfile();
         sign_out.setOnClickListener(new View.OnClickListener() {
             @Override

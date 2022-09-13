@@ -232,7 +232,7 @@ public class ActivityLobby extends AppCompatActivity {
                         Gson gson = new Gson();
                         JSONObject json = (JSONObject) args[0];
                         Log.d("JSON : Badge Change",""+json.toString());
-
+                        lobbyDetail();
 
                     }
                 });

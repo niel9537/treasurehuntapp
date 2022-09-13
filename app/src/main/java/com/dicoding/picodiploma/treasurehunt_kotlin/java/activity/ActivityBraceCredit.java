@@ -68,6 +68,9 @@ public class ActivityBraceCredit extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<FinishModel> call, Response<FinishModel> response) {
                         if(response.isSuccessful()){
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.remove(KEY_TOKEN_GAME);
+                            editor.apply();
                             startActivity(new Intent(ActivityBraceCredit.this,ActivityHome.class));
                         }else{
                             Toast.makeText(ActivityBraceCredit.this,"Error "+response.message().toString(),Toast.LENGTH_SHORT).show();
