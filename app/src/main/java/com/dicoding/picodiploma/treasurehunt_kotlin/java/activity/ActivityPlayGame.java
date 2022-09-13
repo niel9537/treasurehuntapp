@@ -58,6 +58,7 @@ import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import java.net.URISyntaxException;
+import java.util.Random;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
@@ -2082,26 +2083,15 @@ public class ActivityPlayGame extends AppCompatActivity {
         dialog.show();
     }
     private int kainPercaGroup(){
-        ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
-        Call<KainPercaModel> kainperca = apiInterface.kainperca(getKeyToken.toString(),getKeyTokenGame);
-        kainperca.enqueue(new Callback<KainPercaModel>() {
-            @Override
-            public void onResponse(Call<KainPercaModel> call, Response<KainPercaModel> response) {
-                if(response.isSuccessful()){
-                  result =  response.body().getData().getGroup();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<KainPercaModel> call, Throwable t) {
-
-            }
-        });
-        return result;
+        int randomNum = 0;
+        Random random = new Random();
+        randomNum = random.nextInt(6 - 1 + 1) + 1;
+        return randomNum;
     }
 
     private void manoharaFighting(String id, String content, String file_id) {
-        int kainPercaGroup = kainPercaGroup();
+        //int kainPercaGroup = kainPercaGroup();
+        result = kainPercaGroup();
         AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
         linearLayout.setBackground(ContextCompat.getDrawable(ActivityPlayGame.this, R.drawable.manohara1));
         View mView= LayoutInflater.from(this).inflate(R.layout.dialog_narasi_pengantar,null);
@@ -2225,7 +2215,7 @@ public class ActivityPlayGame extends AppCompatActivity {
 
     }
     private void kainpercaGameInstruction(String id, String content, String file_id){
-        int kainGame = 1;
+        int kainGame = kainPercaGroup();
         AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
         View mView= LayoutInflater.from(this).inflate(R.layout.dialog_petunjuk,null);
         linearLayout.setBackground(ContextCompat.getDrawable(ActivityPlayGame.this, R.drawable.bg_brace));
