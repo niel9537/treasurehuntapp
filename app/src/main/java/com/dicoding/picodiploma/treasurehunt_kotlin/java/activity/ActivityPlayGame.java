@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,6 +54,7 @@ import com.google.gson.Gson;
 import com.shashank.sony.fancytoastlib.FancyToast;
 
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.net.URISyntaxException;
 
@@ -89,17 +91,21 @@ public class ActivityPlayGame extends AppCompatActivity {
     String FILE_ID = "";
     String FILE_TYPE = "";
     String FLOW_ID = "";
+    String FLOW_TYPE = "";
     String POST_ID = "";
     String GAME_ID = "";
     String CONTENT = "";
     int STATUS = 0;
     Boolean next = false;
     LinearLayout linearLayout;
+    RelativeLayout relativeLayout;
+    AlertClass alertClass;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_game);
-
+        alertClass = new AlertClass(this);
         sharedPreferences=  getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         getKeyToken=sharedPreferences.getString(KEY_TOKEN,null);
         getKeyTokenGame=sharedPreferences.getString(KEY_TOKEN_GAME,null);
@@ -116,12 +122,16 @@ public class ActivityPlayGame extends AppCompatActivity {
             FILE_ID= extras.getString("FILE_ID");
             POST_ID= extras.getString("POST_ID");
             FLOW_ID= extras.getString("FLOW_ID");
+            FLOW_TYPE= extras.getString("FLOW_TYPE");
             GAME_ID=extras.getString("GAME_ID");
             CONTENT= extras.getString("CONTENT");
             STATUS= extras.getInt("STATUS");
             Log.d("FLOW_ID", " : " + FLOW_ID);
             //The key argument here must match that used in the other activity
         }
+        View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION ;
+        decorView.setSystemUiVisibility(uiOptions);
         //hit Socket
         Log.d("URL", ""+"https://th-main-api.kartala.id/mobile?member="+getKeyMemberId+"&lobby="+getKeyLobbyId+"");
         try {
@@ -145,8 +155,18 @@ public class ActivityPlayGame extends AppCompatActivity {
                                         case "video":
                                             FILE_ID = data.getCurrentFlow().getFile().getFileId();
                                             FLOW_ID = data.getCurrentFlow().getId();
-                                            FancyToast.makeText(ActivityPlayGame.this, "Play Flow ID : " + data.getCurrentFlow().getId() + " FILE ID :" + data.getCurrentFlow().getFile().getFileId(), FancyToast.LENGTH_LONG, FancyToast.SUCCESS, true).show();
+                                            dialog.dismiss();
+                                            //FancyToast.makeText(ActivityPlayGame.this, "Play Flow ID : " + data.getCurrentFlow().getId() + " FILE ID :" + data.getCurrentFlow().getFile().getFileId(), FancyToast.LENGTH_LONG, FancyToast.SUCCESS, true).show();
                                             manoharaVideoDialog(FLOW_ID, FILE_ID);
+                                            break;
+                                        case "manohara-dialogs":
+                                            FILE_ID = data.getCurrentFlow().getFile().getFileId();
+                                            FLOW_ID = data.getCurrentFlow().getId();
+                                            CONTENT = data.getCurrentFlow().getContent();
+                                            String TITLE = data.getCurrentFlow().getTitle();
+                                            dialog.dismiss();
+                                            //FancyToast.makeText(ActivityPlayGame.this, "Play Flow ID : " + data.getCurrentFlow().getId() + " FILE ID :" + data.getCurrentFlow().getFile().getFileId(), FancyToast.LENGTH_LONG, FancyToast.SUCCESS, true).show();
+                                            manoharaDialog(FLOW_ID,CONTENT,FILE_ID,TITLE);
                                             break;
                                         case "brace-post-desc":
                                             FLOW_ID = data.getCurrentFlow().getId();
@@ -246,8 +266,10 @@ public class ActivityPlayGame extends AppCompatActivity {
                         View mView= LayoutInflater.from(this).inflate(R.layout.dialog_intro_story,null);
                         mBuilder.setView(mView);
                         //String web = "http://videocdn.bodybuilding.com/video/mp4/62000/62792m.mp4";
+                        Button btnPrev = mView.findViewById(R.id.btnPrev);
                         skip = mView.findViewById(R.id.videoSkip);
                         playerView = mView.findViewById(R.id.videoView);
+                        btnPrev.setVisibility(View.INVISIBLE);
                         // Build a HttpDataSource.Factory with cross-protocol redirects enabled.
                         HttpDataSource.Factory httpDataSourceFactory =
                                 new DefaultHttpDataSource.Factory().setAllowCrossProtocolRedirects(true);
@@ -340,9 +362,10 @@ public class ActivityPlayGame extends AppCompatActivity {
                             Log.d("FILE_ID", " : " + FILE_ID+" "+response.body().getData().getGameClassification().toString());
                             ovjDialog(FLOW_ID,FILE_ID);
                         }else{
-                            Intent ovjIntent = new Intent(ActivityPlayGame.this, ActivityScanOVJ.class);
-                            ovjIntent.putExtra("FLOW_ID", FLOW_ID);
-                            startActivity(ovjIntent);
+                            alertClass.showAlertScanOVJ("Scan OVJ Gagal","Silahkan scan barcode ovj image yang benar",FLOW_ID);
+//                            Intent ovjIntent = new Intent(ActivityPlayGame.this, ActivityScanOVJ.class);
+//                            ovjIntent.putExtra("FLOW_ID", FLOW_ID);
+//                            startActivity(ovjIntent);
 //                            Toast.makeText(ActivityPlayGame.this,"Error "+response.message().toString(),Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -397,8 +420,41 @@ public class ActivityPlayGame extends AppCompatActivity {
                 prevFlow(FLOW_ID);
                 //posVideoDialog("",POST_ID);
                 break;
+            case 65 :
+                Log.d("FLOW_TYPE 65", " : " + FLOW_TYPE);
+                Log.d("FLOW_ID 65", " : " + FLOW_ID);
+                Log.d("FILE_ID 65", " : " + FILE_ID);
+                Log.d("STATUS 65", " : " + STATUS);
+                currentFlow(FLOW_ID,FLOW_TYPE,FILE_ID);
+                //posVideoDialog("",POST_ID);
+                break;
         }
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        Log.d("Back"," Nothing");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mSocket.disconnect();
+        Log.d("Pause Socket : "," Stopped");
+
+    }
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        mSocket.connect();
+        Log.d("Restart Socket : "," Restart");
+    }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mSocket.disconnect();
+        Log.d("Stop Socket : "," Stopped");
     }
 
     private void carCheck(String post_id, String flow_id) {
@@ -435,10 +491,11 @@ public class ActivityPlayGame extends AppCompatActivity {
                     }
                 }else{
                     Log.d("Response", "" + response.code());
-                    Intent intentCar = new Intent(ActivityPlayGame.this, ActivityScanCar.class);
-                    intentCar.putExtra("FLOW_ID", flowid);
-                    Log.d("FLOW_ID CAR", "" + flowid);
-                    startActivity(intentCar);
+                    alertClass.showAlertCarCheck("Gagal CarCheck","Silahkan scan barcode mobil yang benar",flowid);
+//                    Intent intentCar = new Intent(ActivityPlayGame.this, ActivityScanCar.class);
+//                    intentCar.putExtra("FLOW_ID", flowid);
+//                    Log.d("FLOW_ID CAR", "" + flowid);
+//                    startActivity(intentCar);
                 }
 
             }
@@ -449,8 +506,6 @@ public class ActivityPlayGame extends AppCompatActivity {
             }
         });
     }
-
-
     private void nextFlow(String flow_id) {
         ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
         Call<PlayModel> playCall = apiInterface.next(getKeyToken.toString(),getKeyTokenGame,new RequestNextFlow(flow_id));
@@ -470,7 +525,9 @@ public class ActivityPlayGame extends AppCompatActivity {
 //                    }else{
 //                        FILE_ID = "NOT_FOUND";
 //                    }
-                        if (response.body().getData().getNextFlow().getLast() == true) {
+                        if (response.body().getData().getNextFlow().getLast() == true
+                                && response.body().getData().getNextFlow().getPost().getLast() == true
+                                && !response.body().getData().getNextFlow().getFlowType().getName().equals("manohara-credit-title")) {
                             //Toast.makeText(ActivityPlayGame.this,"End Game",Toast.LENGTH_SHORT).show();
                             ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
                             Call<FinishModel> finishCall = apiInterface.finish(getKeyToken.toString(),getKeyTokenGame,new RequestNextFlow(FLOW_ID));
@@ -509,7 +566,7 @@ public class ActivityPlayGame extends AppCompatActivity {
                                 break;
                             case "video":
                                 FILE_ID = response.body().getData().getNextFlow().getFile().getFileId();
-                                FancyToast.makeText(ActivityPlayGame.this,"Next Flow ID : "+response.body().getData().getNextFlow().getId() +" FILE ID :"+response.body().getData().getNextFlow().getFile().getFileId(),FancyToast.LENGTH_LONG,FancyToast.SUCCESS,true).show();
+                                Log.d("Next Flow ID : ",""+response.body().getData().getNextFlow().getId() +" FILE ID :"+response.body().getData().getNextFlow().getFile().getFileId());
                                 manoharaVideoDialog(FLOW_ID, FILE_ID);
                                 break;
                             case "manohara-dialogs":
@@ -657,6 +714,10 @@ public class ActivityPlayGame extends AppCompatActivity {
                                     braceCreditTitle(FLOW_ID, contentsCredit, "");
                                     break;
                                 }
+                            case "manohara-credit-title":
+                                    String fileCredit = response.body().getData().getNextFlow().getFile().getFileId();
+                                    manoharaCreditTitle(FLOW_ID,fileCredit);
+                                    break;
                             default:
                                 Toast.makeText(ActivityPlayGame.this, "Type : " + type, Toast.LENGTH_SHORT).show();
                                 break;
@@ -694,9 +755,26 @@ public class ActivityPlayGame extends AppCompatActivity {
 //                    }else{
 //                        FILE_ID = "NOT_FOUND";
 //                    }
-                        if (response.body().getData().getNextFlow().getLast() == true) {
+                        if (response.body().getData().getNextFlow().getLast() == true
+                                && response.body().getData().getNextFlow().getPost().getLast() == true
+                                && !response.body().getData().getNextFlow().getFlowType().getName().equals("manohara-credit-title")) {
                             //Toast.makeText(ActivityPlayGame.this,"End Game",Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(ActivityPlayGame.this, ActivityHome.class));
+                            ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
+                            Call<FinishModel> finishCall = apiInterface.finish(getKeyToken.toString(),getKeyTokenGame,new RequestNextFlow(FLOW_ID));
+                            finishCall.enqueue(new Callback<FinishModel>() {
+                                @Override
+                                public void onResponse(Call<FinishModel> call, Response<FinishModel> response) {
+                                    if(response.isSuccessful()){
+                                        startActivity(new Intent(ActivityPlayGame.this, ActivityHome.class));
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<FinishModel> call, Throwable t) {
+
+                                }
+                            });
+
                         }
                         isBack = response.body().getData().getNextFlow().getPrev();
                         Log.d("TYPE", "" + type);
@@ -719,8 +797,7 @@ public class ActivityPlayGame extends AppCompatActivity {
                                 break;
                             case "video":
                                 FILE_ID = response.body().getData().getNextFlow().getFile().getFileId();
-                                FancyToast.makeText(ActivityPlayGame.this,"Check Flow ID : "+response.body().getData().getNextFlow().getId() +" FILE ID :"+response.body().getData().getNextFlow().getFile().getFileId(),FancyToast.LENGTH_LONG,FancyToast.SUCCESS,true).show();
-
+                                Log.d("Checkin Flow ID : ",""+response.body().getData().getNextFlow().getId() +" FILE ID :"+response.body().getData().getNextFlow().getFile().getFileId());
                                 manoharaVideoDialog(FLOW_ID, FILE_ID);
                                 break;
                             case "manohara-dialogs":
@@ -851,16 +928,42 @@ public class ActivityPlayGame extends AppCompatActivity {
                                     braceCreditTitle(FLOW_ID, contentsCredit, "");
                                     break;
                                 }
+                            case "manohara-credit-title":
+                                    String fileIdCredit = response.body().getData().getNextFlow().getFile().getFileId();
+                                    manoharaCreditTitle(FLOW_ID, fileIdCredit);
+                                    break;
                             default:
                                 Toast.makeText(ActivityPlayGame.this, "Type : " + type, Toast.LENGTH_SHORT).show();
                                 break;
                         }
                     }
                 }else{
-                    Toast.makeText(ActivityPlayGame.this,"Chekin gagal : "+response.message().toString(),Toast.LENGTH_SHORT).show();
-                    Intent checkinIntent = new Intent(ActivityPlayGame.this, ActivityScan.class);
-                    checkinIntent.putExtra("FLOW_ID", flow_id);
-                    startActivity(checkinIntent);
+                    AlertDialog.Builder mBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
+                    View mView=ActivityPlayGame.this.getLayoutInflater().inflate(R.layout.registration_failed_dialog_layout, null);
+                    mBuilder.setView(mView);
+                    Button OK = (Button) mView.findViewById(R.id.dialogOK_button);
+                    TextView txtTitle = (TextView) mView.findViewById(R.id.txtTitle);
+                    TextView txtSubtitle = (TextView) mView.findViewById(R.id.txtSubtitle);
+                    txtTitle.setText("Checkin Gagal");
+                    txtSubtitle.setText("Silahkan scan ulang menggunakan barcode yang benar");
+                    OK.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                            Intent checkinIntent = new Intent(ActivityPlayGame.this, ActivityScan.class);
+                            checkinIntent.putExtra("FLOW_ID", flow_id);
+                            startActivity(checkinIntent);
+                        }
+                    });
+
+                    dialog = mBuilder.create();
+                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    dialog.setCanceledOnTouchOutside(false);
+                    dialog.show();
+
+//                    Intent checkinIntent = new Intent(ActivityPlayGame.this, ActivityScan.class);
+//                    checkinIntent.putExtra("FLOW_ID", flow_id);
+//                    startActivity(checkinIntent);
                 }
             }
 
@@ -889,9 +992,26 @@ public class ActivityPlayGame extends AppCompatActivity {
 //                    }else{
 //                        FILE_ID = "NOT_FOUND";
 //                    }
-                        if (response.body().getData().getNextFlow().getLast() == true) {
+                        if (response.body().getData().getNextFlow().getLast() == true
+                                && response.body().getData().getNextFlow().getPost().getLast() == true
+                                && !response.body().getData().getNextFlow().getFlowType().getName().equals("manohara-credit-title")) {
                             //Toast.makeText(ActivityPlayGame.this,"End Game",Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(ActivityPlayGame.this, ActivityHome.class));
+                            ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
+                            Call<FinishModel> finishCall = apiInterface.finish(getKeyToken.toString(),getKeyTokenGame,new RequestNextFlow(FLOW_ID));
+                            finishCall.enqueue(new Callback<FinishModel>() {
+                                @Override
+                                public void onResponse(Call<FinishModel> call, Response<FinishModel> response) {
+                                    if(response.isSuccessful()){
+                                        startActivity(new Intent(ActivityPlayGame.this, ActivityHome.class));
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<FinishModel> call, Throwable t) {
+
+                                }
+                            });
+
                         }
                         isBack = response.body().getData().getNextFlow().getPrev();
                         Log.d("TYPE", "" + type);
@@ -913,7 +1033,7 @@ public class ActivityPlayGame extends AppCompatActivity {
                                 break;
                             case "video":
                                 FILE_ID = response.body().getData().getNextFlow().getFile().getFileId();
-                                FancyToast.makeText(ActivityPlayGame.this,"Prev Flow ID : "+response.body().getData().getNextFlow().getId() +" FILE ID :"+response.body().getData().getNextFlow().getFile().getFileId(),FancyToast.LENGTH_LONG,FancyToast.SUCCESS,true).show();
+                                Log.d("Prev Flow ID : ",""+response.body().getData().getNextFlow().getId() +" FILE ID :"+response.body().getData().getNextFlow().getFile().getFileId());
                                 manoharaVideoDialog(FLOW_ID, FILE_ID);
                                 break;
                             case "manohara-dialogs":
@@ -1045,6 +1165,10 @@ public class ActivityPlayGame extends AppCompatActivity {
                                     braceCreditTitle(FLOW_ID, contentsCredit, "");
                                     break;
                                 }
+                            case "manohara-credit-title":
+                                    String fileIdCredit = response.body().getData().getNextFlow().getFile().getFileId();
+                                    manoharaCreditTitle(FLOW_ID, fileIdCredit);
+                                    break;
                             default:
                                 Toast.makeText(ActivityPlayGame.this, "Type : " + type, Toast.LENGTH_SHORT).show();
                                 break;
@@ -1060,6 +1184,20 @@ public class ActivityPlayGame extends AppCompatActivity {
                 Toast.makeText(ActivityPlayGame.this,"Error : "+t.getMessage().toString(),Toast.LENGTH_SHORT).show();
             }
         });
+    }
+    private void currentFlow(String flow_id, String flow_type, String file_id){
+        switch (flow_type) {
+            case "checkin":
+                dialog.dismiss();
+                //FancyToast.makeText(ActivityPlayGame.this, "Play Flow ID : " + data.getCurrentFlow().getId() + " FILE ID :" + data.getCurrentFlow().getFile().getFileId(), FancyToast.LENGTH_LONG, FancyToast.SUCCESS, true).show();
+                manoharaVideoDialog(flow_id, file_id);
+                break;
+            case "brace-post-desc":
+                braceDescDialog(FLOW_ID,"POS","Brace", "Text", "");
+                break;
+            default:
+                break;
+        }
     }
     private void miePatiArenGameInstruction(String flow_id, String content, String file_id) {
         AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
@@ -1100,6 +1238,7 @@ public class ActivityPlayGame extends AppCompatActivity {
         dialog = dBuilder.create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
         dialog.show();
     }
     private void ovjDialog(String flow_id, String file_id) {
@@ -1139,6 +1278,7 @@ public class ActivityPlayGame extends AppCompatActivity {
         dialog = dBuilder.create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
         dialog.show();
     }
     private void gerabahDialog(String flow_id, String file_id) {
@@ -1178,6 +1318,7 @@ public class ActivityPlayGame extends AppCompatActivity {
         dialog = dBuilder.create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
         dialog.show();
     }
     private void gerabahPreview(String flow_id, String file_id) {
@@ -1204,6 +1345,7 @@ public class ActivityPlayGame extends AppCompatActivity {
         dialog = dBuilder.create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
         dialog.show();
     }
     private void checkOut(String post_id, String flow_id) {
@@ -1221,10 +1363,11 @@ public class ActivityPlayGame extends AppCompatActivity {
                         transportInstruction(FLOW_ID, response.body().getData().getNextFlow().getContent(), response.body().getData().getNextFlow().getFile().getFileId());
                     }
                 }else {
-                    Intent intent = new Intent(ActivityPlayGame.this, ActivityScanCheckOut.class);
-                    intent.putExtra("FLOW_ID", flow_id);
-                    Log.d("FLOW_ID CEKOUT", "" + flow_id);
-                    startActivity(intent);
+                    alertClass.showAlerCheckOut("Checkout Gagal","Silahkan scan barcode checkout yang benar",flow_id);
+//                    Intent intent = new Intent(ActivityPlayGame.this, ActivityScanCheckOut.class);
+//                    intent.putExtra("FLOW_ID", flow_id);
+//                    Log.d("FLOW_ID CEKOUT", "" + flow_id);
+//                    startActivity(intent);
                 }
 
             }
@@ -1250,6 +1393,82 @@ public class ActivityPlayGame extends AppCompatActivity {
         intent.putExtra("CONTENT",content);
         Log.d("CONTENT TITLE",""+id);
         startActivity(intent);
+    }
+    private void manoharaCreditTitle(String id, String file_id) {
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
+        View mView= LayoutInflater.from(this).inflate(R.layout.dialog_intro_story,null);
+        mBuilder.setView(mView);
+        //String web = "http://videocdn.bodybuilding.com/video/mp4/62000/62792m.mp4";
+        skip = mView.findViewById(R.id.videoSkip);
+        playerView = mView.findViewById(R.id.videoView);
+        Button btnPrev = mView.findViewById(R.id.btnPrev);
+        if(isBack == false){
+            btnPrev.setVisibility(View.INVISIBLE);
+        }else{
+            btnPrev.setVisibility(View.VISIBLE);
+        }
+        // Build a HttpDataSource.Factory with cross-protocol redirects enabled.
+        HttpDataSource.Factory httpDataSourceFactory =
+                new DefaultHttpDataSource.Factory().setAllowCrossProtocolRedirects(true);
+        // Wrap the HttpDataSource.Factory in a DefaultDataSource.Factory, which adds in
+        // support for requesting data from other sources (e.g., files, resources, etc).
+        DefaultDataSource.Factory dataSourceFactory = () -> {
+            HttpDataSource dataSource = httpDataSourceFactory.createDataSource();
+            // Set a custom authentication request header.
+            dataSource.setRequestProperty("Authorization", getKeyToken.toString());
+            return dataSource;
+        };
+
+        try {
+            simpleExoPlayer = new SimpleExoPlayer.Builder(this).setMediaSourceFactory(new DefaultMediaSourceFactory(dataSourceFactory)).build();
+            playerView.setPlayer(simpleExoPlayer);
+            MediaItem mediaItem = MediaItem.fromUri(Config.BASE_URL+"mobile/v1/file-uploads/"+file_id);
+            Log.d("VIDEO URL ",""+Config.BASE_URL+"mobile/v1/file-uploads/"+file_id);
+            //MediaItem mediaItem = MediaItem.fromUri(web);
+            simpleExoPlayer.addMediaItem(mediaItem);
+            simpleExoPlayer.prepare();
+            simpleExoPlayer.play();
+        }catch (Exception e){
+            Log.d("VIDEO EXCEPTION ",""+e.getMessage().toString());
+        }
+
+        skip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                simpleExoPlayer.stop();
+                dialog.dismiss();
+              //  nextFlow(id);
+                ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
+                Call<FinishModel> finishCall = apiInterface.finish(getKeyToken.toString(),getKeyTokenGame,new RequestNextFlow(FLOW_ID));
+                finishCall.enqueue(new Callback<FinishModel>() {
+                    @Override
+                    public void onResponse(Call<FinishModel> call, Response<FinishModel> response) {
+                        if(response.isSuccessful()){
+                            startActivity(new Intent(ActivityPlayGame.this,ActivityHome.class));
+                        }else{
+                            Toast.makeText(ActivityPlayGame.this,"Error "+response.message().toString(),Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<FinishModel> call, Throwable t) {
+                        Toast.makeText(ActivityPlayGame.this,"Fail "+t.getMessage().toString(),Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+        btnPrev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                prevFlow(id);
+            }
+        });
+        dialog = mBuilder.create();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
+        dialog.show();
     }
     private void manoharaVideoDialog(String id, String file_id) {
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
@@ -1280,12 +1499,13 @@ public class ActivityPlayGame extends AppCompatActivity {
             simpleExoPlayer = new SimpleExoPlayer.Builder(this).setMediaSourceFactory(new DefaultMediaSourceFactory(dataSourceFactory)).build();
             playerView.setPlayer(simpleExoPlayer);
             MediaItem mediaItem = MediaItem.fromUri(Config.BASE_URL+"mobile/v1/file-uploads/"+file_id);
+            Log.d("VIDEO URL ",""+Config.BASE_URL+"mobile/v1/file-uploads/"+file_id);
             //MediaItem mediaItem = MediaItem.fromUri(web);
             simpleExoPlayer.addMediaItem(mediaItem);
             simpleExoPlayer.prepare();
             simpleExoPlayer.play();
         }catch (Exception e){
-
+            Log.d("VIDEO EXCEPTION ",""+e.getMessage().toString());
         }
 
         skip.setOnClickListener(new View.OnClickListener() {
@@ -1306,11 +1526,13 @@ public class ActivityPlayGame extends AppCompatActivity {
         dialog = mBuilder.create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
         dialog.show();
     }
     private void manoharaMapDialog(String id, String file_id) {
         AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
         View mView= LayoutInflater.from(this).inflate(R.layout.manohara_map,null);
+        linearLayout.setBackground(ContextCompat.getDrawable(ActivityPlayGame.this, R.drawable.hutan_phalaka));
         dBuilder.setView(mView);
 
         TextView lanjut = mView.findViewById(R.id.continue_peta);
@@ -1364,6 +1586,7 @@ public class ActivityPlayGame extends AppCompatActivity {
         dialog = dBuilder.create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
         dialog.show();
     }
     private void checkInInstructionDialog(String id, String content, String file_id) {
@@ -1425,6 +1648,7 @@ public class ActivityPlayGame extends AppCompatActivity {
         dialog = dBuilder.create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
         if(!isFinishing()){
             dialog.show();
         }
@@ -1470,6 +1694,7 @@ public class ActivityPlayGame extends AppCompatActivity {
         dialog = dBuilder.create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
         dialog.show();
     }
     private void gerabahGameInstruction(String id, String content, String file_id) {
@@ -1539,6 +1764,7 @@ public class ActivityPlayGame extends AppCompatActivity {
         dialog = dBuilder.create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
         dialog.show();
     }
     private void openCamera(String flow_id) {
@@ -1611,6 +1837,7 @@ public class ActivityPlayGame extends AppCompatActivity {
         dialog = dBuilder.create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
         dialog.show();
     }
     private void checkoutInstruction(String id, String content, String file_id) {
@@ -1670,6 +1897,7 @@ public class ActivityPlayGame extends AppCompatActivity {
         dialog = dBuilder.create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
         dialog.show();
     }
     private void transportInstruction(String id, String content, String file_id) {
@@ -1688,6 +1916,7 @@ public class ActivityPlayGame extends AppCompatActivity {
         dialog = dBuilder.create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
         dialog.show();
     }
     private void manoharaInstruction(String id, String content, String file_id) {
@@ -1748,6 +1977,7 @@ public class ActivityPlayGame extends AppCompatActivity {
         dialog = dBuilder.create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
         dialog.show();
     }
     private void manoharaDialog(String id, String content, String file_id, String title) {
@@ -1842,6 +2072,7 @@ public class ActivityPlayGame extends AppCompatActivity {
         dialog = dBuilder.create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
         dialog.show();
     }
     private void manoharaFighting(String id, String content, String file_id) {
@@ -1880,6 +2111,7 @@ public class ActivityPlayGame extends AppCompatActivity {
         dialog = dBuilder.create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
         dialog.show();
     }
     private void manoharaMediaSocial(String id, String content, String file_id) {
@@ -1917,6 +2149,7 @@ public class ActivityPlayGame extends AppCompatActivity {
         dialog = dBuilder.create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
         dialog.show();
     }
     private void Socmed(String id, String content, String file_id){
@@ -1937,6 +2170,7 @@ public class ActivityPlayGame extends AppCompatActivity {
         dialog = dBuilder.create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
         dialog.show();
     }
     private void showBottomSheetDialog(String FLOW_ID) {
@@ -1964,7 +2198,6 @@ public class ActivityPlayGame extends AppCompatActivity {
         });
 
     }
-
     private void kainpercaGameInstruction(String id, String content, String file_id){
         AlertDialog.Builder dBuilder = new AlertDialog.Builder(ActivityPlayGame.this);
         View mView= LayoutInflater.from(this).inflate(R.layout.dialog_petunjuk,null);
@@ -2023,6 +2256,7 @@ public class ActivityPlayGame extends AppCompatActivity {
         dialog = dBuilder.create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
         dialog.show();
     }
     private void gerabahGame(String id, String content, String file_id){

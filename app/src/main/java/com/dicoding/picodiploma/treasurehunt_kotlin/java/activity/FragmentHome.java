@@ -63,6 +63,7 @@ public class FragmentHome extends Fragment {
     String getKeyToken = "";
     String getKeyTokenGame = "";
     String FLOW_ID = "";
+    String FLOW_TYPE = "";
     ViewPager2 viewPager2;
     private Handler slideHandler = new Handler();
     boolean isContinue = false;
@@ -75,7 +76,7 @@ public class FragmentHome extends Fragment {
         getKeyToken=sharedPreferences.getString(KEY_TOKEN,null);
         getKeyTokenGame=sharedPreferences.getString(KEY_TOKEN_GAME,"");
         Log.d("CHECKING: ", getKeyToken.toString());
-        Log.d("TOKEN GAME: ", getKeyTokenGame.toString());
+        Log.d("TOKEN GAME HOME: ", getKeyTokenGame.toString());
         codeInput = view.findViewById(R.id.input_code);
         playButton = view.findViewById(R.id.play_button);
         username_welcome = view.findViewById(R.id.username_welcome);
@@ -87,6 +88,7 @@ public class FragmentHome extends Fragment {
         viewPager2.setAdapter(new SliderAdapter(sliderItems,viewPager2));
         sliderBuild();
         meProfile();
+        //username_welcome.setText(getKeyTokenGame);
         codeInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -108,11 +110,17 @@ public class FragmentHome extends Fragment {
                 play();
             }
         });
-        checkProgress();
+
         if(getKeyTokenGame!=null){
             playButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    if(FLOW_TYPE.equals("checkin")){
+                        Intent checkinIntent = new Intent(getActivity(), ActivityScan.class);
+                        checkinIntent.putExtra("FLOW_ID", FLOW_ID);
+                        startActivity(checkinIntent);
+
+                    }
                     Log.d("CHECK: ", "2");
                     Intent intent = new Intent(getActivity(),ActivityPlayGame.class);
                     intent.putExtra("FLOW_ID",FLOW_ID);
@@ -121,10 +129,26 @@ public class FragmentHome extends Fragment {
                 }
             });
         }
-
+        checkProgress(getKeyTokenGame);
 
         return view;
     }
+
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        Log.d("CHECKING: ", getKeyToken.toString());
+//        Log.d("TOKEN GAME ONRESUME: ", getKeyTokenGame.toString());
+//        checkProgress(getKeyTokenGame);
+//    }
+//
+//    @Override
+//    public void onAttach(@NonNull Context context) {
+//        super.onAttach(context);
+//        Log.d("CHECKING: ", getKeyToken.toString());
+//        Log.d("TOKEN GAME ONATTACH: ", getKeyTokenGame.toString());
+//        checkProgress(getKeyTokenGame);
+//    }
 
     private void sliderBuild() {
         viewPager2.setClipToPadding(false);
@@ -157,14 +181,16 @@ public class FragmentHome extends Fragment {
             viewPager2.setCurrentItem(viewPager2.getCurrentItem() +1);
         }
     };
-    private void checkProgress(){
+    private void checkProgress(String tokenGame){
+        Log.d("TOKEN GAME: ", tokenGame);
         ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
-        Call<CekProgressModel> cekProgressCall = apiInterface.cekproses(getKeyToken.toString(),getKeyTokenGame.toString());
+        Call<CekProgressModel> cekProgressCall = apiInterface.cekproses(getKeyToken.toString(),tokenGame);
         cekProgressCall.enqueue(new Callback<CekProgressModel>() {
             @Override
             public void onResponse(Call<CekProgressModel> call, Response<CekProgressModel> response) {
                 if(response.isSuccessful()){
-                    if(!response.body().getData().getCurrentFlow().getLast()){
+                   // if(!response.body().getData().getCurrentFlow().getLast() && !response.body().getData().getCurrentFlow().getPost().getLast()){
+
                         codeInput.setEnabled(false);
                         codeInput.setHeight(0);
                         codeInput.setVisibility(View.INVISIBLE);
@@ -172,10 +198,14 @@ public class FragmentHome extends Fragment {
                         playButton.setEnabled(true);
                         playButton.setText("Continue");
                         FLOW_ID = response.body().getData().getCurrentFlow().getId().toString();
-                        Log.d("FLOW_ID ", " : " + FLOW_ID);
+                        Log.d("FLOW_ID CEK PROGRESS", " : " + FLOW_ID);
                         isContinue = true;
-                    }
+                        FLOW_TYPE = response.body().getData().getCurrentFlow().getFlowType().getName().toString();
 
+                 //   }
+
+                }else{
+                    Log.d("ERROR CEK PROGRESS", " : " + response.message());
                 }
             }
             @Override
@@ -272,7 +302,8 @@ public class FragmentHome extends Fragment {
                     Log.d("Member ID", " : " + response.body().getData().getId().toString());
                     username_welcome.setText("Hallo, "+response.body().getData().getProfile().getFullName());
                 }else{
-                    Toast.makeText(getActivity(), "Fail "+response.body().getResponseMessage().toString(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getActivity(), "Fail "+response.body().getMessage().toString(), Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(getActivity(),ActivityLogin.class));
                 }
             }
 

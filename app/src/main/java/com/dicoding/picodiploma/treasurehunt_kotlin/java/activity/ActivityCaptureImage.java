@@ -59,6 +59,7 @@ public class ActivityCaptureImage extends AppCompatActivity {
             Log.d("FLOW_ID CAMERA", " : " + FLOW_ID);
             //The key argument here must match that used in the other activity
         }
+
         txtTitle = findViewById(R.id.txtTitle);
         imgOvj = findViewById(R.id.imgOvj);
         txtHint = findViewById(R.id.txtHint);

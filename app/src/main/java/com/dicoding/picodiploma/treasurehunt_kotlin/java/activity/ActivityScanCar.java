@@ -3,6 +3,8 @@ package com.dicoding.picodiploma.treasurehunt_kotlin.java.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +19,7 @@ import com.google.zxing.Result;
 public class ActivityScanCar extends AppCompatActivity {
     private CodeScanner mCodeScanner;
     String FLOW_ID = "";
+    Button btnBack;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,6 +31,7 @@ public class ActivityScanCar extends AppCompatActivity {
             //The key argument here must match that used in the other activity
         }
         CodeScannerView scannerView = findViewById(R.id.scanner_view);
+        btnBack = findViewById(R.id.btnBack);
         mCodeScanner = new CodeScanner(this, scannerView);
         mCodeScanner.setDecodeCallback(new DecodeCallback() {
             @Override
@@ -47,7 +51,18 @@ public class ActivityScanCar extends AppCompatActivity {
             }
         });
         mCodeScanner.startPreview();
-
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ActivityScanCar.this,ActivityPlayGame.class);
+                intent.putExtra("FLOW_ID",FLOW_ID);
+                intent.putExtra("STATUS", Config.PREV);
+                startActivity(intent);
+            }
+        });
+        View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION ;
+        decorView.setSystemUiVisibility(uiOptions);
 
     }
 

@@ -4,180 +4,181 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/linearLayout"
+    android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <RelativeLayout
-        android:id="@+id/activity_landing"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <Button
 
-        <Button
+        android:id="@+id/btnPrev"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/cardView"
+        android:layout_alignEnd="@+id/cardView"
+        android:layout_marginTop="40dp"
+        android:layout_marginStart="40dp"
+        android:alpha="0.75"
+        android:backgroundTint="@android:color/darker_gray"
+        android:fontFamily="@font/lora_regular"
+        android:text="Prev"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="15sp" />
 
-            android:id="@+id/btnPrev"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/cardView"
-            android:layout_alignEnd="@+id/cardView"
-            android:layout_marginLeft="40dp"
-            android:layout_marginEnd="262dp"
-            android:alpha="0.75"
-            android:backgroundTint="@android:color/darker_gray"
-            android:fontFamily="@font/lora_regular"
-            android:text="Prev"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="15sp" />
+
 
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardView"
             android:layout_width="match_parent"
-            android:layout_marginHorizontal="30dp"
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
-            android:layout_marginVertical="60dp"
+            android:layout_marginHorizontal="40dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="60dp"
             app:cardCornerRadius="10dp">
-        <RelativeLayout
-            android:id="@+id/peta_area"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/pop_up_dialog">
 
-
-            <ImageView
-                android:id="@+id/imgInstruction"
+            <RelativeLayout
+                android:id="@+id/peta_area"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_above="@+id/constraint_petunjuk"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginStart="0dp"
-                android:scaleType="fitXY" />
-
-            <TextView
-                android:id="@+id/txtSubtitles"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/txtBiasa"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="-59dp"
-                android:layout_marginBottom="20dp"
-                android:fontFamily="@font/lora_regular"
-                android:gravity="center"
-                android:text=""
-                android:textAlignment="center"
-                android:textColor="@color/green"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/txtBiasa"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/constraint_petunjuk"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="0dp"
-                android:layout_marginBottom="30dp"
-                android:fontFamily="@font/plus_jakarta_sans_regular"
-                android:paddingStart="30dp"
-                android:paddingEnd="30dp"
-                android:text=""
-                android:textAlignment="center"
-                android:textColor="@color/text2"
-                android:textSize="12sp" />
-
-            <LinearLayout
+                android:background="@drawable/pop_up_dialog">
 
 
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentBottom="true"
-                android:layout_margin="1dp"
-                android:background="@color/white"
-                android:layout_marginBottom="10dp"
-                android:padding="1dp">
-
-                <androidx.cardview.widget.CardView
+                <ImageView
+                    android:id="@+id/imgInstruction"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/player"
+                    android:layout_above="@+id/constraint_petunjuk"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginStart="0dp"
+                    android:scaleType="fitXY" />
 
-                    app:cardCornerRadius="10dp">
+                <TextView
+                    android:id="@+id/txtSubtitles"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/txtBiasa"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="-59dp"
+                    android:layout_marginBottom="20dp"
+                    android:fontFamily="@font/lora_regular"
+                    android:gravity="center"
+                    android:text=""
+                    android:textAlignment="center"
+                    android:textColor="@color/green"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
-                    <LinearLayout
-                        android:layout_margin="5dp"
-                        android:background="@drawable/player"
+                <TextView
+                    android:id="@+id/txtBiasa"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/constraint_petunjuk"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginStart="0dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="0dp"
+                    android:layout_marginBottom="30dp"
+                    android:fontFamily="@font/plus_jakarta_sans_regular"
+                    android:paddingStart="30dp"
+                    android:paddingEnd="30dp"
+                    android:text=""
+                    android:textAlignment="center"
+                    android:textColor="@color/text2"
+                    android:textSize="12sp" />
+
+                <LinearLayout
+
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_margin="0dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@android:color/transparent"
+                    android:padding="0dp">
+
+                    <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:padding="10dp">
+                        android:background="@drawable/player"
+                        android:layout_margin="15dp"
+                        app:cardCornerRadius="10dp">
 
-                        <TextView
-                            android:id="@+id/txtSubtitle"
+                        <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="20dp"
-                            android:fontFamily="@font/lora_regular"
-                            android:gravity="left"
-                            android:text="Petunjuk"
-                            android:textColor="@color/green"
-                            android:textSize="20sp"
-                            android:textStyle="bold" />
+                            android:layout_height="match_parent"
+                            android:layout_margin="5dp"
 
-                        <TextView
-                            android:id="@+id/txtInstruction"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="0dp"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginEnd="0dp"
-                            android:layout_marginBottom="30dp"
-                            android:fontFamily="@font/plus_jakarta_sans_regular"
+                            android:orientation="vertical"
+                            android:padding="10dp">
 
-                            android:paddingEnd="30dp"
-                            android:text="Keberadaan Petapa Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-                            android:textAlignment="textStart"
-                            android:textColor="@color/text2"
-                            android:textSize="13sp" />
+                            <TextView
+                                android:id="@+id/txtSubtitle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="20dp"
+                                android:fontFamily="@font/lora_regular"
+                                android:gravity="left"
+                                android:text="Petunjuk"
+                                android:textColor="@color/green"
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
 
-                        <TextView
-                            android:id="@+id/btnInstruction"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="right"
-                            android:fontFamily="@font/lora_regular"
-                            android:gravity="right|bottom"
-                            android:padding="10dp"
-                            android:text="Continue"
-                            android:textAllCaps="false"
-                            android:textColor="@color/green"
-                            android:textSize="20sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
+                            <TextView
+                                android:id="@+id/txtInstruction"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="0dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginEnd="0dp"
+                                android:layout_marginBottom="30dp"
+                                android:fontFamily="@font/plus_jakarta_sans_regular"
 
-                </androidx.cardview.widget.CardView>
+                                android:paddingEnd="30dp"
+                                android:text="Keberadaan Petapa Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+                                android:textAlignment="textStart"
+                                android:textColor="@color/text2"
+                                android:textSize="13sp" />
+
+                            <TextView
+                                android:id="@+id/btnInstruction"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="right"
+                                android:fontFamily="@font/lora_regular"
+                                android:gravity="right|bottom"
+                                android:padding="10dp"
+                                android:text="Continue"
+                                android:textAllCaps="false"
+                                android:textColor="@color/green"
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                    </androidx.cardview.widget.CardView>
 
 
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/constraint_petunjuk"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentBottom="true"
-                android:orientation="vertical" />
-        </RelativeLayout>
-    </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-    </RelativeLayout>
+                <LinearLayout
+                    android:id="@+id/constraint_petunjuk"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentBottom="true"
+                    android:orientation="vertical" />
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+
+
 
 
 </LinearLayout>

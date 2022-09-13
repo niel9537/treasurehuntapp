@@ -37,6 +37,9 @@ public class ActivitySplashBrace2022 extends AppCompatActivity {
             SUBTITLE = extras.getString("SUBTITLE");
             //The key argument here must match that used in the other activity
         }
+        View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION ;
+        decorView.setSystemUiVisibility(uiOptions);
         txtContent.setText(CONTENT);
         txtTitle.setText(TITLE);
         txtSubtitle.setText(SUBTITLE);

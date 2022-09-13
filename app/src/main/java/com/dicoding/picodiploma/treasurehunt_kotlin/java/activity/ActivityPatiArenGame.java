@@ -88,7 +88,9 @@ public class ActivityPatiArenGame extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
 //        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-
+        View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION ;
+        decorView.setSystemUiVisibility(uiOptions);
 
 
         buildData();

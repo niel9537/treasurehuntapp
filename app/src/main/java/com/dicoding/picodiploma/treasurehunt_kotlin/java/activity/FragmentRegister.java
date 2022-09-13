@@ -10,6 +10,7 @@ import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,8 @@ import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.LoginMod
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.network.ApiHelper;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.network.ApiInterface;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.util.LoadingDialogBar;
+
+import java.util.regex.Pattern;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -150,72 +153,79 @@ public class FragmentRegister extends Fragment {
         return view;
     }
 
-
+    private boolean validEmail(String email) {
+        Pattern pattern = Patterns.EMAIL_ADDRESS;
+        return pattern.matcher(email).matches();
+    }
     private void register() {
-        if(!nameInput.getText().toString().isEmpty() && !emailInput.getText().toString().isEmpty() && !confirmInput.getText().toString().isEmpty() && !passInput.getText().toString().isEmpty()){
-            if(confirmInput.getText().toString().equals(passInput.getText().toString())){
-                ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
-                Call<LoginModel> regisCall = apiInterface.registration(new RequestRegister(
-                        emailInput.getText().toString(),
-                        passInput.getText().toString(),
-                        nameInput.getText().toString(),
-                        "",
-                        ""));
-                regisCall.enqueue(new Callback<LoginModel>() {
-                    @Override
-                    public void onResponse(Call<LoginModel> call, Response<LoginModel> response) {
-                        if(response.isSuccessful()){
-                            Log.d("Register",""+response.body().getMessage().toString());
-                            AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
-                            View mView=getActivity().getLayoutInflater().inflate(R.layout.registration_success_dialog_layout, null);
-                            mBuilder.setView(mView);
-                            Button OK = (Button) mView.findViewById(R.id.dialogOK_button);
+        if(validEmail(emailInput.getText().toString())) {
+            if (!nameInput.getText().toString().isEmpty() && !emailInput.getText().toString().isEmpty() && !confirmInput.getText().toString().isEmpty() && !passInput.getText().toString().isEmpty()) {
+                if (confirmInput.getText().toString().equals(passInput.getText().toString())) {
+                    ApiInterface apiInterface = ApiHelper.getClient().create(ApiInterface.class);
+                    Call<LoginModel> regisCall = apiInterface.registration(new RequestRegister(
+                            emailInput.getText().toString(),
+                            passInput.getText().toString(),
+                            nameInput.getText().toString(),
+                            "",
+                            ""));
+                    regisCall.enqueue(new Callback<LoginModel>() {
+                        @Override
+                        public void onResponse(Call<LoginModel> call, Response<LoginModel> response) {
+                            if (response.isSuccessful()) {
+                                Log.d("Register", "" + response.body().getMessage().toString());
+                                AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
+                                View mView = getActivity().getLayoutInflater().inflate(R.layout.registration_success_dialog_layout, null);
+                                mBuilder.setView(mView);
+                                Button OK = (Button) mView.findViewById(R.id.dialogOK_button);
 
-                            OK.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    startActivity(new Intent(getActivity(),ActivityLogin.class));
-                                }
-                            });
+                                OK.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        startActivity(new Intent(getActivity(), ActivityLogin.class));
+                                    }
+                                });
 
-                            dialog = mBuilder.create();
-                            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                            dialog.setCanceledOnTouchOutside(false);
-                            dialog.show();
+                                dialog = mBuilder.create();
+                                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                                dialog.setCanceledOnTouchOutside(false);
+                                dialog.show();
 
 
-                            //Toast.makeText(getActivity(), "Menambah user berhasil!", Toast.LENGTH_SHORT).show();
-                        }else{
-                            AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
-                            View mView=getActivity().getLayoutInflater().inflate(R.layout.registration_failed_dialog_layout, null);
-                            mBuilder.setView(mView);
-                            Button OK = (Button) mView.findViewById(R.id.dialogOK_button);
+                                //Toast.makeText(getActivity(), "Menambah user berhasil!", Toast.LENGTH_SHORT).show();
+                            } else {
+                                AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
+                                View mView = getActivity().getLayoutInflater().inflate(R.layout.registration_failed_dialog_layout, null);
+                                mBuilder.setView(mView);
+                                Button OK = (Button) mView.findViewById(R.id.dialogOK_button);
 
-                            OK.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    dialog.dismiss();
-                                }
-                            });
+                                OK.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        dialog.dismiss();
+                                    }
+                                });
 
-                            dialog = mBuilder.create();
-                            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                            dialog.setCanceledOnTouchOutside(false);
-                            dialog.show();
-                            //Toast.makeText(getActivity(),"Gagal menambah user! "+response.body().getMessage().toString(),Toast.LENGTH_SHORT).show();
+                                dialog = mBuilder.create();
+                                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                                dialog.setCanceledOnTouchOutside(false);
+                                dialog.show();
+                                //Toast.makeText(getActivity(),"Gagal menambah user! "+response.body().getMessage().toString(),Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<LoginModel> call, Throwable t) {
-                        Toast.makeText(getActivity(),"Gagal  Registrasi : "+t.getMessage().toString(),Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }else{
-                Toast.makeText(getActivity(), "Password dan Konfirmasi password tidak cocok!", Toast.LENGTH_SHORT).show();
+                        @Override
+                        public void onFailure(Call<LoginModel> call, Throwable t) {
+                            Toast.makeText(getActivity(), "Gagal  Registrasi : " + t.getMessage().toString(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else {
+                    Toast.makeText(getActivity(), "Password dan Konfirmasi password tidak cocok!", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(getActivity(), "Masukkan data yang diperlukan!", Toast.LENGTH_SHORT).show();
             }
         }else{
-            Toast.makeText(getActivity(), "Masukkan data yang diperlukan!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Format Email kurang tepat!", Toast.LENGTH_SHORT).show();
         }
 
     }

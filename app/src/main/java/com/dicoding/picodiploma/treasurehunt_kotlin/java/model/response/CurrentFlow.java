@@ -31,14 +31,14 @@ public class CurrentFlow {
     @SerializedName("prev")
     @Expose
     private Boolean prev;
-    @SerializedName("post_id")
+    @SerializedName("post")
     @Expose
-    private String postId;
+    private Post post;
     @SerializedName("file")
     @Expose
     private File file;
 
-    public CurrentFlow(String id, String title, String subTitle, String content, Integer flowOrder, FlowType flowType, Boolean isLast, Boolean next, Boolean prev, String postId, File file) {
+    public CurrentFlow(String id, String title, String subTitle, String content, Integer flowOrder, FlowType flowType, Boolean isLast, Boolean next, Boolean prev, Post post, File file) {
         this.id = id;
         this.title = title;
         this.subTitle = subTitle;
@@ -48,7 +48,7 @@ public class CurrentFlow {
         this.isLast = isLast;
         this.next = next;
         this.prev = prev;
-        this.postId = postId;
+        this.post = post;
         this.file = file;
     }
 
@@ -124,12 +124,12 @@ public class CurrentFlow {
         this.prev = prev;
     }
 
-    public String getPostId() {
-        return postId;
+    public Post getPost() {
+        return post;
     }
 
-    public void setPostId(String postId) {
-        this.postId = postId;
+    public void setPost(Post post) {
+        this.post = post;
     }
 
     public File getFile() {

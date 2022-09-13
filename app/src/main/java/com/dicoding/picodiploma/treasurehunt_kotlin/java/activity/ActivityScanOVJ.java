@@ -3,6 +3,8 @@ package com.dicoding.picodiploma.treasurehunt_kotlin.java.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +19,7 @@ import com.google.zxing.Result;
 public class ActivityScanOVJ extends AppCompatActivity {
     private CodeScanner mCodeScanner;
     String FLOW_ID = "";
+    Button btnBack;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,6 +30,7 @@ public class ActivityScanOVJ extends AppCompatActivity {
             Log.d("FLOW_ID SCAN CHECKOUT", " : " + FLOW_ID);
             //The key argument here must match that used in the other activity
         }
+        btnBack = findViewById(R.id.btnBack);
             CodeScannerView scannerView = findViewById(R.id.scanner_view);
             mCodeScanner = new CodeScanner(this, scannerView);
             mCodeScanner.setDecodeCallback(new DecodeCallback() {
@@ -48,7 +52,18 @@ public class ActivityScanOVJ extends AppCompatActivity {
             });
             mCodeScanner.startPreview();
 
-
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ActivityScanOVJ.this,ActivityPlayGame.class);
+                intent.putExtra("FLOW_ID",FLOW_ID);
+                intent.putExtra("STATUS", Config.PREV);
+                startActivity(intent);
+            }
+        });
+        View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION ;
+        decorView.setSystemUiVisibility(uiOptions);
     }
 
     @Override

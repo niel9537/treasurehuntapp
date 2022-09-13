@@ -14,7 +14,7 @@ public class DataCekProgress {
     private CurrentPost currentPost;
     @SerializedName("next_post")
     @Expose
-    private List<NextPost> nextPost = null;
+    private NextPost nextPost = null;
     @SerializedName("current_flow")
     @Expose
     private CurrentFlow currentFlow;
@@ -22,7 +22,7 @@ public class DataCekProgress {
     @Expose
     private NextFlow nextFlow;
 
-    public DataCekProgress(CurrentPost currentPost, List<NextPost> nextPost, CurrentFlow currentFlow, NextFlow nextFlow) {
+    public DataCekProgress(CurrentPost currentPost, NextPost nextPost, CurrentFlow currentFlow, NextFlow nextFlow) {
         this.currentPost = currentPost;
         this.nextPost = nextPost;
         this.currentFlow = currentFlow;
@@ -37,11 +37,11 @@ public class DataCekProgress {
         this.currentPost = currentPost;
     }
 
-    public List<NextPost> getNextPost() {
+    public NextPost getNextPost() {
         return nextPost;
     }
 
-    public void setNextPost(List<NextPost> nextPost) {
+    public void setNextPost(NextPost nextPost) {
         this.nextPost = nextPost;
     }
 

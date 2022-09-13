@@ -1,6 +1,7 @@
 package com.dicoding.picodiploma.treasurehunt_kotlin.java.activity;
 
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -55,6 +56,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ActivityDetailGames extends AppCompatActivity {
+
     FloatingActionButton back;
     ImageView imgDetail,imgGame;
     AlertDialog dialog;
@@ -75,6 +77,7 @@ public class ActivityDetailGames extends AppCompatActivity {
     String getKeyToken = "";
     String id = "";
     List<Gallery> galleryList;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

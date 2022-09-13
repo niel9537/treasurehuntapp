@@ -139,6 +139,34 @@ public class ActivityLobby extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mSocket.disconnect();
+        Log.d("Pause Socket : "," Stopped");
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mSocket.connect();
+        Log.d("Resume Socket : "," Resume");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        mSocket.connect();
+        Log.d("Restart Socket : "," Restart");
+    }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mSocket.disconnect();
+        Log.d("Stop Socket : "," Stopped");
+    }
+
     private void setListening() {
         mSocket.on("game-started", new Emitter.Listener() {
             @Override
@@ -237,7 +265,7 @@ public class ActivityLobby extends AppCompatActivity {
                         MemberReadyModel data = gson.fromJson(json.toString(), MemberReadyModel.class);
                         FancyToast.makeText(ActivityLobby.this,"Player bernama "+data.getMember().getUser().getProfile().getFullName().toString()+" telah ready !!",FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,true).show();
                         //startActivity(new Intent(ActivityLobby.this,ActivityLobby.class));
-
+                        lobbyDetail();
                     }
                 });
 
@@ -260,38 +288,38 @@ public class ActivityLobby extends AppCompatActivity {
                 });
 
             }
-        }).on("member-offline", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Gson gson = new Gson();
-                        JSONObject json = (JSONObject) args[0];
-                        Log.d("JSON Offline: ",""+json.toString());
-                        MemberReadyModel data = gson.fromJson(json.toString(), MemberReadyModel.class);
-                        FancyToast.makeText(ActivityLobby.this,"Player bernama "+data.getMember().getUser().getProfile().getFullName().toString()+" telah offline !!",FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,true).show();
-
-
-                    }
-                });
-
-            }
-        }).on("member-online", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Gson gson = new Gson();
-                        JSONObject json = (JSONObject) args[0];
-                        Log.d("JSON Online: ",""+json.toString());
-                        MemberReadyModel data = gson.fromJson(json.toString(), MemberReadyModel.class);
-                        //FancyToast.makeText(ActivityLobby.this,"Player bernama "+data.getMember().getUser().getProfile().getFullName().toString()+" telah online !!",FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,true).show();
-                    }
-                });
-
-            }
+//        }).on("member-offline", new Emitter.Listener() {
+//            @Override
+//            public void call(Object... args) {
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        Gson gson = new Gson();
+//                        JSONObject json = (JSONObject) args[0];
+//                        Log.d("JSON Offline: ",""+json.toString());
+//                        MemberReadyModel data = gson.fromJson(json.toString(), MemberReadyModel.class);
+//                        FancyToast.makeText(ActivityLobby.this,"Player bernama "+data.getMember().getUser().getProfile().getFullName().toString()+" telah offline !!",FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,true).show();
+//
+//
+//                    }
+//                });
+//
+//            }
+//        }).on("member-online", new Emitter.Listener() {
+//            @Override
+//            public void call(Object... args) {
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        Gson gson = new Gson();
+//                        JSONObject json = (JSONObject) args[0];
+//                        Log.d("JSON Online: ",""+json.toString());
+//                        MemberReadyModel data = gson.fromJson(json.toString(), MemberReadyModel.class);
+//                        //FancyToast.makeText(ActivityLobby.this,"Player bernama "+data.getMember().getUser().getProfile().getFullName().toString()+" telah online !!",FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,true).show();
+//                    }
+//                });
+//
+//            }
         }).on("checked-out", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
@@ -407,7 +435,7 @@ public class ActivityLobby extends AppCompatActivity {
     }
     private void lanjut() {
            Intent intent = new Intent(ActivityLobby.this,ActivityPlayGame.class);
-           intent.putExtra("FLOW_ID",FLOW_ID);
+           intent.putExtra("FLOW_ID LANJUT",FLOW_ID);
            intent.putExtra("STATUS", Config.CONTINUE_GAME);
            startActivity(intent);
     }
@@ -484,7 +512,7 @@ public class ActivityLobby extends AppCompatActivity {
                   ready.setEnabled(false);
                   play.setText("Continue");
                   FLOW_ID = response.body().getData().getCurrentFlow().getId().toString();
-                  Log.d("FLOW_ID ", " : " + FLOW_ID);
+                  Log.d("FLOW_ID CEK PROGRESS", " : " + FLOW_ID);
                   isContinue = true;
                   Log.d("CEK PROGRESS ", " : " + isContinue);
                   play.setOnClickListener(new View.OnClickListener() {

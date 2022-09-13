@@ -39,14 +39,14 @@ public class DBHelper extends SQLiteOpenHelper {
         return db.rawQuery("Select * from " + "manoharaFlow", null);
     }
 
-    public boolean updateFlow(CurrentFlow nf, int id) {
-        SQLiteDatabase db = getWritableDatabase();
-        ContentValues cv = new ContentValues();
-        cv.put("flow_order", nf.getFlowOrder());
-        cv.put("post_id", nf.getPostId());
-        return db.update("manoharaFlow", cv, "id" + "=" + id,
-                null) > 0;
-    }
+//    public boolean updateFlow(CurrentFlow nf, int id) {
+//        SQLiteDatabase db = getWritableDatabase();
+//        ContentValues cv = new ContentValues();
+//        cv.put("flow_order", nf.getFlowOrder());
+//        cv.put("post_id", nf.getPostId());
+//        return db.update("manoharaFlow", cv, "id" + "=" + id,
+//                null) > 0;
+//    }
 
     public void deleteFlow (int id) {
         SQLiteDatabase db = getReadableDatabase();

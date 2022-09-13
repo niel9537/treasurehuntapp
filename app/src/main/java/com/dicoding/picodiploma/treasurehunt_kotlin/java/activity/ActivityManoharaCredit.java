@@ -1,6 +1,5 @@
 package com.dicoding.picodiploma.treasurehunt_kotlin.java.activity;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,21 +13,16 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.dicoding.picodiploma.treasurehunt_kotlin.R;
-import com.dicoding.picodiploma.treasurehunt_kotlin.java.config.Config;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.request.RequestNextFlow;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.FinishModel;
-import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.MiePatiArenData;
-import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.MiePatiArenModel;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.network.ApiHelper;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.network.ApiInterface;
-
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ActivityBraceCredit extends AppCompatActivity {
+public class ActivityManoharaCredit extends AppCompatActivity {
     private int delayValue=2500;
     String FLOW_ID = "";
     String CONTENT = "";
@@ -45,7 +39,7 @@ public class ActivityBraceCredit extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_credit);
+        setContentView(R.layout.activity_manohara_credit);
         sharedPreferences=  getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         getKeyToken=sharedPreferences.getString(KEY_TOKEN,null);
         getKeyTokenGame=sharedPreferences.getString(KEY_TOKEN_GAME,null);
@@ -55,7 +49,7 @@ public class ActivityBraceCredit extends AppCompatActivity {
         if (extras != null) {
             FLOW_ID= extras.getString("FLOW_ID");
             CONTENT= extras.getString("CONTENT");
-            Log.d("FLOW_ID BRACE CREDIT",""+FLOW_ID);
+            Log.d("FLOW_ID MANOHARA CREDIT",""+FLOW_ID);
             //The key argument here must match that used in the other activity
         }
         txtContent.setText(CONTENT);
@@ -68,15 +62,15 @@ public class ActivityBraceCredit extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<FinishModel> call, Response<FinishModel> response) {
                         if(response.isSuccessful()){
-                            startActivity(new Intent(ActivityBraceCredit.this,ActivityHome.class));
+                            startActivity(new Intent(ActivityManoharaCredit.this,ActivityHome.class));
                         }else{
-                            Toast.makeText(ActivityBraceCredit.this,"Error "+response.message().toString(),Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ActivityManoharaCredit.this,"Error "+response.message().toString(),Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<FinishModel> call, Throwable t) {
-                        Toast.makeText(ActivityBraceCredit.this,"Fail "+t.getMessage().toString(),Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ActivityManoharaCredit.this,"Fail "+t.getMessage().toString(),Toast.LENGTH_SHORT).show();
                     }
                 });
             }
