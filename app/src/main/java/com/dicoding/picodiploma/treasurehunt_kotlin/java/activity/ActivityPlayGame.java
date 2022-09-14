@@ -42,7 +42,9 @@ import com.dicoding.picodiploma.treasurehunt_kotlin.java.model.response.socketre
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.network.ApiHelper;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.network.ApiInterface;
 import com.dicoding.picodiploma.treasurehunt_kotlin.java.util.TypeWritter;
+import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.MediaItem;
+import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.DefaultMediaSourceFactory;
 import com.google.android.exoplayer2.ui.PlayerView;
@@ -478,6 +480,7 @@ public class ActivityPlayGame extends AppCompatActivity {
                         String type = response.body().getData().getCurrentFlow().getFlowType().getName();
                         switch (type) {
                             case "checkin-instruction":
+                                //dialog.dismiss();
                                 checkInInstructionDialog(FLOW_ID, response.body().getData().getCurrentFlow().getContent().toString(), response.body().getData().getCurrentFlow().getFile().getFileId());
                                 break;
                             case "brace-credit-title":
@@ -1511,6 +1514,14 @@ public class ActivityPlayGame extends AppCompatActivity {
             simpleExoPlayer.addMediaItem(mediaItem);
             simpleExoPlayer.prepare();
             simpleExoPlayer.play();
+            simpleExoPlayer.addListener(new Player.Listener() {
+                @Override
+                public void onPlayerError(ExoPlaybackException error) {
+                    Player.Listener.super.onPlayerError(error);
+                    Log.d("VIDEO EXCEPTION ERROR",""+error.getMessage().toString());
+                    alertClass.showAlertVideo("Gagal Putar Video","Video ini tidak di support pada device anda","");
+                }
+            });
         }catch (Exception e){
             Log.d("VIDEO EXCEPTION ",""+e.getMessage().toString());
         }

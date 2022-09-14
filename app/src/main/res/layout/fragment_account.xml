@@ -163,15 +163,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="48dp"
+        android:backgroundTint="#D2DBD9"
         android:text="Sign Out"
-        android:textStyle="bold"
         android:textAllCaps="false"
         android:textColor="@color/green"
-        android:backgroundTint="#D2DBD9"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtAbout" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -178,7 +178,7 @@ public class ActivityDetailGames extends AppCompatActivity {
 
         dialog = dBuilder.create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCanceledOnTouchOutside(true);
         dialog.show();
     }
     private void meGame(String tokenGame) {

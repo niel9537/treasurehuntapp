@@ -111,5 +111,23 @@ public class AlertClass {
         dialog.create();
         dialog.show();
     }
+    public void showAlertVideo(String title, String subtitle, String flowId){
+        dialog = new Dialog(context);
+        dialog.setContentView(R.layout.dialog_regis_failed);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        TextView txtTitle = dialog.findViewById(R.id.textView4);
+        TextView txtSubtitle = dialog.findViewById(R.id.textView6);
+        Button ok = dialog.findViewById(R.id.ok_forgot);
+        txtTitle.setText(title);
+        txtSubtitle.setText(subtitle);
+        ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
 
+        dialog.create();
+        dialog.show();
+    }
 }
